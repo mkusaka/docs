@@ -1,4 +1,6 @@
 # study documents
+url: https://mkusaka.github.io/docs/public/
+
 ## commands
 server
 ```bash
@@ -15,4 +17,3 @@ build
 ```bash
 hugo
 ```
-
