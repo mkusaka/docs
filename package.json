@@ -1,0 +1,19 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/mkusaka/docs.git",
+  "author": "mkusaka <hinoshita1992@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "yarn": "1.13.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "./pushhook.sh"
+    }
+  },
+  "devDependencies": {
+    "husky": "^1.1.2"
+  }
+}
