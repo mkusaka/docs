@@ -1,5 +1,5 @@
 # study documents
-url: https://mkusaka.github.io/docs/public/
+url: [public](https://mkusaka.github.io/docs/public/)
 
 ## commands
 server
