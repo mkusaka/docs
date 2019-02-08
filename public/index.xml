@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>docs</title>
-    <link>/</link>
+    <link>https://mkusaka.github.io/docs/public/</link>
     <description>Recent content on docs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja</language>
     <lastBuildDate>Sat, 09 Feb 2019 00:31:47 +0900</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://mkusaka.github.io/docs/public/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Firstpost</title>
-      <link>/posts/firstpost/</link>
+      <link>https://mkusaka.github.io/docs/public/posts/firstpost/</link>
       <pubDate>Sat, 09 Feb 2019 00:31:47 +0900</pubDate>
       
-      <guid>/posts/firstpost/</guid>
-      <description> typescript </description>
+      <guid>https://mkusaka.github.io/docs/public/posts/firstpost/</guid>
+      <description> TypeScript </description>
     </item>
     
   </channel>
