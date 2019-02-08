@@ -1,7 +1,7 @@
 baseURL = "https://mkusaka.github.io/docs/"
 languageCode = "ja"
 title = "docs"
-theme = "code-editor"
+theme = "learn"
 
 [params]
   author = "mkusaka"
