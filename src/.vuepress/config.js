@@ -4,6 +4,32 @@ module.exports = {
   dest: 'docs',
   base: '/docs/',
   serviceWorker: true,
-  Markdown: true
-  // TODO: config sidebar https://vuepress.vuejs.org/theme/default-theme-config.html#disable-the-navbar
+  markdown: {
+    // options for markdown-it-anchor
+    anchor: {
+      permalink: false
+    },
+    // options for markdown-it-toc
+    toc: {
+      includeLevel: [1, 2]
+    },
+    extendMarkdown: md => {
+      // use more markdown-it plugins!
+      md.use(require('markdown-it'))
+    }
+  },
+  themeConfig: {
+    sidebar: {
+      '/': [
+        ''
+      ],
+      '/Database/': [
+        ''
+      ],
+      '/Languages/': [
+        ''
+      ]
+    },
+    displayAllHeaders: true
+  }
 }
