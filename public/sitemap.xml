@@ -3,29 +3,40 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://mkusaka.github.io/docs/public/posts/firstpost/</loc>
+    <loc>https://mkusaka.github.io/docs/studies/ml/tensorflow_and_scikit-learn/readme/</loc>
+    <lastmod>2019-02-09T01:49:09+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/posts/firstpost/</loc>
     <lastmod>2019-02-09T00:31:47+09:00</lastmod>
   </url>
   
   <url>
-    <loc>https://mkusaka.github.io/docs/public/categories/</loc>
+    <loc>https://mkusaka.github.io/docs/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://mkusaka.github.io/docs/public/posts/</loc>
+    <loc>https://mkusaka.github.io/docs/posts/</loc>
     <lastmod>2019-02-09T00:31:47+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://mkusaka.github.io/docs/public/tags/</loc>
+    <loc>https://mkusaka.github.io/docs/studies/</loc>
+    <lastmod>2019-02-09T01:49:09+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://mkusaka.github.io/docs/public/</loc>
-    <lastmod>2019-02-09T00:31:47+09:00</lastmod>
+    <loc>https://mkusaka.github.io/docs/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/</loc>
+    <lastmod>2019-02-09T01:49:09+09:00</lastmod>
     <priority>0</priority>
   </url>
   
