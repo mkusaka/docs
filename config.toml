@@ -1,0 +1,9 @@
+# baseURL = "http://example.org/"
+languageCode = "ja"
+title = "docs"
+theme = "code-editor"
+
+[params]
+  author = "mkusaka"
+  locale = "ja"
+  roootlink = "/"
