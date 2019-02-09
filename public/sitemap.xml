@@ -3,6 +3,21 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://mkusaka.github.io/docs/public/searches/readme/</loc>
+    <lastmod>2019-02-09T13:12:33+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/public/posts/search_result_document_granularity/</loc>
+    <lastmod>2019-02-09T12:51:44+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/public/posts/stock_and_flow/</loc>
+    <lastmod>2019-02-09T12:43:19+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://mkusaka.github.io/docs/public/</loc>
     <lastmod>2019-02-09T02:05:14+09:00</lastmod>
   </url>
@@ -14,6 +29,18 @@
   
   <url>
     <loc>https://mkusaka.github.io/docs/public/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/public/posts/</loc>
+    <lastmod>2019-02-09T12:51:44+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/public/searches/</loc>
+    <lastmod>2019-02-09T13:12:33+09:00</lastmod>
     <priority>0</priority>
   </url>
   

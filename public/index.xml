@@ -13,6 +13,36 @@
     
     <item>
       <title>README</title>
+      <link>https://mkusaka.github.io/docs/public/searches/readme/</link>
+      <pubDate>Sat, 09 Feb 2019 13:12:33 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/searches/readme/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Search_result_document_granularity</title>
+      <link>https://mkusaka.github.io/docs/public/posts/search_result_document_granularity/</link>
+      <pubDate>Sat, 09 Feb 2019 12:51:44 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/posts/search_result_document_granularity/</guid>
+      <description> これはなに 調査をする際のドキュメントの粒度について、個人的な現状のベストプラクティスぽいものをまとめる
+概要 TBD
+ 課題感  調査をしながらドキュメントを書くとただのログになりがちで再利用性がない  戦略  調査の主題を記載するドキュメントを作成する 調査の思考過程をもとにしたドキュメントの分岐を作成する 思考の分岐 = ドキュメントの分岐として捉える  分岐の例: わからない単語が出てきて調べる 新しいライブラリについて調べる 対象の技術を使ってみたサイトに何が書いてあったのかをまとめる 対象の技術の思想についてまとめる etc&amp;hellip;  すべての情報は主題のドキュメントを頂点としたツリー構造を取る  本質的にはどこが頂点でも変わらない  思考した結果をもとに提出用としてドキュメントを揃える ツリー構造からわかること、どこを頂点とすればよいかを考慮した上でまとめる ピラミッド原則がわかりやすい 思考過程のドキュメントと提出用のドキュメントを相互参照できるようにする  戦略を支えるツール  ドキュメントツールなら何でもいい気がする dropboxpaper notion esa  調査をしながらドキュメントを書くということ  メリット あとに残るので再利用可能 文章のほうがシェアしやすいため集合知としての価値も出てくる デメリット 調査の速度が遅くなる 戦略がないと再利用ができないただの一時情報ができる   </description>
+    </item>
+    
+    <item>
+      <title>Stock_and_flow</title>
+      <link>https://mkusaka.github.io/docs/public/posts/stock_and_flow/</link>
+      <pubDate>Sat, 09 Feb 2019 12:43:19 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/posts/stock_and_flow/</guid>
+      <description> これはなに ストック情報フロー情報について、普段どういう事を考えているのかをまとめる。 また普段使用しているツールも踏まえ、どういった形の情報整理が正しいかを考える。
+概要  ストック情報  あとから参照される可能性の高い情報 メンテナンスを要する  フロー情報  あとから参照される可能性の低い情報 メンテナンスを要さない  チャットシステム ドキュメントシステム 口頭という呪い  口頭で話したことをあとで文章化すればいいものではない  Github Issueはストック情報か？フロー情報か？  ストック情報とフロー情報の間  コラム:コピペの功罪 なんもわからん  詳細 参考URL  フローとストック | サルでもわかるプロジェクト管理入門【プロジェクト管理ツールBacklog】 ストック情報とフロー情報 – イディア：情報デザインと情報アーキテクチャ  </description>
+    </item>
+    
+    <item>
+      <title>README</title>
       <link>https://mkusaka.github.io/docs/public/studies/ml/tensorflow_and_scikit-learn/readme/</link>
       <pubDate>Sat, 09 Feb 2019 01:49:09 +0900</pubDate>
       
