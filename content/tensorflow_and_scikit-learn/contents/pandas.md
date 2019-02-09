@@ -20,6 +20,20 @@ dataframeを図示するメソッド
   - etc..
 - x: x軸のラベルを指定。デフォルトはNone
 - y: y軸のラベルを指定。デフォルトはNone
+- alpha: 密度が高いところを見やすくする。
+  - (ここだけmatplotlibの引数なのかな？)
+- c: ドキュメントに見当たらない、、
+- label: ドキュメントに見当たらない、、
+- cmap: ドキュメントに見当たらない、、
+- figsize: ドキュメントに見当たらない、、
+- colorbar: カラーバーの表示
 
+#### 情報元
+- [pandas.DataFrame.plot — pandas 0.24.1 documentation](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html)
+- [axes — Matplotlib 3.0.2 documentation](https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes)
 
-情報元: [pandas.DataFrame.plot — pandas 0.24.1 documentation](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html)
+### pandas.DataFrame.corr
+列同士の相関を計算する。計算をする際にNAやnullは考慮されない
+
+#### 情報元
+- [pandas.DataFrame.corr — pandas 0.24.1 documentation](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.corr.html#pandas.DataFrame.corr)
