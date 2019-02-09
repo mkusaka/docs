@@ -1,7 +1,7 @@
 ---
 title: "Tensorflow_scikit Learn_book"
 date: 2019-02-09T22:37:34+09:00
-draft: true
+draft: false
 ---
 
 読む本: [O'Reilly Japan - scikit-learnとTensorFlowによる実践機械学習](https://www.oreilly.co.jp/books/9784873118345/)
