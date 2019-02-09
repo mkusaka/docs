@@ -10,7 +10,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "./pushhook.sh"
+      "post-commit": "./commithook.sh"
     }
   },
   "devDependencies": {

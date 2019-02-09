@@ -8,4 +8,4 @@ draft: false
 hi :)
 
 # what is this?
-my study history repo.
+my study documents repo.
