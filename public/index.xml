@@ -12,6 +12,26 @@
     
     
     <item>
+      <title>2_4</title>
+      <link>https://mkusaka.github.io/docs/public/studies/ml/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/2_4/</link>
+      <pubDate>Sun, 10 Feb 2019 00:46:12 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/studies/ml/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/2_4/</guid>
+      <description> 概要 データの可視化の話 - データを可視化することで、対象に対するより深い洞察をする - 2.3章でも概観を見たが、ことをしたが、より深い理解を進める。
+詳細 まずやること  訓練セットのみを扱う 訓練セットが大きい場合は抽出して小さくする  参考URL </description>
+    </item>
+    
+    <item>
+      <title>Tensorflow_scikit Learn_book</title>
+      <link>https://mkusaka.github.io/docs/public/studies/ml/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/</link>
+      <pubDate>Sat, 09 Feb 2019 22:37:34 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/studies/ml/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/</guid>
+      <description> 読む本: O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習
+参考URL  O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 notebook置き場  </description>
+    </item>
+    
+    <item>
       <title>README</title>
       <link>https://mkusaka.github.io/docs/public/searches/readme/</link>
       <pubDate>Sat, 09 Feb 2019 13:12:33 +0900</pubDate>
@@ -48,8 +68,7 @@
       <pubDate>Sat, 09 Feb 2019 01:49:09 +0900</pubDate>
       
       <guid>https://mkusaka.github.io/docs/public/studies/ml/tensorflow_and_scikit-learn/readme/</guid>
-      <description>概要 O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 の学習リンク
-mkusaka/tensorflow_tutorial: https://www.tensorflow.org/tutorials/</description>
+      <description>O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 をやるメモ</description>
     </item>
     
   </channel>
