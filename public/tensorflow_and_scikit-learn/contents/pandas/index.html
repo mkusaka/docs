@@ -12,17 +12,17 @@
     <title>Pandas :: docs</title>
 
     
-    <link href="https://mkusaka.github.io/docs/public/css/nucleus.css?1549729092" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/fontawesome-all.min.css?1549729092" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/hybrid.css?1549729092" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/featherlight.min.css?1549729092" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/perfect-scrollbar.min.css?1549729092" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/auto-complete.css?1549729092" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/theme.css?1549729092" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/hugo-theme.css?1549729092" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/nucleus.css?1549730586" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/fontawesome-all.min.css?1549730586" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/hybrid.css?1549730586" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/featherlight.min.css?1549730586" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/perfect-scrollbar.min.css?1549730586" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/auto-complete.css?1549730586" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/theme.css?1549730586" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/hugo-theme.css?1549730586" rel="stylesheet">
     
 
-    <script src="https://mkusaka.github.io/docs/public/js/jquery-2.x.min.js?1549729092"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/jquery-2.x.min.js?1549730586"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -67,14 +67,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/lunr.min.js?1549729092"></script>
-<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/auto-complete.js?1549729092"></script>
+<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/lunr.min.js?1549730586"></script>
+<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/auto-complete.js?1549730586"></script>
 <script type="text/javascript">
     
         var baseurl = "https:\/\/mkusaka.github.io\/docs\/public\/";
     
 </script>
-<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/search.js?1549729092"></script>
+<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/search.js?1549730586"></script>
 
     
   </div>
@@ -366,6 +366,11 @@
 <li><a href="#pandas-dataframe-plot">pandas.DataFrame.plot</a>
 <ul>
 <li><a href="#引数">引数</a></li>
+<li><a href="#情報元">情報元</a></li>
+</ul></li>
+<li><a href="#pandas-dataframe-corr">pandas.DataFrame.corr</a>
+<ul>
+<li><a href="#情報元-1">情報元</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
@@ -416,9 +421,34 @@
 </ul></li>
 <li>x: x軸のラベルを指定。デフォルトはNone</li>
 <li>y: y軸のラベルを指定。デフォルトはNone</li>
+<li>alpha: 密度が高いところを見やすくする。
+
+<ul>
+<li>(ここだけmatplotlibの引数なのかな？)</li>
+</ul></li>
+<li>c: ドキュメントに見当たらない、、</li>
+<li>label: ドキュメントに見当たらない、、</li>
+<li>cmap: ドキュメントに見当たらない、、</li>
+<li>figsize: ドキュメントに見当たらない、、</li>
+<li>colorbar: カラーバーの表示</li>
 </ul>
 
-<p>情報元: <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html">pandas.DataFrame.plot — pandas 0.24.1 documentation</a></p>
+<h4 id="情報元">情報元</h4>
+
+<ul>
+<li><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html">pandas.DataFrame.plot — pandas 0.24.1 documentation</a></li>
+<li><a href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes">axes — Matplotlib 3.0.2 documentation</a></li>
+</ul>
+
+<h3 id="pandas-dataframe-corr">pandas.DataFrame.corr</h3>
+
+<p>列同士の相関を計算する。計算をする際にNAやnullは考慮されない</p>
+
+<h4 id="情報元-1">情報元</h4>
+
+<ul>
+<li><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.corr.html#pandas.DataFrame.corr">pandas.DataFrame.corr — pandas 0.24.1 documentation</a></li>
+</ul>
 
 
 <footer class=" footline" >
@@ -623,20 +653,20 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="https://mkusaka.github.io/docs/public/js/clipboard.min.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.min.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.jquery.min.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/jquery.sticky.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/featherlight.min.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/html5shiv-printshiv.min.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/highlight.pack.js?1549729092"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/clipboard.min.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.min.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.jquery.min.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/jquery.sticky.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/featherlight.min.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/html5shiv-printshiv.min.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/highlight.pack.js?1549730586"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="https://mkusaka.github.io/docs/public/js/modernizr.custom.71422.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/learn.js?1549729092"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/hugo-learn.js?1549729092"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/modernizr.custom.71422.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/learn.js?1549730586"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/hugo-learn.js?1549730586"></script>
 
-    <link href="https://mkusaka.github.io/docs/public/mermaid/mermaid.css?1549729092" type="text/css" rel="stylesheet" />
-    <script src="https://mkusaka.github.io/docs/public/mermaid/mermaid.js?1549729092"></script>
+    <link href="https://mkusaka.github.io/docs/public/mermaid/mermaid.css?1549730586" type="text/css" rel="stylesheet" />
+    <script src="https://mkusaka.github.io/docs/public/mermaid/mermaid.js?1549730586"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
