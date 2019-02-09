@@ -31,16 +31,6 @@
     </item>
     
     <item>
-      <title>Tensorflow_scikit Learn_book</title>
-      <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/</link>
-      <pubDate>Sat, 09 Feb 2019 22:37:34 +0900</pubDate>
-      
-      <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/</guid>
-      <description> 読む本: O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習
-参考URL  O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 notebook置き場  </description>
-    </item>
-    
-    <item>
       <title>README</title>
       <link>https://mkusaka.github.io/docs/public/searches/readme/</link>
       <pubDate>Sat, 09 Feb 2019 13:12:33 +0900</pubDate>
@@ -77,7 +67,8 @@
       <pubDate>Sat, 09 Feb 2019 01:49:09 +0900</pubDate>
       
       <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/readme/</guid>
-      <description>O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 をやるメモ</description>
+      <description> 読む本: O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習
+参考URL  O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 notebook置き場  </description>
     </item>
     
   </channel>
