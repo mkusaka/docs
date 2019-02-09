@@ -21,14 +21,5 @@
 mkusaka/tensorflow_tutorial: https://www.tensorflow.org/tutorials/</description>
     </item>
     
-    <item>
-      <title>Firstpost</title>
-      <link>https://mkusaka.github.io/docs/public/posts/firstpost/</link>
-      <pubDate>Sat, 09 Feb 2019 00:31:47 +0900</pubDate>
-      
-      <guid>https://mkusaka.github.io/docs/public/posts/firstpost/</guid>
-      <description> TypeScript </description>
-    </item>
-    
   </channel>
 </rss>
