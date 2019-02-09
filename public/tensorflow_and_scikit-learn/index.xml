@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tensorflow_and_scikit-learns on docs</title>
+    <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/</link>
+    <description>Recent content in Tensorflow_and_scikit-learns on docs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    <lastBuildDate>Sun, 10 Feb 2019 01:09:39 +0900</lastBuildDate>
+    
+	<atom:link href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Pandas</title>
+      <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/pandas/</link>
+      <pubDate>Sun, 10 Feb 2019 01:09:39 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/pandas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>2_4</title>
+      <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/2_4/</link>
+      <pubDate>Sun, 10 Feb 2019 00:46:12 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/2_4/</guid>
+      <description> 概要 データの可視化の話 - データを可視化することで、対象に対するより深い洞察をする - 2.3章でも概観を見たが、ことをしたが、より深い理解を進める。
+詳細 まずやること  訓練セットのみを扱う 訓練セットが大きい場合は抽出して小さくする  図示  pandas.DataFrame.plot  kind(str): https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html   参考URL </description>
+    </item>
+    
+    <item>
+      <title>Tensorflow_scikit Learn_book</title>
+      <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/</link>
+      <pubDate>Sat, 09 Feb 2019 22:37:34 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/tensorflow_scikit-learn_book/</guid>
+      <description> 読む本: O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習
+参考URL  O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 notebook置き場  </description>
+    </item>
+    
+    <item>
+      <title>README</title>
+      <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/readme/</link>
+      <pubDate>Sat, 09 Feb 2019 01:49:09 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/readme/</guid>
+      <description>O&amp;rsquo;Reilly Japan - scikit-learnとTensorFlowによる実践機械学習 をやるメモ</description>
+    </item>
+    
+  </channel>
+</rss>
