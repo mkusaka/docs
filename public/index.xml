@@ -27,7 +27,7 @@ def: 自発的な構造化
     </item>
     
     <item>
-      <title>section1</title>
+      <title>Section1</title>
       <link>https://mkusaka.github.io/docs/public/alife/section1/</link>
       <pubDate>Sun, 10 Feb 2019 17:47:28 +0900</pubDate>
       
@@ -54,7 +54,7 @@ DNNは学習後は変更しにくい？などの欠点があり、LSTMなどい�
       
       <guid>https://mkusaka.github.io/docs/public/alife/readme/</guid>
       <description>これはなに O&amp;rsquo;Reilly Japan - 作って動かすALife ついでのTensorflow勉強記録
-序文 ゼロからはじめるディープラーニングを読んだあとにTensorflowを読みたくなったため、alifeに手を出すことにしました。 200ページほどなのですぐ読めると信じています。</description>
+序文 ゼロからはじめるディープラーニングを読んだあとにTensorflowを触りたくなったため、alifeに手を出すことにしました。 200ページほどなのですぐ読めると信じています。</description>
     </item>
     
     <item>
