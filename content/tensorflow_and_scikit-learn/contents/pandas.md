@@ -37,3 +37,13 @@ dataframeを図示するメソッド
 
 #### 情報元
 - [pandas.DataFrame.corr — pandas 0.24.1 documentation](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.corr.html#pandas.DataFrame.corr)
+
+### pandas.plotting.scatter_matrix
+各データ同士の散布図を作成する
+
+#### 引数
+- 第1引数: データフレーム
+- figsize: tupleで図の大きさを指定する
+
+#### 情報元
+- [pandas.plotting.scatter_matrix — pandas 0.24.1 documentation](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.plotting.scatter_matrix.html)
