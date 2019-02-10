@@ -6,10 +6,19 @@
     <description>Recent content in Posts on docs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja</language>
-    <lastBuildDate>Sat, 09 Feb 2019 12:51:44 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 10 Feb 2019 12:55:43 +0900</lastBuildDate>
     
 	<atom:link href="https://mkusaka.github.io/docs/public/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Toggl_pomodoro</title>
+      <link>https://mkusaka.github.io/docs/public/posts/toggl_pomodoro/</link>
+      <pubDate>Sun, 10 Feb 2019 12:55:43 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/posts/toggl_pomodoro/</guid>
+      <description>TBD pomodoroとtogglの併用について書く予定</description>
+    </item>
     
     <item>
       <title>Search_result_document_granularity</title>
