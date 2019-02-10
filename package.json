@@ -8,12 +8,20 @@
   "engines": {
     "yarn": "1.13.0"
   },
+  "scripts": {
+    "lint": "textlint `find content/**/*.md`",
+    "lint:fix": "textlint --fix `find content/**/*.md`"
+  },
   "husky": {
     "hooks": {
-      "post-commit": "./commithook.sh"
+      "post-commit": "bin/commithook",
+      "pre-commit": "yarn run lint"
     }
   },
   "devDependencies": {
-    "husky": "^1.1.2"
+    "husky": "^1.1.2",
+    "textlint": "^11.2.2",
+    "textlint-rule-max-ten": "^2.0.3",
+    "textlint-rule-spellcheck-tech-word": "^5.0.0"
   }
 }

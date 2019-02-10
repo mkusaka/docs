@@ -1,0 +1,7 @@
+#!/bin/bash
+
+TARGET_FILES = `find content/**/*.md`
+
+for file in TARGET_FILES; do
+  echo $file
+done
