@@ -12,13 +12,27 @@
     
     
     <item>
+      <title>Sklearn</title>
+      <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/sklearn/</link>
+      <pubDate>Sun, 10 Feb 2019 14:14:38 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/sklearn/</guid>
+      <description>概要 sklearnに関して調べたものはこちらに集約していく。
+詳細 クラス sklearn.preprocessing.Imputer 欠損値の補完を行う。
+引数  strategy: str  median: axisに依存した欠損値の中央値で代替する 実際に計算する際はテキスト属性などを削除したdataframeを渡すぽい   インスタンスメソッド  fit:  引数に訓練データを渡してインスタンスを適合させられる   ※このクラス自体はSimpleImputerに変わるらしいとdeprecation warningが出ていた。
+/usr/local/lib/python3.6/dist-packages/sklearn/utils/deprecation.py:58: DeprecationWarning: Class Imputer is deprecated; Imputer was deprecated in version 0.20 and will be removed in 0.22. Import impute.SimpleImputer from sklearn instead.  情報元 sklearn.preprocessing.Imputer — scikit-learn 0.17 文档</description>
+    </item>
+    
+    <item>
       <title>2_5</title>
       <link>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/2_5/</link>
       <pubDate>Sun, 10 Feb 2019 13:06:34 +0900</pubDate>
       
       <guid>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/2_5/</guid>
       <description> 概要 機械学習アルゴリズムのためのデータ準備
-詳細 </description>
+詳細 データのクリーニング 欠損特徴量の処理機構 通常欠損特徴量を処理できないので、対応するための関数を作る必要性がある。
+pandasの対処方法例  欠測のある区域を取り除く ⇔ pandas.DataFrame.dropna() 属性全体を取り除く ⇔ pandas.DataFrame.drop() 何らかの値(0, 平均etc)を設定する ⇔ pandas.DataFrame.fillna()  システム評価などで再利用する可能性があるため、使用した中央値は残しておいたほうが良い   scikit learnの対処例 Imputerを使用するとうまく処理してくれる - 数値データのみのdataframeを渡す必要がある
+link  notebook  </description>
     </item>
     
     <item>

@@ -12,17 +12,17 @@
     <title>2_5 :: docs</title>
 
     
-    <link href="https://mkusaka.github.io/docs/public/css/nucleus.css?1549771774" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/fontawesome-all.min.css?1549771774" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/hybrid.css?1549771774" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/featherlight.min.css?1549771774" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/perfect-scrollbar.min.css?1549771774" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/auto-complete.css?1549771774" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/theme.css?1549771774" rel="stylesheet">
-    <link href="https://mkusaka.github.io/docs/public/css/hugo-theme.css?1549771774" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/nucleus.css?1549776686" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/fontawesome-all.min.css?1549776686" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/hybrid.css?1549776686" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/featherlight.min.css?1549776686" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/perfect-scrollbar.min.css?1549776686" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/auto-complete.css?1549776686" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/theme.css?1549776686" rel="stylesheet">
+    <link href="https://mkusaka.github.io/docs/public/css/hugo-theme.css?1549776686" rel="stylesheet">
     
 
-    <script src="https://mkusaka.github.io/docs/public/js/jquery-2.x.min.js?1549771774"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/jquery-2.x.min.js?1549776686"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -67,14 +67,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/lunr.min.js?1549771774"></script>
-<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/auto-complete.js?1549771774"></script>
+<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/lunr.min.js?1549776686"></script>
+<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/auto-complete.js?1549776686"></script>
 <script type="text/javascript">
     
         var baseurl = "https:\/\/mkusaka.github.io\/docs\/public\/";
     
 </script>
-<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/search.js?1549771774"></script>
+<script type="text/javascript" src="https://mkusaka.github.io/docs/public/js/search.js?1549776686"></script>
 
     
   </div>
@@ -107,6 +107,25 @@
           
           
         
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/tensorflow_and_scikit-learn/contents/sklearn/" title="Sklearn" class="dd-item ">
+        <a href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/sklearn/">
+        Sklearn
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
           
             
             
@@ -397,7 +416,18 @@
 <nav id="TableOfContents">
 <ul>
 <li><a href="#概要">概要</a></li>
-<li><a href="#詳細">詳細</a></li>
+<li><a href="#詳細">詳細</a>
+<ul>
+<li><a href="#データのクリーニング">データのクリーニング</a>
+<ul>
+<li><a href="#欠損特徴量の処理機構">欠損特徴量の処理機構</a>
+<ul>
+<li><a href="#pandasの対処方法例">pandasの対処方法例</a></li>
+</ul></li>
+<li><a href="#scikit-learnの対処例">scikit learnの対処例</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#link">link</a></li>
 </ul>
 </nav>
     </div>
@@ -424,6 +454,35 @@
 <p>機械学習アルゴリズムのためのデータ準備</p>
 
 <h1 id="詳細">詳細</h1>
+
+<h2 id="データのクリーニング">データのクリーニング</h2>
+
+<h3 id="欠損特徴量の処理機構">欠損特徴量の処理機構</h3>
+
+<p>通常欠損特徴量を処理できないので、対応するための関数を作る必要性がある。</p>
+
+<h4 id="pandasの対処方法例">pandasの対処方法例</h4>
+
+<ol>
+<li>欠測のある区域を取り除く ⇔ pandas.DataFrame.dropna()</li>
+<li>属性全体を取り除く ⇔ pandas.DataFrame.drop()</li>
+<li>何らかの値(0, 平均etc)を設定する ⇔ pandas.DataFrame.fillna()
+
+<ul>
+<li>システム評価などで再利用する可能性があるため、使用した中央値は残しておいたほうが良い</li>
+</ul></li>
+</ol>
+
+<h3 id="scikit-learnの対処例">scikit learnの対処例</h3>
+
+<p>Imputerを使用するとうまく処理してくれる
+- 数値データのみのdataframeを渡す必要がある</p>
+
+<h1 id="link">link</h1>
+
+<ul>
+<li><a href="https://github.com/mkusaka/tensorflow_tutorial/blob/master/src/scikit-learn%26TensorFlow/2.5.ipynb">notebook</a></li>
+</ul>
 
 
 <footer class=" footline" >
@@ -476,6 +535,25 @@
             
                 
                     
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
                     
                 
                 
@@ -647,7 +725,7 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/" title="Tensorflow_and_scikit-learns"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/sklearn/" title="Sklearn"> <i class="fa fa-chevron-left"></i></a>
 		
 		
 			<a class="nav nav-next" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/pandas/" title="Pandas" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
@@ -660,20 +738,20 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="https://mkusaka.github.io/docs/public/js/clipboard.min.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.min.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.jquery.min.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/jquery.sticky.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/featherlight.min.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/html5shiv-printshiv.min.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/highlight.pack.js?1549771774"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/clipboard.min.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.min.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/perfect-scrollbar.jquery.min.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/jquery.sticky.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/featherlight.min.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/html5shiv-printshiv.min.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/highlight.pack.js?1549776686"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="https://mkusaka.github.io/docs/public/js/modernizr.custom.71422.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/learn.js?1549771774"></script>
-    <script src="https://mkusaka.github.io/docs/public/js/hugo-learn.js?1549771774"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/modernizr.custom.71422.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/learn.js?1549776686"></script>
+    <script src="https://mkusaka.github.io/docs/public/js/hugo-learn.js?1549776686"></script>
 
-    <link href="https://mkusaka.github.io/docs/public/mermaid/mermaid.css?1549771774" type="text/css" rel="stylesheet" />
-    <script src="https://mkusaka.github.io/docs/public/mermaid/mermaid.js?1549771774"></script>
+    <link href="https://mkusaka.github.io/docs/public/mermaid/mermaid.css?1549776686" type="text/css" rel="stylesheet" />
+    <script src="https://mkusaka.github.io/docs/public/mermaid/mermaid.js?1549776686"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
