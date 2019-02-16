@@ -40,3 +40,5 @@ etc..
 
 ## 1.4
 https://github.com/mkusaka/go_system_programming
+
+- fmt.Println("hello world") を題材に、vscodeのデバッガ(F5)のステップインを使用しつつsyscallまで見た
