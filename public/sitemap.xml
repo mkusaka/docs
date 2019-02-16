@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://mkusaka.github.io/docs/public/sys_go/section2/</loc>
+    <lastmod>2019-02-17T00:05:13+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://mkusaka.github.io/docs/public/systems_performance/section2/</loc>
     <lastmod>2019-02-16T17:54:22+09:00</lastmod>
   </url>
@@ -112,7 +117,7 @@
   
   <url>
     <loc>https://mkusaka.github.io/docs/public/sys_go/</loc>
-    <lastmod>2019-02-16T15:45:59+09:00</lastmod>
+    <lastmod>2019-02-17T00:05:13+09:00</lastmod>
     <priority>0</priority>
   </url>
   

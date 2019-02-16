@@ -12,6 +12,18 @@
     
     
     <item>
+      <title>$2 低レベルアクセスへの入り口1: io.Writer</title>
+      <link>https://mkusaka.github.io/docs/public/sys_go/section2/</link>
+      <pubDate>Sun, 17 Feb 2019 00:05:13 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/sys_go/section2/</guid>
+      <description>概要 io.Writerから見る低レイヤー
+詳細 2.1 io.Writer は OS が持つファイルのシステムコールの相似形 def: ファイル記述子
+ファイルディスクリプタとは、プログラムからファイルを操作する際、操作対象のファイルを識別・同定するために割り当てられる番号。OSにアクセスを依頼する際にファイルを指定するのに用いられる整数値である。主にUNIX系OSで用いられる仕組みで、Windowsではファイルハンドル（file handle）がほぼこれに相当する仕組みを提供する。  via: ファイルディスクリプタ（ファイル記述子）とは - IT用語辞典
+ OSはsyscallをファイル記述子に対して呼ぶ 記述子はただの数値だが、実際はモノ(ファイル、CPU、ソケットetc..)への識別子として提供されている  記述子を指定することで、プログラマはその実態が何かを意識する必要がない これはOSがうまく抽象化してくれているということ   // fd_unix.go func (fd *FD) Write(p []byte) (int, error) { // fdがファイルディスクリプタ? if err := fd.writeLock(); err != nil { return 0, err } defer fd.writeUnlock() if err := fd.pd.prepareWrite(fd.isFile); err != nil { return 0, err } var nn int for { max := len(p) if fd.</description>
+    </item>
+    
+    <item>
       <title>Section2</title>
       <link>https://mkusaka.github.io/docs/public/systems_performance/section2/</link>
       <pubDate>Sat, 16 Feb 2019 17:54:22 +0900</pubDate>

@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="https://mkusaka.github.io/docs/public/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="https://mkusaka.github.io/docs/public/images/favicon.png" type="image/x-icon" />
-    <title>README :: docs</title>
+    <title>$2 低レベルアクセスへの入り口1: io.Writer :: docs</title>
 
     
     <link href="https://mkusaka.github.io/docs/public/css/nucleus.css?1550332406" rel="stylesheet">
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/alife/readme/">
+  <body class="" data-url="/sys_go/section2/">
     <nav id="sidebar" class="">
 
 
@@ -91,7 +91,7 @@
   
     
     <li data-nav-id="/sys_go/" title="Sys_gos" class="dd-item 
-        
+        parent
         
         
         ">
@@ -115,7 +115,7 @@
  
   
     
-      <li data-nav-id="/sys_go/section2/" title="$2 低レベルアクセスへの入り口1: io.Writer" class="dd-item ">
+      <li data-nav-id="/sys_go/section2/" title="$2 低レベルアクセスへの入り口1: io.Writer" class="dd-item active">
         <a href="https://mkusaka.github.io/docs/public/sys_go/section2/">
         $2 低レベルアクセスへの入り口1: io.Writer
         
@@ -250,7 +250,7 @@
   
     
     <li data-nav-id="/alife/" title="Alives" class="dd-item 
-        parent
+        
         
         
         ">
@@ -312,7 +312,7 @@
  
   
     
-      <li data-nav-id="/alife/readme/" title="README" class="dd-item active">
+      <li data-nav-id="/alife/readme/" title="README" class="dd-item ">
         <a href="https://mkusaka.github.io/docs/public/alife/readme/">
         README
         
@@ -648,7 +648,7 @@
             
           
           
-            <a href='https://mkusaka.github.io/docs/public/'></a> > <a href='https://mkusaka.github.io/docs/public/alife/'>Alives</a> > README
+            <a href='https://mkusaka.github.io/docs/public/'></a> > <a href='https://mkusaka.github.io/docs/public/sys_go/'>Sys_gos</a> > $2 低レベルアクセスへの入り口1: io.Writer
           
          
           
@@ -663,8 +663,14 @@
     <div class="wrapper">
 <nav id="TableOfContents">
 <ul>
-<li><a href="#これはなに">これはなに</a></li>
-<li><a href="#序文">序文</a></li>
+<li><a href="#概要">概要</a></li>
+<li><a href="#詳細">詳細</a>
+<ul>
+<li><a href="#2-1-io-writer-は-os-か-持つファイルのシステムコールの相似形">2.1 io.Writer は OS が持つファイルのシステムコールの相似形</a></li>
+<li><a href="#2-2-go-言語のインタフェース">2.2 Go 言語のインタフェース</a></li>
+<li><a href="#2-3-io-writer-は-インタフェース">2.3 io.Writer は「インタフェース」</a></li>
+<li><a href="#2-4-io-writer-を使う構造体の例">2.4 io.Writer を使う構造体の例</a></li>
+</ul></li>
 </ul>
 </nav>
     </div>
@@ -678,7 +684,7 @@
         
         <div id="body-inner">
           
-            <h1>README</h1>
+            <h1>$2 低レベルアクセスへの入り口1: io.Writer</h1>
           
 
         
@@ -686,14 +692,107 @@
 
 
 
-<h1 id="これはなに">これはなに</h1>
+<h1 id="概要">概要</h1>
 
-<p><a href="https://www.oreilly.co.jp/books/9784873118475/">O&rsquo;Reilly Japan - 作って動かすALife</a> ついでのTensorflow勉強記録</p>
+<p>io.Writerから見る低レイヤー</p>
 
-<h1 id="序文">序文</h1>
+<h1 id="詳細">詳細</h1>
 
-<p>ゼロからはじめるディープラーニングを読んだあとにTensorflowを触りたくなったため、alifeに手を出すことにしました。
-200ページほどなのですぐ読めると信じています。</p>
+<h2 id="2-1-io-writer-は-os-か-持つファイルのシステムコールの相似形">2.1 io.Writer は OS が持つファイルのシステムコールの相似形</h2>
+
+<p><strong>def: ファイル記述子</strong></p>
+
+<pre><code>ファイルディスクリプタとは、プログラムからファイルを操作する際、操作対象のファイルを識別・同定するために割り当てられる番号。OSにアクセスを依頼する際にファイルを指定するのに用いられる整数値である。主にUNIX系OSで用いられる仕組みで、Windowsではファイルハンドル（file handle）がほぼこれに相当する仕組みを提供する。
+</code></pre>
+
+<p>via: <a href="http://e-words.jp/w/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%82%BF.html">ファイルディスクリプタ（ファイル記述子）とは - IT用語辞典</a></p>
+
+<ul>
+<li>OSはsyscallをファイル記述子に対して呼ぶ</li>
+<li>記述子はただの数値だが、実際はモノ(ファイル、CPU、ソケットetc..)への識別子として提供されている
+
+<ul>
+<li>記述子を指定することで、プログラマはその実態が何かを意識する必要がない</li>
+<li>これはOSがうまく抽象化してくれているということ</li>
+</ul></li>
+</ul>
+
+<pre><code class="language-go">// fd_unix.go
+func (fd *FD) Write(p []byte) (int, error) { // fdがファイルディスクリプタ?
+	if err := fd.writeLock(); err != nil {
+		return 0, err
+	}
+	defer fd.writeUnlock()
+	if err := fd.pd.prepareWrite(fd.isFile); err != nil {
+		return 0, err
+	}
+	var nn int
+	for {
+		max := len(p)
+		if fd.IsStream &amp;&amp; max-nn &gt; maxRW {
+			max = nn + maxRW
+		}
+		n, err := syscall.Write(fd.Sysfd, p[nn:max])
+</code></pre>
+
+<h2 id="2-2-go-言語のインタフェース">2.2 Go 言語のインタフェース</h2>
+
+<p>いわゆるインタフェース。
+構造体などが持つべき仕様を定義したもの。</p>
+
+<pre><code class="language-go">package main
+
+import (
+  &quot;fmt&quot;
+)
+
+// インターフェース定義
+type Animal interface {
+  Say()
+}
+
+// 構造体の宣言
+// implementsとかはいらない
+type Human struct {
+  height int
+}
+
+// これでSayメソッドを定義できるのかな。面白い。
+// 他にもありそう→複数メソッドを定義は毎回func書かないとなのかな
+// 副作用があるバイは h *Humanとかにする必要があるそう(なんでだろう。。？)
+func (h Human) Say() {
+  fmt.Printf(&quot;Hello, my hight is %s\n&quot;, h.height)
+}
+
+func main() {
+  var animal Animal
+
+  animal = &amp;Human{200} // なんでポインタ渡してるんだろう・・？ 初期化したポインタをanimalに渡している。。。？であれば (*animal).Say()が正しい気がするけどいらないのかな。→いらないぽい。goはかしこい。
+  animal.Say()
+}
+</code></pre>
+
+<ul>
+<li><a href="https://qiita.com/ruiu/items/85b72bc94e08d192d90b">Goのメソッドは構造体以外にでも定義できるしそれが便利なこともよくある - Qiita</a>
+
+<ul>
+<li>面白いので併読すると良いかも。</li>
+</ul></li>
+</ul>
+
+<h2 id="2-3-io-writer-は-インタフェース">2.3 io.Writer は「インタフェース」</h2>
+
+<ul>
+<li><code>f *File</code> はcppで言うところの <code>File* f</code> つまりFileのポインタ型を持つ変数</li>
+<li><code>func (f *File) Write(b []byte) (n int, err error)</code> で <code>File</code> 構造体へ引数 <code>[]bye</code> 返りが <code>int, error</code> の <code>Write</code> メソッドを定義していることになる。</li>
+</ul>
+
+<pre><code class="language-go">type Writer interface {
+  Write(p []byte) (n int, err error)
+}
+</code></pre>
+
+<h2 id="2-4-io-writer-を使う構造体の例">2.4 io.Writer を使う構造体の例</h2>
 
 
 <footer class=" footline" >
@@ -732,8 +831,122 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
                         
                         
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
                     
                 
                 
@@ -798,126 +1011,6 @@
             
             
                 
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
                     
                 
                 
@@ -1115,10 +1208,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/alife/section1/" title="Section1"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/sys_go/" title="Sys_gos"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/" title="Tensorflow_and_scikit-learns" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="https://mkusaka.github.io/docs/public/sys_go/section1/" title="$1 Go言語で覗くシステムプログラミングの世界" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
