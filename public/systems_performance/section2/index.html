@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="https://mkusaka.github.io/docs/public/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="https://mkusaka.github.io/docs/public/images/favicon.png" type="image/x-icon" />
-    <title>Sklearn :: docs</title>
+    <title>Section2 :: docs</title>
 
     
     <link href="https://mkusaka.github.io/docs/public/css/nucleus.css?1550307472" rel="stylesheet">
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/tensorflow_and_scikit-learn/contents/sklearn/">
+  <body class="" data-url="/systems_performance/section2/">
     <nav id="sidebar" class="">
 
 
@@ -91,7 +91,7 @@
   
     
     <li data-nav-id="/systems_performance/" title="Systems_performances" class="dd-item 
-        
+        parent
         
         
         ">
@@ -115,7 +115,7 @@
  
   
     
-      <li data-nav-id="/systems_performance/section2/" title="Section2" class="dd-item ">
+      <li data-nav-id="/systems_performance/section2/" title="Section2" class="dd-item active">
         <a href="https://mkusaka.github.io/docs/public/systems_performance/section2/">
         Section2
         
@@ -320,7 +320,7 @@
   
     
     <li data-nav-id="/tensorflow_and_scikit-learn/" title="Tensorflow_and_scikit-learns" class="dd-item 
-        parent
+        
         
         
         ">
@@ -344,7 +344,7 @@
  
   
     
-      <li data-nav-id="/tensorflow_and_scikit-learn/contents/sklearn/" title="Sklearn" class="dd-item active">
+      <li data-nav-id="/tensorflow_and_scikit-learn/contents/sklearn/" title="Sklearn" class="dd-item ">
         <a href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/sklearn/">
         Sklearn
         
@@ -629,7 +629,7 @@
             
           
           
-            <a href='https://mkusaka.github.io/docs/public/'></a> > <a href='https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/'>Tensorflow_and_scikit-learns</a> > Sklearn
+            <a href='https://mkusaka.github.io/docs/public/'></a> > <a href='https://mkusaka.github.io/docs/public/systems_performance/'>Systems_performances</a> > Section2
           
          
           
@@ -642,23 +642,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents">
-<ul>
-<li><a href="#概要">概要</a></li>
-<li><a href="#詳細">詳細</a>
-<ul>
-<li><a href="#クラス">クラス</a>
-<ul>
-<li><a href="#sklearn-preprocessing-imputer">sklearn.preprocessing.Imputer</a>
-<ul>
-<li><a href="#引数">引数</a></li>
-<li><a href="#インスタンスメソッド">インスタンスメソッド</a></li>
-</ul></li>
-<li><a href="#情報元">情報元</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
+
     </div>
 </div>
 
@@ -670,55 +654,38 @@
         
         <div id="body-inner">
           
-            <h1>Sklearn</h1>
+            <h1>Section2</h1>
           
 
         
 
 
+<p>キャッシュ率とパフォーマンスのグラフが非線形の証明メモ</p>
 
+<pre><code class="language-js">T1 // ex) 2s // non cache tier の応答時間
+T2 // ex) 1s // cache tier の応答時間
 
-<h1 id="概要">概要</h1>
+latency = (1-a) * T1 + a * T2 // (0 &lt;= a &lt;= 1)  // aはキャッシュヒット率
+        = T1 + (T2 - T1) * a
 
-<p>sklearnに関して調べたものはこちらに集約していく。</p>
+/* このあたりは関係なかった。。。。
+miss
+- cacheを見る: 0
+- cache元を作る: T1
+- cacheをstoreする: T2
 
-<h1 id="詳細">詳細</h1>
+hit
+- cacheを見る: 0
+- cacheをreadする: T2
+*/
 
-<h2 id="クラス">クラス</h2>
+W // &lt;- システムを通して返されるデータ量
 
-<h3 id="sklearn-preprocessing-imputer">sklearn.preprocessing.Imputer</h3>
-
-<p>欠損値の補完を行う。</p>
-
-<h4 id="引数">引数</h4>
-
-<ul>
-<li>strategy: str
-
-<ul>
-<li>median: axisに依存した欠損値の中央値で代替する</li>
-<li>実際に計算する際はテキスト属性などを削除したdataframeを渡すぽい</li>
-</ul></li>
-</ul>
-
-<h4 id="インスタンスメソッド">インスタンスメソッド</h4>
-
-<ul>
-<li>fit:
-
-<ul>
-<li>引数に訓練データを渡してインスタンスを適合させられる</li>
-</ul></li>
-</ul>
-
-<p>※このクラス自体はSimpleImputerに変わるらしいとdeprecation warningが出ていた。</p>
-
-<pre><code>/usr/local/lib/python3.6/dist-packages/sklearn/utils/deprecation.py:58: DeprecationWarning: Class Imputer is deprecated; Imputer was deprecated in version 0.20 and will be removed in 0.22. Import impute.SimpleImputer from sklearn instead.
+TROUGHPUT   = W / ((1-a) * (T1 + T2) + a(T2)) // (0 &lt;= a &lt;= 1)
+            = W / (a * (T2 - T1) + T1)  // これは非線形
+d(TROUGHPUT)/da   = - (T2 - T1) * W/ (a * (T2 - T1) + T1)^2 // aに関する微分
+            = (T1 - T2)  * W/ (a * (T2 - T1) + T1)^2 // (T1 - T2) &gt; 0
 </code></pre>
-
-<h3 id="情報元">情報元</h3>
-
-<p><a href="http://lijiancheng0614.github.io/scikit-learn/modules/generated/sklearn.preprocessing.Imputer.html">sklearn.preprocessing.Imputer — scikit-learn 0.17 文档</a></p>
 
 
 <footer class=" footline" >
@@ -757,8 +724,6 @@
             
                 
                     
-                        
-                        
                     
                 
                 
@@ -772,6 +737,7 @@
             
             
                 
+                    
                     
                 
                 
@@ -789,53 +755,8 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
                         
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
                         
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -896,6 +817,54 @@
             
         
                     
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
                         
             
             
@@ -920,7 +889,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -933,7 +901,6 @@
             
             
                 
-                    
                     
                 
                 
@@ -950,9 +917,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -1121,10 +1085,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/" title="Tensorflow_and_scikit-learns"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/systems_performance/" title="Systems_performances"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/2_5/" title="2_5" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="https://mkusaka.github.io/docs/public/systems_performance/readme/" title="README" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

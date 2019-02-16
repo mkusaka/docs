@@ -3,6 +3,16 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://mkusaka.github.io/docs/public/systems_performance/section2/</loc>
+    <lastmod>2019-02-16T17:54:22+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/public/systems_performance/readme/</loc>
+    <lastmod>2019-02-16T17:51:33+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://mkusaka.github.io/docs/public/sys_go/section1/</loc>
     <lastmod>2019-02-16T15:45:59+09:00</lastmod>
   </url>
@@ -103,6 +113,12 @@
   <url>
     <loc>https://mkusaka.github.io/docs/public/sys_go/</loc>
     <lastmod>2019-02-16T15:45:59+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://mkusaka.github.io/docs/public/systems_performance/</loc>
+    <lastmod>2019-02-16T17:54:22+09:00</lastmod>
     <priority>0</priority>
   </url>
   

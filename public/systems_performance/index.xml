@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Systems_performances on docs</title>
+    <link>https://mkusaka.github.io/docs/public/systems_performance/</link>
+    <description>Recent content in Systems_performances on docs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    <lastBuildDate>Sat, 16 Feb 2019 17:54:22 +0900</lastBuildDate>
+    
+	<atom:link href="https://mkusaka.github.io/docs/public/systems_performance/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Section2</title>
+      <link>https://mkusaka.github.io/docs/public/systems_performance/section2/</link>
+      <pubDate>Sat, 16 Feb 2019 17:54:22 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/systems_performance/section2/</guid>
+      <description>キャッシュ率とパフォーマンスのグラフが非線形の証明メモ
+T1 // ex) 2s // non cache tier の応答時間 T2 // ex) 1s // cache tier の応答時間 latency = (1-a) * T1 + a * T2 // (0 &amp;lt;= a &amp;lt;= 1) // aはキャッシュヒット率 = T1 + (T2 - T1) * a /* このあたりは関係なかった。。。。 miss - cacheを見る: 0 - cache元を作る: T1 - cacheをstoreする: T2 hit - cacheを見る: 0 - cacheをreadする: T2 */ W // &amp;lt;- システムを通して返されるデータ量 TROUGHPUT = W / ((1-a) * (T1 + T2) + a(T2)) // (0 &amp;lt;= a &amp;lt;= 1) = W / (a * (T2 - T1) + T1) // これは非線形 d(TROUGHPUT)/da = - (T2 - T1) * W/ (a * (T2 - T1) + T1)^2 // aに関する微分 = (T1 - T2) * W/ (a * (T2 - T1) + T1)^2 // (T1 - T2) &amp;gt; 0  </description>
+    </item>
+    
+    <item>
+      <title>README</title>
+      <link>https://mkusaka.github.io/docs/public/systems_performance/readme/</link>
+      <pubDate>Sat, 16 Feb 2019 17:51:33 +0900</pubDate>
+      
+      <guid>https://mkusaka.github.io/docs/public/systems_performance/readme/</guid>
+      <description>これはなに 詳解システムパフォーマンス</description>
+    </item>
+    
+  </channel>
+</rss>
