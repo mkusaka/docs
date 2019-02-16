@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="https://mkusaka.github.io/docs/public/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="https://mkusaka.github.io/docs/public/images/favicon.png" type="image/x-icon" />
-    <title>2_5 :: docs</title>
+    <title>$1 Go言語で覗くシステムプログラミングの世界 :: docs</title>
 
     
     <link href="https://mkusaka.github.io/docs/public/css/nucleus.css?1550306994" rel="stylesheet">
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/tensorflow_and_scikit-learn/contents/2_5/">
+  <body class="" data-url="/sys_go/section1/">
     <nav id="sidebar" class="">
 
 
@@ -91,7 +91,7 @@
   
     
     <li data-nav-id="/sys_go/" title="Sys_gos" class="dd-item 
-        
+        parent
         
         
         ">
@@ -115,7 +115,7 @@
  
   
     
-      <li data-nav-id="/sys_go/section1/" title="$1 Go言語で覗くシステムプログラミングの世界" class="dd-item ">
+      <li data-nav-id="/sys_go/section1/" title="$1 Go言語で覗くシステムプログラミングの世界" class="dd-item active">
         <a href="https://mkusaka.github.io/docs/public/sys_go/section1/">
         $1 Go言語で覗くシステムプログラミングの世界
         
@@ -250,7 +250,7 @@
   
     
     <li data-nav-id="/tensorflow_and_scikit-learn/" title="Tensorflow_and_scikit-learns" class="dd-item 
-        parent
+        
         
         
         ">
@@ -293,7 +293,7 @@
  
   
     
-      <li data-nav-id="/tensorflow_and_scikit-learn/contents/2_5/" title="2_5" class="dd-item active">
+      <li data-nav-id="/tensorflow_and_scikit-learn/contents/2_5/" title="2_5" class="dd-item ">
         <a href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/2_5/">
         2_5
         
@@ -559,7 +559,7 @@
             
           
           
-            <a href='https://mkusaka.github.io/docs/public/'></a> > <a href='https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/'>Tensorflow_and_scikit-learns</a> > 2_5
+            <a href='https://mkusaka.github.io/docs/public/'></a> > <a href='https://mkusaka.github.io/docs/public/sys_go/'>Sys_gos</a> > $1 Go言語で覗くシステムプログラミングの世界
           
          
           
@@ -577,16 +577,14 @@
 <li><a href="#概要">概要</a></li>
 <li><a href="#詳細">詳細</a>
 <ul>
-<li><a href="#データのクリーニング">データのクリーニング</a>
+<li><a href="#1-1-システムプログラミングとは">1.1 システムプログラミングとは</a>
 <ul>
-<li><a href="#欠損特徴量の処理機構">欠損特徴量の処理機構</a>
-<ul>
-<li><a href="#pandasの対処方法例">pandasの対処方法例</a></li>
+<li><a href="#1-1-1-osの機能について">1.1.1 OSの機能について</a></li>
 </ul></li>
-<li><a href="#scikit-learnの対処例">scikit learnの対処例</a></li>
+<li><a href="#1-2-go言語">1.2 Go言語</a></li>
+<li><a href="#1-3-go環境構築">1.3 Go環境構築</a></li>
+<li><a href="#1-4">1.4</a></li>
 </ul></li>
-</ul></li>
-<li><a href="#link">link</a></li>
 </ul>
 </nav>
     </div>
@@ -600,7 +598,7 @@
         
         <div id="body-inner">
           
-            <h1>2_5</h1>
+            <h1>$1 Go言語で覗くシステムプログラミングの世界</h1>
           
 
         
@@ -610,38 +608,52 @@
 
 <h1 id="概要">概要</h1>
 
-<p>機械学習アルゴリズムのためのデータ準備</p>
+<p>本の導入
+- システムプログラミングとは
+- 環境構築</p>
 
 <h1 id="詳細">詳細</h1>
 
-<h2 id="データのクリーニング">データのクリーニング</h2>
+<h2 id="1-1-システムプログラミングとは">1.1 システムプログラミングとは</h2>
 
-<h3 id="欠損特徴量の処理機構">欠損特徴量の処理機構</h3>
+<p><strong>def: システムプログラミング</strong></p>
 
-<p>通常欠損特徴量を処理できないので、対応するための関数を作る必要性がある。</p>
+<pre><code>OSの提供する機能を使ったプログラミング
+※現代のWeb関連の技術とは対象的なもの
+※他にもいろいろな定義がある
+</code></pre>
 
-<h4 id="pandasの対処方法例">pandasの対処方法例</h4>
-
-<ol>
-<li>欠測のある区域を取り除く ⇔ pandas.DataFrame.dropna()</li>
-<li>属性全体を取り除く ⇔ pandas.DataFrame.drop()</li>
-<li>何らかの値(0, 平均etc)を設定する ⇔ pandas.DataFrame.fillna()
+<h3 id="1-1-1-osの機能について">1.1.1 OSの機能について</h3>
 
 <ul>
-<li>システム評価などで再利用する可能性があるため、使用した中央値は残しておいたほうが良い</li>
-</ul></li>
-</ol>
-
-<h3 id="scikit-learnの対処例">scikit learnの対処例</h3>
-
-<p>Imputerを使用するとうまく処理してくれる
-- 数値データのみのdataframeを渡す必要がある</p>
-
-<h1 id="link">link</h1>
-
-<ul>
-<li><a href="https://github.com/mkusaka/tensorflow_tutorial/blob/master/src/scikit-learn%26TensorFlow/2.5.ipynb">notebook</a></li>
+<li>GUIなどの機能はほぼ「アプリケーション」と呼ばれるもの</li>
 </ul>
+
+<p><strong>def: OSの機能</strong></p>
+
+<pre><code>OSが提供している(ここでは最大公約数の)機能
+- メモリ管理
+- プロセス管理
+- ファイルシステム
+- ネットワーク
+etc..
+</code></pre>
+
+<h2 id="1-2-go言語">1.2 Go言語</h2>
+
+<ul>
+<li>Cの性能とPythonの書きやすさ</li>
+<li>Google謹製</li>
+<li>OSの機能を直接扱えて書きやすいので使用</li>
+</ul>
+
+<h2 id="1-3-go環境構築">1.3 Go環境構築</h2>
+
+<p>スルー</p>
+
+<h2 id="1-4">1.4</h2>
+
+<p><a href="https://github.com/mkusaka/go_system_programming">https://github.com/mkusaka/go_system_programming</a></p>
 
 
 <footer class=" footline" >
@@ -680,8 +692,58 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
                         
                         
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
                     
                 
                 
@@ -723,54 +785,6 @@
             
         
                     
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
                         
             
             
@@ -795,7 +809,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -808,26 +821,6 @@
             
             
                 
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
                     
                 
                 
@@ -845,8 +838,21 @@
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
                         
-                        
+            
+            
+                
                     
                 
                 
@@ -999,10 +1005,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/sklearn/" title="Sklearn"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="https://mkusaka.github.io/docs/public/sys_go/" title="Sys_gos"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/pandas/" title="Pandas" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="https://mkusaka.github.io/docs/public/sys_go/readme/" title="README" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
