@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/contents/2_6/</loc>
+    <lastmod>2019-02-17T18:20:58+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://mkusaka.github.io/docs/public/sys_go/section2/</loc>
     <lastmod>2019-02-17T00:05:13+09:00</lastmod>
   </url>
@@ -134,7 +139,7 @@
   
   <url>
     <loc>https://mkusaka.github.io/docs/public/tensorflow_and_scikit-learn/</loc>
-    <lastmod>2019-02-10T14:14:38+09:00</lastmod>
+    <lastmod>2019-02-17T18:20:58+09:00</lastmod>
     <priority>0</priority>
   </url>
   
