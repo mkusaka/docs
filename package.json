@@ -14,7 +14,7 @@
   },
   "husky": {
     "hooks": {
-      "post-commit": "bin/commithook",
+      "pre-push": "bin/commithook",
       "pre-commit": "yarn run lint"
     }
   },
