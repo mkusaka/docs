@@ -12,6 +12,14 @@ import { StaticQuery, graphql } from "gatsby"
 import Header from "./header"
 import "./layout.css"
 
+interface ISitemetadata {
+  site: {
+    siteMetadata: {
+      title: string
+    }
+  }
+}
+
 const Layout = ({ children }: any) => (
   <StaticQuery
     query={graphql`
@@ -23,7 +31,7 @@ const Layout = ({ children }: any) => (
         }
       }
     `}
-    render={data => (
+    render={(data: ISitemetadata) => (
       <>
         <Header siteTitle={data.site.siteMetadata.title} />
         <div
