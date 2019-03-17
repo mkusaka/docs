@@ -13,7 +13,8 @@
     "lint:fix": "textlint --fix `find content/**/*.md`",
     "gitbook:install": "cd content && gitbook install && cd ..",
     "gitbook:dev": "yarn run gitbook:install && cd content && gitbook serve && cd..",
-    "gitbook:build": "cd content && gitbook build . \"../public\" && cd .."
+    "gitbook:build": "cd content && gitbook build . \"../public\" && cd ..",
+    "prettier": "prettier"
   },
   "husky": {
     "hooks": {
@@ -25,6 +26,7 @@
     "cryptiles": "^4.1.3",
     "gitbook-cli": "^2.3.2",
     "husky": "^1.1.2",
+    "prettier": "^1.16.4",
     "textlint": "^11.2.2",
     "textlint-rule-max-ten": "^2.0.3",
     "textlint-rule-spellcheck-tech-word": "^5.0.0"

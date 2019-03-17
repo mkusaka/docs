@@ -6,6 +6,7 @@
   * [section2](./alife/section2.md)
 * posts
 * [researches](./researches/README.md)
+  * [learn_machine_learn](./researches/learn_machine_learn.md)
 * studies
 * [sys_go](./sys_go/README.md)
   * [section1](./sys_go/section1.md)
