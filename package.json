@@ -10,7 +10,9 @@
   },
   "scripts": {
     "lint": "textlint `find content/**/*.md`",
-    "lint:fix": "textlint --fix `find content/**/*.md`"
+    "lint:fix": "textlint --fix `find content/**/*.md`",
+    "gitbook:install": "cd content && gitbook install && cd ..",
+    "gitbook:dev": "yarn run gitbook:install && cd content && gitbook serve"
   },
   "husky": {
     "hooks": {
@@ -19,6 +21,7 @@
     }
   },
   "devDependencies": {
+    "gitbook-cli": "^2.3.2",
     "husky": "^1.1.2",
     "textlint": "^11.2.2",
     "textlint-rule-max-ten": "^2.0.3",
