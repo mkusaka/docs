@@ -1,6 +1,6 @@
 #!/bin/bash
 if git diff --name-only HEAD^ | grep .md; then
-  hugo
+  yarn run build
   git add .
   git commit -m "pre-push build"
 fi

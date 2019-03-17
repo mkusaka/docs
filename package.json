@@ -12,7 +12,8 @@
     "lint": "textlint `find content/**/*.md`",
     "lint:fix": "textlint --fix `find content/**/*.md`",
     "gitbook:install": "cd content && gitbook install && cd ..",
-    "gitbook:dev": "yarn run gitbook:install && cd content && gitbook serve"
+    "gitbook:dev": "yarn run gitbook:install && cd content && gitbook serve && cd..",
+    "gitbook:build": "cd content && gitbook build . \"../public\" && cd.."
   },
   "husky": {
     "hooks": {
