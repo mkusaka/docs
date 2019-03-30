@@ -4,6 +4,7 @@
 * [alife](./alife/README.md)
   * [section1](./alife/section1.md)
   * [section2](./alife/section2.md)
+* [functional_programming_javascript](./functional_programming_javascript/README.md)
 * posts
 * [researches](./researches/README.md)
   * [learn_machine_learn](./researches/learn_machine_learn.md)
