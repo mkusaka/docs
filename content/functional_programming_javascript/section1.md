@@ -1,5 +1,14 @@
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [memo](#memo)
+  - [アプリケーションを設計する際に気をつけること](#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E8%A8%AD%E8%A8%88%E3%81%99%E3%82%8B%E9%9A%9B%E3%81%AB%E6%B0%97%E3%82%92%E3%81%A4%E3%81%91%E3%82%8B%E3%81%93%E3%81%A8)
+    - [本章でやること](#%E6%9C%AC%E7%AB%A0%E3%81%A7%E3%82%84%E3%82%8B%E3%81%93%E3%81%A8)
+  - [関数型プログラミングが役に立つこと](#%E9%96%A2%E6%95%B0%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%81%8C%E5%BD%B9%E3%81%AB%E7%AB%8B%E3%81%A4%E3%81%93%E3%81%A8)
+  - [関数プログラミングの定義](#%E9%96%A2%E6%95%B0%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%81%AE%E5%AE%9A%E7%BE%A9)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # memo
 ## アプリケーションを設計する際に気をつけること
