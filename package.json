@@ -6,7 +6,7 @@
   "author": "mkusaka <hinoshita1992@gmail.com>",
   "license": "MIT",
   "engines": {
-    "yarn": ">1.13.0"
+    "yarn": ">a1.13.0"
   },
   "scripts": {
     "lint": "textlint `find content/**/*.md`",
@@ -15,7 +15,8 @@
     "gitbook:dev": "yarn run gitbook:install && cd content && gitbook serve && cd..",
     "gitbook:build": "cd content && gitbook build . \"../public\" && cd ..",
     "prettier": "prettier",
-    "toc": "doctoc `find content/**/*.md`"
+    "toc": "doctoc `find content/**/*.md`",
+    "mc": "mdoctoc"
   },
   "husky": {
     "hooks": {
@@ -24,6 +25,7 @@
     }
   },
   "devDependencies": {
+    "@mkusaka/toc": "^0.0.9",
     "cryptiles": "^4.1.3",
     "gitbook-cli": "^2.3.2",
     "husky": "^1.1.2",
