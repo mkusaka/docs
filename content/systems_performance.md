@@ -1,6 +1,6 @@
 ---
-title: "README"
-date: 2019-02-16T15:43:44+09:00
+title: "system performance"
+date: 2019-02-16T17:51:33+09:00
 draft: false
 ---
 
@@ -14,4 +14,4 @@ draft: false
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # これはなに
-[Goならわかるシステムプログラミング（PDF版のみ） – 技術書出版と販売のラムダノート](https://www.lambdanote.com/products/go-ebook?variant=21485241303124) の読書メモ
+詳解システムパフォーマンス

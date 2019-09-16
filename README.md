@@ -1,19 +1,22 @@
 # study documents
-url: [public](https://mkusaka.github.io/docs/public/)
+url: https://mkusaka.github.io/docs/
 
 ## commands
 server
 ```bash
-hugo server
-```
-
-make post
-
-```bash
-hugo new posts/firstpost.md
+yarn start
 ```
 
 build
 ```bash
-hugo
+yarn build
 ```
+
+deploy
+
+```bash
+yarn deploy
+```
+
+# boilerplate
+This page has created from gatsby boilerplate https://github.com/hasura/gatsby-gitbook-starter.
