@@ -1,8 +1,0 @@
-{
-  "rules": {
-    "max-ten": {
-      "max": 3
-    },
-    "spellcheck-tech-word": true
-  }
-}
