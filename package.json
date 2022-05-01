@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next export",
     "start": "next start",
     "lint": "next lint",
-    "fmt": "prettier --write \"./**/*.{js,ts,tsx,css,json,json5}\" --no-error-on-unmatched-pattern\n"
+    "fmt": "prettier --write \"./**/*.{js,ts,tsx,css,json,json5}\" --no-error-on-unmatched-pattern",
+    "deploy": ""
   },
   "dependencies": {
     "next": "^12.1.5",
