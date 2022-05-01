@@ -22,7 +22,7 @@ jobs:
       - name: Build Next.js app
         run: yarn build
         env:
-          URL_PREFIX: docs/
+          URL_PREFIX: /docs
 
       - name: Export Next.js app
         run: yarn export
