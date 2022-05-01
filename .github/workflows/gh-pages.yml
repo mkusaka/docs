@@ -22,7 +22,7 @@ jobs:
       - name: Build Next.js app
         run: yarn build
         env:
-          URL_PREFIX: myapp
+          URL_PREFIX: https://mkusaka.github.io/docs/
 
       - name: Export Next.js app
         run: yarn export
