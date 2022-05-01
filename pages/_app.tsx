@@ -1,15 +1,8 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import "nextra-theme-docs/style.css";
 import type { AppProps } from "next/app";
-import { Main } from "src/layouts/main";
 
-function MyApp({ Component, pageProps, router }: AppProps) {
-  return (
-    <ChakraProvider>
-      <Main router={router}>
-        <Component {...pageProps} key={router.route} />
-      </Main>
-    </ChakraProvider>
-  );
+function MyApp({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />;
 }
 
 export default MyApp;
