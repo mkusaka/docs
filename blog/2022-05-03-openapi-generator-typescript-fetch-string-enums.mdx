@@ -9,7 +9,7 @@ tags: [openapi-generator, typescript-fetch, 小ネタ]
 
 - [OpenAPI Generator](https://openapi-generator.tech/)と呼ばれる[OpenAPI Specification](https://swagger.io/specification/)ファイルからクライアントを自動生成するツールに fetch & typescript の組み合わせでクライアントを生成するオプションが有る
 - 従来、OpenAPI Specification で言う enum を typescript の enum に変換してクライアントを生成していた
-- 今回、enum ではなく typescript のオブジェクトへ変換することもできるオプションが追加されたので、enum に対して懸念がある場合はこちらも検討してみると良いよ(実際にはデフォルトでオブジェクトへ変換されるため、enum を使いたい場合はオプションを true 似すると良いよ)
+- 今回、enum ではなく typescript の Union へ変換することもできるオプションが追加されたので、enum に対して懸念がある場合はこちらも検討してみると良いよ(実際にはデフォルトで Union へ変換されるため、enum を使いたい場合はオプションを true にすると良い)
 
 ## OpenAPI Generator について
 
@@ -60,7 +60,7 @@ export enum FindPetsByStatusStatusEnum {
 
 ここで利用されている typescript の enum は[tree shaking との相性](https://engineering.linecorp.com/ja/blog/typescript-enum-tree-shaking/)や[typescript 独自のものになってしまっていたり、型安全ではないような事があったり](https://engineering.linecorp.com/ja/blog/typescript-enum-tree-shaking/)などの懸念が指摘されているのもあり、利用を控えたい人も少なからず存在する状況です。実際[こちらの](https://tech.readyfor.jp/entry/2021/04/15/170227)記事などでは OpenAPI Generator によって enum が生成されてしまうという箇所が懸念として指摘されています。
 
-個人的のもこの点はどうにかしたいと思っていたため、OpenAPI Generator 本体に UnionType として出力できるオプションを追加する[Pull Request](https://github.com/OpenAPITools/openapi-generator/pull/11976)をマージしてもらいました。
+個人的のもこの点はどうにかしたいと思っていたため、OpenAPI Generator 本体に Union として出力できるオプションを追加する[Pull Request](https://github.com/OpenAPITools/openapi-generator/pull/11976)をマージしてもらいました。
 
 ### オプション実装後に生成されるコード
 
