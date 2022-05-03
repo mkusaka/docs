@@ -1,6 +1,109 @@
 ---
-title: "openapi-generator の typescript-fetch に stringEnumsオプションが追加されました"
+title: "typescript-fetch generator に enum を union で生成するオプション追加した"
 date: 2022-05-03
+categories: \[tools]
+tags: \[openapi-generator, typescript-fetch, 小ネタ]
 ---
 
-# openapi-generator の typescript-fetch に stringEnumsオプションが追加されました
+## tl;dr
+
+- [OpenAPI Generator][1]と呼ばれる[OpenAPI Specification][2]ファイルからクライアントを自動生成するツールに fetch & typescript の組み合わせでクライアントを生成するオプションが有る
+- 従来、OpenAPI Specification で言う enum を typescript の enum に変換してクライアントを生成していた
+- 今回、enum ではなく typescript のオブジェクトへ変換することもできるオプションを追加してきました
+
+## OpenAPI Generator について
+
+OpenAPI Specification は web api のリクエスト・レスポンスの言語によらないインターフェイスを提供するための仕様で openapi-generator はそこから自動的にクライアントのコードを生成するツールです。
+
+同様にクライアントコードを生成するツールはたくさんありますが、openapi-generator は[多くの言語/FW をサポート][3]しており、またダウンロード数などを見てもデファクトに近いような形で使われているようです。
+
+typescript 向けのものに関しては fetch をクライアントとして利用する [typescript-fetch][4] や axios をクライアントとして利用する [typescript-axios][5] などがあります。
+
+## stringEnums オプション
+
+OpenAPI Specification は enum をサポートしており、OpenAPI Generator はこれを各言語で対応する表現にしてコードを生成します。
+
+### オプションが実装される前に生成されたコード
+
+typescript-fetch 向けの生成においては、今までこれを typescript の enum に変換していました。
+
+```yaml
+# original.yaml
+openapi: 3.0.0
+# ...
+paths:
+  # ...
+  /pet/findByStatus:
+    get:
+      # ...
+      parameters:
+        - name: status
+          in: query
+          # ...
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - available
+                - pending
+                - sold
+```
+
+```ts
+export enum FindPetsByStatusStatusEnum {
+  Available = "available",
+  Pending = "pending",
+  Sold = "sold",
+}
+```
+
+ここで利用されている typescript の enum は[tree shaking との相性][6]や[typescript 独自のものになってしまっていたり、型安全ではないような事があったり][7]などの懸念が指摘されているのもあり、利用を控えたい人も少なからず存在する状況です。実際[この][8]記事などでは enum が生成されてしまうという懸念が指摘されています。
+
+個人的のもこの点はどうにかしたいと思っていたため、OpenAPI Generator 本体に UnionType として出力できるオプションを追加する[PR][9]をマージしてもらいました。
+
+### オプション実装後に生成されるコード
+
+オプション実装後、この動作はデフォルトで有効になり、以下のようなコードを生成するようになります。
+
+```ts
+export const FindPetsByStatusStatusEnum = {
+  Available: "available",
+  Pending: "pending",
+  Sold: "sold",
+} as const;
+
+export type FindPetsByStatusStatusEnum =
+  typeof FindPetsByStatusStatusEnum[keyof typeof FindPetsByStatusStatusEnum];
+```
+
+**元の enum を生成する挙動のままとしたい場合** は stringEnums オプションを true にすると元の挙動のままになります。(ex: )
+
+※この実装は [typescript-axios に対して実装されたもの][10] をそのまま借用している形で実装されいています。個人的には const で宣言した変数と同一の名前で宣言した type がうまく動くのが割と面白いなと思って実装していました。
+
+## 今すぐ使いたい場合には
+
+stringEnums オプションが実装されたバージョンはまだリリースがされていません(2022 年の 5 月以降になる予定ですが、現状は決まっていません)。今すぐ利用をしたい場合は[docker][11]の latest であれば利用ができます。
+
+```bash
+# enumのままとしたい場合
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/spec.yaml -g typescript-fetch -o local/generated/ -p stringEnum=true
+# union型を生成したい場合(デフォルトでunionを生成するので、オプションの指定は不要)
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/spec.yaml -g typescript-fetch -o local/generated/
+```
+
+注意点として、現在 OpenAPI Generator は次のメジャーバージョン向けての準備中であるため、いくつかの fallback なしの breaking changes が含まれている場合があります。
+
+## 参考
+
+[1]: [Hello from OpenAPI Generator](https://openapi-generator.tech/)
+[2]: [OpenAPI Specification - Version 3.0.3 | Swagger](https://swagger.io/specification/)
+[3]: [Generators List](https://openapi-generator.tech/docs/generators/)
+[4]: [Documentation for the typescript-fetch Generator](https://openapi-generator.tech/docs/generators/typescript-fetch/)
+[5]: [Documentation for the typescript-axios Generator](https://openapi-generator.tech/docs/generators/typescript-axios/)
+[6]: [TypeScript の enum を使わないほうがいい理由を、Tree-shaking の観点で紹介します - LINE ENGINEERING](https://engineering.linecorp.com/ja/blog/typescript-enum-tree-shaking/)
+[7]: [さようなら、TypeScript enum | Kabuku Developers Blog](https://www.kabuku.co.jp/developers/good-bye-typescript-enum)
+[8]: [TypeScript の型生成における OpenAPI Generator のハマりどころ - READYFOR Tech Blog](https://tech.readyfor.jp/entry/2021/04/15/170227)
+[9]: [[typescript-fetch] Add stringEnums option by mkusaka · Pull Request #11976 · OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator/pull/11976)
+[10]: [[typescript-axios] Add stringEnums option by ty-v1 · Pull Request #11368 · OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator/pull/11368)
+[11]: [CLI Installation](https://openapi-generator.tech/docs/installation/#docker)
