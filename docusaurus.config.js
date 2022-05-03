@@ -23,9 +23,9 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          routeBasePath: "/",
         },
         blog: {
+          routeBasePath: "/",
           showReadingTime: true,
         },
         theme: {
@@ -49,7 +49,7 @@ const config = {
           src: "img/logo.png",
         },
         items: [
-          { to: "/blog", label: "Blog", position: "left" },
+          { to: "/docs", label: "Docs", position: "left" },
           {
             href: "https://github.com/mkusaka/docs",
             label: "GitHub",
@@ -64,8 +64,8 @@ const config = {
             title: "Links",
             items: [
               {
-                label: "Blog",
-                to: "/blog",
+                label: "Docs",
+                to: "/docs",
               },
               {
                 label: "GitHub",
