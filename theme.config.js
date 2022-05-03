@@ -8,7 +8,7 @@ export default {
   customSearch: null, // customizable, you can use algolia for example
   darkMode: true,
   footer: true,
-  footerText: `MIT ${new Date().getFullYear()} © Masatomo Kusaka.`,
+  footerText: `${new Date().getFullYear()} © mkusaka.`,
   footerEditLink: `Edit this page on GitHub`,
   logo: <span>docs</span>,
   head: (
@@ -16,6 +16,17 @@ export default {
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="description" content="Nextra: the next docs builder" />
       <meta name="og:title" content="Nextra: the next docs builder" />
+      <script
+        lang="javascript"
+        dangerouslySetInnerHTML={{
+          __html: `if (!window.localStorage.getItem("theme_default")) {
+              window.localStorage.setItem("theme", "dark");
+              window.localStorage.setItem("theme_default", "dark");
+              document.documentElement.classList.add("dark");
+              document.documentElement.classList.remove("light");
+            }`,
+        }}
+      />
     </>
   ),
 };
