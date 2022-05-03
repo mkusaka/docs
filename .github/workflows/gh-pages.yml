@@ -20,12 +20,11 @@ jobs:
         run: yarn install
 
       - name: Build Next.js app
-        run: yarn build
+        run: |
+          yarn build
+          yarn export
         env:
-          URL_PREFIX: /docs
-
-      - name: Export Next.js app
-        run: yarn export
+          URL_PREFIX: docs
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
