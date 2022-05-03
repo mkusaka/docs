@@ -92,18 +92,18 @@ docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i 
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/spec.yaml -g typescript-fetch -o local/generated/
 ```
 
-注意点として、現在 OpenAPI Generator は次のメジャーバージョン向けての準備中であるため、いくつかの fallback なしの breaking changes が含まれている場合があります。
+現在 OpenAPI Generator は次のメジャーバージョン向けての準備中であるため、いくつかの fallback なしの breaking changes が含まれている場合があることには注意が必要です。
 
 ## 参考
 
-[1]: [Hello from OpenAPI Generator](https://openapi-generator.tech/)
-[2]: [OpenAPI Specification - Version 3.0.3 | Swagger](https://swagger.io/specification/)
-[3]: [Generators List](https://openapi-generator.tech/docs/generators/)
-[4]: [Documentation for the typescript-fetch Generator](https://openapi-generator.tech/docs/generators/typescript-fetch/)
-[5]: [Documentation for the typescript-axios Generator](https://openapi-generator.tech/docs/generators/typescript-axios/)
-[6]: [TypeScript の enum を使わないほうがいい理由を、Tree-shaking の観点で紹介します - LINE ENGINEERING](https://engineering.linecorp.com/ja/blog/typescript-enum-tree-shaking/)
-[7]: [さようなら、TypeScript enum | Kabuku Developers Blog](https://www.kabuku.co.jp/developers/good-bye-typescript-enum)
-[8]: [TypeScript の型生成における OpenAPI Generator のハマりどころ - READYFOR Tech Blog](https://tech.readyfor.jp/entry/2021/04/15/170227)
-[9]: [[typescript-fetch] Add stringEnums option by mkusaka · Pull Request #11976 · OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator/pull/11976)
-[10]: [[typescript-axios] Add stringEnums option by ty-v1 · Pull Request #11368 · OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator/pull/11368)
-[11]: [CLI Installation](https://openapi-generator.tech/docs/installation/#docker)
+- [1]: [Hello from OpenAPI Generator](https://openapi-generator.tech/)
+- [2]: [OpenAPI Specification - Version 3.0.3 | Swagger](https://swagger.io/specification/)
+- [3]: [Generators List](https://openapi-generator.tech/docs/generators/)
+- [4]: [Documentation for the typescript-fetch Generator](https://openapi-generator.tech/docs/generators/typescript-fetch/)
+- [5]: [Documentation for the typescript-axios Generator](https://openapi-generator.tech/docs/generators/typescript-axios/)
+- [6]: [TypeScript の enum を使わないほうがいい理由を、Tree-shaking の観点で紹介します - LINE - ENGINEERING](https://engineering.linecorp.com/ja/blog/typescript-enum-tree-shaking/)
+- [7]: [さようなら、TypeScript enum | Kabuku Developers Blog](https://www.kabuku.co.jp/developers/good-bye-typescript-enum)
+- [8]: [TypeScript の型生成における OpenAPI Generator のハマりどころ - READYFOR Tech Blog](https://tech.readyfor.jp/entry/2021/04/15/170227)
+- [9]: [[typescript-fetch] Add stringEnums option by mkusaka · Pull Request #11976 · OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator/pull/11976)
+- [10]: [[typescript-axios] Add stringEnums option by ty-v1 · Pull Request #11368 · OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator/pull/11368)
+- [11]: [CLI Installation](https://openapi-generator.tech/docs/installation/#docker)
