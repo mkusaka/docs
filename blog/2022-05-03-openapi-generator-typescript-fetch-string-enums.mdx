@@ -88,7 +88,7 @@ stringEnums オプションが実装されたバージョンはまだリリー�
 
 ```bash
 # enumのままとしたい場合
-docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/spec.yaml -g typescript-fetch -o local/generated/ -p stringEnum=true
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/spec.yaml -g typescript-fetch -o local/generated/ -p stringEnums=true
 # union型を生成したい場合(デフォルトでunionを生成するので、オプションの指定は不要)
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/spec.yaml -g typescript-fetch -o local/generated/
 ```
