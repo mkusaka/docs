@@ -125,3 +125,36 @@ fs.writeFileSync("output.yaml", dump(config));
 
 ## 補足
 以上の文章は適当にtl;drを作った上でchat GPTにだいたい書いてもらいました。いい感じの文章が出てきたので、ソレに適切にリファレンスを追加するだけで完了したので楽でした。
+
+だいたいのプロンプト
+```
+https://mkusaka.com/ の文調を参考に、以下の概要を満たすようなブログを書きなさい
+
+# tl;dr
+## circleciのyamlを書く/メンテンするのは辛い
+  - yamlを生で書くのは辛い
+    - 回避するためのアンカーも癖がある
+  - json schemaによる補完もある程度効くが、そこまで強くないので困る事が多い
+## [circleci-config-sdk-ts](https://github.com/CircleCI-Public/circleci-config-sdk-ts)があるが、宣言的ではないので思ったようにはかけない
+## これらはtypescriptで補完させながら対応することで解消できそう
+1. 何らかの方法でtypescript用の型を作成
+2. 型に合致するようにjs objectを作る
+3. js-yamlでjs objectをyamlに変換
+
+### typescript用の型を作成する方法
+  - json schemaから生成する方法
+    - json schemaから型を生成し、それにマッチするようにjavascriptのobjectを書く
+  - chat gptにconfig referenceから生成させる方法
+    - config referenceを読ませることで型を生成させる
+
+だいたい生成できた結果を載せる
+- https://github.com/mkusaka/ciconfig
+- https://www.typescriptlang.org/
+
+## 次の１手
+  - zod schemaによる検証を加えたい
+    - typescriptだとmin/max/regex/defaultなどの検証ができないので、zod schemaに翻訳させたい(現状は適切な変換ができていない)
+  - デフォルトのものは自動で生成させるようにしたい
+  - 同じことをgithub workflow/github actionsでもできるはず
+    - actionlintのようにgithub actionsの独自構文内の諸々にも対応できると良さそう
+```
