@@ -1,0 +1,15 @@
+---
+title: "slideshareのスライド内広告を抑制するchrome拡張を書いた"
+date: 2023-04-06
+description: "slideshareのスライド内広告を抑制するchrome拡張を書いた。slideshareのshare機能内のiframe"
+categories: [tools]
+tags: [slideshare, chrome extension, ads]
+---
+
+## まとめ
+- slideshareのスライド内に挟まれる広告が多いので、それを抑制するchrome拡張を書いた
+  - [refined slideshare - Chrome ウェブストア](https://chrome.google.com/webstore/detail/refined-slideshare/aaoppniefnfcljndkcodeanklbanedeo)
+- slideshareは他のサイトにiframe経由で埋め込むことができ、埋め込んだ際に広告は表示されない
+- slideshareを開いたタイミングでスライドをiframe版に切り替えるようにすることでこれを実現している
+- 同じ機能を持ったchrome拡張に[Slideshare Viewer](https://chrome.google.com/webstore/detail/slideshare-viewer/iielbgdjdenipcchemkiknljbghjfdlk)があるが、こちらはwindowにある広告表示フラグを上書きすることでこれを達成している
+  - https://github.com/kawasima/slideshare-viewer/blob/b7050808ae846ed09e5995d6aeb7a477e766bc07/content.js#L3-L9
