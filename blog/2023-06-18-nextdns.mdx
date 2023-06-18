@@ -1,0 +1,52 @@
+---
+title: "NextDNS.ioを使ってみて広告ブロックが捗ったので紹介"
+date: 2023-06-18
+description: "NextDNS.ioを導入することで各種広告をdnsレベルでブロックできるようになったため、各種サイトのブラウジングが快適になった話"
+categories: [tools]
+tags: [dns, NextDNS, adblock]
+---
+
+
+## まとめ
+- NextDNS.ioは数年前にリリースされたdnsサービスで、各種広告などをdnsレベルでブロックすることが可能
+- 個人的にここがすごいNextDNS
+  - スマホでも利用が可能なため、スマホで見た際にPCでadblock利用時と同等の広告フリーな体験を得ることができる
+    - スマホ内アプリからのクエリもすべてNextDNSを経由するため、chromeでadblockのような体験を得ることができる
+    - 従来あまりにも広告が酷いサイトはjavascriptを切って閲覧していたが、それはそれでしんどいところがあるの
+  - 設定もしんどくない
+    - andridのおすすめはプライベートDNSをnextdnsに変更
+    - macのおすすめはMac appを入れて起動する
+  - その他の利点は他の方が書いているのでそちらを参照
+    - [NextDNSというサービスは子持ち家庭のインターネットを安心安全にする - kuenishi's blog](https://kuenishi.hatenadiary.jp/entry/2020/06/06/111724)
+    - [新進気鋭のDNSサービス「NextDNS」を使うと何ができるのか？ - GIGAZINE](https://gigazine.net/news/20200415-next-dns-is-great/)
+- 設定しておいたほうが良いこと
+  - デフォルトの設定だとそこまで積極的に広告まわりがブロックされない
+  - 適宜フィルターを追加することで結構な広告をブロックすることが可能
+    - [NextDNS 設定ガイド | めものーとあるふぁ](https://memonotealpha.net/blog/archives/3723)
+- 一部自分の設定だと使えなくなる機能が存在した
+  - googleの検索結果上位に現れる広告(検索連動型広告)をクリックしてもdnsエラー画面に飛ぶようになった
+    - 表示自体はされるので、単純にリンクが不明というような状況になる
+  - 一部のサイトでadblock利用判定がされるようになった
+    - 現状の利用範囲ではbusinessinsiderにアクセスした際にadblock利用と検知された
+    - adblockを検知すると消すように促すサイトも時たまあるため、
+  - 一部のアプリ内広告が利用できない場合があった
+    - 広告を見ることでゲーム内の通貨などを取得できる仕組みのあるような場合、これ自体が機能しない場合があった
+  - アフィリエイトリンクが一部機能しなくなった
+    - (意図通りではあるが)一部のアフィリエイトリンクが機能しなくなり、特に楽天などの紹介リンクから素直に楽天市場に遷移できなくなった
+    - あまり楽天市場を利用しないのでそこまで問題にはならないが、忘れた際にDNSエラーになる
+- 気をつけること
+  - 最初30万クエリまでは無料だが、課金しないと途中から広告ブロック機能がなくなる
+    - 利用状況を見つつ課金を検討すること(月額250円、年額2,500円)
+    - 利用状況は https://my.nextdns.io/ または https://my.nextdns.io/ → Analyticsタブ から確認可能
+  - NextDNS側にはクエリされたログが残るので、そういったものを気にする場合は注意
+    - https://my.nextdns.io/ → Logsタブからログを確認可能
+  - 意図せずブロックされた場合にフィルタ設定などを見直す必要がある
+- 余談
+  - 以前[slideshareのスライドから広告を削除する拡張を書いた](./2023-04-04-refined-slideshare.mdx)が、NextDNS.ioを使うことでブラウザ拡張を入れる必要がなくなったが、NextDNSの設定をすることで拡張無しでもスムーズにブラウジングが可能になった
+  - chromeの拡張だとPCのみでしかカバーできなかったが、これをすることでスマホでも同等の広告フリーなslideshare体験を得ることができるようになった
+
+## ref
+- [NextDNS - The new firewall for the modern Internet](https://nextdns.io/)
+- [NextDNS 設定ガイド | めものーとあるふぁ](https://memonotealpha.net/blog/archives/3723)
+- [NextDNSというサービスは子持ち家庭のインターネットを安心安全にする - kuenishi's blog](https://kuenishi.hatenadiary.jp/entry/2020/06/06/111724)
+- [新進気鋭のDNSサービス「NextDNS」を使うと何ができるのか？ - GIGAZINE](https://gigazine.net/news/20200415-next-dns-is-great/)
