@@ -3,7 +3,7 @@ title: "JetBrains系IDEのためのエラーインライン表示のためのプ
 date: 2023-08-06
 description: "VScodeでよく使われるエラーをインラインに表示されるプラグインErrorLensのJetBrains系IDE版用のプラグインInspectionLensの紹介"
 categories: [tools]
-tags: [github apps, permission]
+tags: [tools, jetbrains, errorlens, inspectionlens]
 ---
 
 ## まとめ
