@@ -1,0 +1,13 @@
+---
+title: "JetBrains系IDEのためのエラーインライン表示のためのプラグイン"
+date: 2023-08-06
+description: "VScodeでよく使われるエラーをインラインに表示されるプラグインErrorLensのJetBrains系IDE版用のプラグインInspectionLensの紹介"
+categories: [tools]
+tags: [github apps, permission]
+---
+
+## まとめ
+- VScodeでよく使われるエラーをインラインに表示されるプラグインにErrorLensというものがあり、大変便利
+  - [Dynamics 365 Business Central: VS Codeのおすすめプラグイン – Error Lens | Dynamics 365 Lab](https://yzhums.com/11518/)など参照
+- JetBrains系IDE向けに同様の機能を提供するプラグインとしてInspectionLensがある。おすすめ
+  - [Inspection Lens - IntelliJ IDEs Plugin | Marketplace](https://plugins.jetbrains.com/plugin/19678-inspection-lens)
