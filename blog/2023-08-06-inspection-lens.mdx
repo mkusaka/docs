@@ -1,13 +1,17 @@
 ---
-title: "JetBrains系IDEのためのエラーインライン表示プラグイン"
+title: "JetBrains系IDEでgithubにログインしたのにgithub tokenを要求される件の解消"
 date: 2023-08-06
-description: "VScodeでよく使われるエラーをインラインに表示されるプラグインErrorLensのJetBrains系IDE版用のプラグインInspectionLensの紹介"
+description: "JetBrains系IDEでgithubにログインしたのに、特定リポジトリでgithub tokenを要求される場合がある。ただ単に特定のorgが intellij github plugin をgrantしていないことが原因だが、その方法をまとめておく"
 categories: [tools]
-tags: [tools, jetbrains, errorlens, inspectionlens]
+tags: [tools, jetbrains, github, plugin]
 ---
 
 ## まとめ
-- VScodeでよく使われるエラーをインラインに表示されるプラグインにErrorLensというものがあり、大変便利
-  - [Dynamics 365 Business Central: VS Codeのおすすめプラグイン – Error Lens | Dynamics 365 Lab](https://yzhums.com/11518/)など参照
-- JetBrains系IDE向けに同様の機能を提供するプラグインとしてInspectionLensがある。おすすめ
-  - [Inspection Lens - IntelliJ IDEs Plugin | Marketplace](https://plugins.jetbrains.com/plugin/19678-inspection-lens)
+- githubにログインしたのに、特定リポジトリでgithub tokenを要求される場合がある
+- ただ単に特定のorgが intellij github plugin をgrantしていないことが原因
+- 以下の手順で対応可能
+  1. githubにログインする
+  2. githubの設定画面で、`Applications`を選択する
+  3. `Authorized OAuth Apps`の中から`JetBrains IDE Integration`を選択する
+  4. 警告の出るリポジトリを保有するorgで `Grant`を選択する
+  5. 場合によってはorgの管理者に許可をして貰う必要がある
