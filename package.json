@@ -37,8 +37,8 @@
     ]
   },
   "devDependencies": {
-    "husky": "^9.1.5",
-    "lint-staged": "^15.2.9",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3"
   },
   "husky": {
@@ -52,6 +52,6 @@
     ]
   },
   "volta": {
-    "node": "20.17.0"
+    "node": "20.18.0"
   }
 }
