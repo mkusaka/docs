@@ -16,8 +16,8 @@
     "format": "prettiter --write"
   },
   "dependencies": {
-    "@docusaurus/core": "3.6.0",
-    "@docusaurus/preset-classic": "3.6.0",
+    "@docusaurus/core": "3.6.3",
+    "@docusaurus/preset-classic": "3.6.3",
     "@mdx-js/react": "^3.1.0",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.0",
@@ -37,7 +37,7 @@
     ]
   },
   "devDependencies": {
-    "husky": "^9.1.6",
+    "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3"
   },
@@ -52,6 +52,6 @@
     ]
   },
   "volta": {
-    "node": "20.18.0"
+    "node": "20.18.1"
   }
 }
