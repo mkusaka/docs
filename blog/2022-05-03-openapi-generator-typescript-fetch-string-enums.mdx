@@ -75,7 +75,7 @@ export const FindPetsByStatusStatusEnum = {
 } as const;
 
 export type FindPetsByStatusStatusEnum =
-  typeof FindPetsByStatusStatusEnum[keyof typeof FindPetsByStatusStatusEnum];
+  (typeof FindPetsByStatusStatusEnum)[keyof typeof FindPetsByStatusStatusEnum];
 ```
 
 **元の enum を生成する挙動のままとしたい場合** は stringEnums オプションを true にすると元の挙動のままになります。(ex: )

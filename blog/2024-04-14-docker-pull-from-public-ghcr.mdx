@@ -8,10 +8,10 @@ tags: [docker, ghcr]
 
 ## まとめ
 
-* public なはずの ghcr にある docker image を pull した際に `Error response from daemon: Head "https://ghcr.io/v2/some/publicimage": denied: denied` と出た際には `docker logout ghcr.io` とすれば直るっぽい
-* どうも ghcr に対して認証情報が残っているために発生するエラーの様子
-
+- public なはずの ghcr にある docker image を pull した際に `Error response from daemon: Head "https://ghcr.io/v2/some/publicimage": denied: denied` と出た際には `docker logout ghcr.io` とすれば直るっぽい
+- どうも ghcr に対して認証情報が残っているために発生するエラーの様子
 
 ## 参考
-* [Access denied on public package pulled by docker · community · Discussion #50487](https://togithub.com/orgs/community/discussions/50487)
-* [Unable to pull public image from Github Container Registry · community · Discussion #27116](https://togithub.com/orgs/community/discussions/27116)
+
+- [Access denied on public package pulled by docker · community · Discussion #50487](https://togithub.com/orgs/community/discussions/50487)
+- [Unable to pull public image from Github Container Registry · community · Discussion #27116](https://togithub.com/orgs/community/discussions/27116)
