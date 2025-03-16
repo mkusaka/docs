@@ -5,15 +5,15 @@
  */
 
 @font-face {
-  font-family: 'CineCaption';
-  src: url('/fonts/cinecaption227.TTF') format('truetype');
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-font-family-base: 'CineCaption', system-ui, -apple-system, sans-serif;
+  --ifm-font-family-base: 'Geist', system-ui, -apple-system, sans-serif;
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
   --ifm-color-primary-darker: #277148;
