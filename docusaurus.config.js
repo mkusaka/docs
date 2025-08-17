@@ -8,6 +8,7 @@ const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const config = {
   future: {
     experimental_faster: true,
+    v4: true,
   },
   title: "docs",
   tagline: "docs",
