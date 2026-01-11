@@ -1,0 +1,46 @@
+---
+title: "ChatGPT Developer mode でMemoryを無効化する"
+date: 2026-01-11
+description: "ChatGPTのDeveloper modeを使ってMemory機能を無効化し、意図しないパーソナライズを避けつつ会話履歴を残す方法"
+categories: [tips]
+tags: [chatgpt, openai, memory, developer-mode, mcp]
+---
+
+## まとめ
+
+- ChatGPTのDeveloper modeを有効化するとMemory機能が無効化される
+- 会話履歴自体は残るため、後から参照可能
+- Custom instructionsは引き続き有効
+- Memory・直近の会話参照による意図しないパーソナライズを避けつつ、会話履歴を保持したいユースケースに有用
+- 本来は未検証のconnectors(MCP等)を使うための機能なので、この用途での利用は将来的に使えなくなる可能性あり
+
+## Developer modeとは
+
+ChatGPTのbeta機能として提供されている設定。公式の説明は以下の通り:
+
+> Developer mode Beta
+>
+> Allows you to add unverified connectors that could modify or erase data permanently. Memory is disabled. Use at your own risk. Learn more
+
+本来の用途はMCPサーバー等を接続するための開発者向け機能だが、副次的にMemory機能が無効化されるため、中立的な回答を得たい場合にも活用できる。
+
+## 設定方法
+
+Settings > Apps > Advanced settings > Developer mode でトグルを有効化する。
+
+![ChatGPT Settings - General画面](/img/chatgpt-developer-mode/settings-general.png)
+
+![ChatGPT Settings - Apps - Developer mode](/img/chatgpt-developer-mode/settings-apps-developer-mode.png)
+
+## ユースケース
+
+- Memoryや直近の会話参照による意図しないパーソナライズを避けたい場合
+- 非中立な意見の創出を避けつつ、会話履歴を残したい場合
+
+## 注意点
+
+- 本来は未検証のconnectors(MCPなど)を使う際に設定する用途のため、Memory無効化目的での利用は将来的にサポートされなくなる可能性がある
+
+## ref
+
+- [Developer mode and MCP apps in ChatGPT (beta)](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt-beta)
