@@ -1,0 +1,56 @@
+---
+title: "Claude Code/OpenCode/CodexでCtrl+Zが地味に便利"
+date: 2026-01-20
+description: "AI CLIツールでCtrl+Zでサスペンドしてシェルに戻り、fgで復帰できる。ディレクトリ確認などちょっとした操作に便利"
+categories: [tips]
+tags: [claude-code, opencode, codex, cli, terminal]
+---
+
+## まとめ
+
+- Claude Code / OpenCode / Codex CLI は Ctrl+Z でサスペンドして `fg` で復帰できる
+- vimでCtrl+Z → シェル作業 → fgで戻る、と同じ要領
+- セッションやコンテキストは維持される
+- `ls` や `git status` など、ちょっとしたコマンドでディレクトリの状況確認したいときに重宝する
+
+## Ctrl+Z と fg の仕組み
+
+Unixのジョブコントロール機能。
+
+- **Ctrl+Z**: フォアグラウンドのプロセスにSIGTSTPシグナルを送り、サスペンド（一時停止）する
+- **fg**: サスペンドしたジョブをフォアグラウンドに戻す
+
+
+## 使い方
+
+```bash
+# AI CLIで作業中に Ctrl+Z
+[1]+  Stopped                 claude
+
+# シェルで好きなコマンドを実行
+$ ls
+$ git status
+$ git diff
+
+# fg で復帰
+$ fg
+```
+
+## 対応状況
+
+| ツール | Ctrl+Z サスペンド |
+|--------|------------------|
+| Claude Code | ○ |
+| OpenCode | ○ |
+| Codex CLI | ○ |
+
+## Claude Codeの経緯
+
+1.0.44で導入、2.1.0でデグレしたが2.1.9で修正済み。動かない場合はアップデートで直るかも。
+
+## ref
+
+- [Claude Code CHANGELOG 1.0.44](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#1044)
+- [Claude Code Issue #16895](https://github.com/anthropics/claude-code/issues/16895)
+- [Claude Code CHANGELOG 2.1.9](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#219)
+- [OpenCode Issue #3737](https://github.com/anomalyco/opencode/issues/3737)
