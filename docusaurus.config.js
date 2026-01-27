@@ -20,6 +20,8 @@ const config = {
   organizationName: "mkusaka", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
 
+  plugins: ["docusaurus-plugin-copy-page-button"],
+
   presets: [
     [
       "classic",
