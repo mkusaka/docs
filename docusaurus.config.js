@@ -15,8 +15,13 @@ const config = {
   url: "https://mkusaka.com",
   baseUrl: "/",
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
+  },
   organizationName: "mkusaka", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
 
@@ -33,6 +38,7 @@ const config = {
         blog: {
           routeBasePath: "/",
           showReadingTime: true,
+          onUntruncatedBlogPosts: "ignore",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
