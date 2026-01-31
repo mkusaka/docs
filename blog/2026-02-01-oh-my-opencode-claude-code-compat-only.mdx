@@ -1,0 +1,106 @@
+---
+title: "oh-my-opencodeをClaude Code互換レイヤーのみで使う"
+date: 2026-02-01
+description: "oh-my-opencodeのSisyphus/Atlas等のオーケストレーション機能を無効化し、Claude Code互換レイヤー（.claude/の読み込み等）だけを利用する設定"
+categories: [tips]
+tags: [opencode, oh-my-opencode, claude-code, configuration]
+---
+
+## まとめ
+
+- oh-my-opencodeはClaude Codeの`.claude/`ディレクトリ（commands/skills/agents/hooks）を読み込む互換レイヤーを提供する
+- 一方でSisyphus/Atlas/Prometheus等のオーケストレーション機能も含まれており、自動的に介入してくることがある
+- `oh-my-opencode.json`で適切に無効化設定をすれば、互換レイヤーだけを利用できる
+- 設定ミスしやすいポイント: `disabled`ではなく`disable`、`disabled_commands`に指定できる値はスキーマで限定されている
+
+## 問題
+
+oh-my-opencodeをインストールすると、Claude Code互換機能だけでなく、以下のような自動機能も有効になる：
+
+- Sisyphus（オーケストレーションエージェント）
+- Atlas（ワークフロー自動化）
+- `/start-work`コマンド（Prometheusプランからの自動実行）
+- `keyword-detector`（キーワード検出による自動介入）
+
+これらを使わず、`.claude/`の読み込みやMCP共有だけを利用したいケースがある。
+
+## 解決方法
+
+`~/.config/opencode/oh-my-opencode.json`を以下のように設定：
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "claude_code": {
+    "hooks": true,
+    "commands": true,
+    "skills": true,
+    "agents": true,
+    "mcps": true,
+    "plugins": true
+  },
+  "sisyphus_agent": {
+    "disabled": true
+  },
+  "disabled_agents": [
+    "sisyphus",
+    "atlas",
+    "prometheus"
+  ],
+  "disabled_commands": [
+    "init-deep",
+    "start-work"
+  ],
+  "disabled_hooks": [
+    "start-work",
+    "atlas",
+    "ralph-loop",
+    "keyword-detector",
+    "auto-slash-command",
+    "agent-usage-reminder"
+  ],
+  "agents": {
+    "sisyphus": {
+      "disable": true
+    },
+    "atlas": {
+      "disable": true
+    },
+    "prometheus": {
+      "disable": true
+    }
+  }
+}
+```
+
+## 設定のポイント
+
+### 無効化の仕組み
+
+| 設定キー | 役割 |
+|---------|------|
+| `sisyphus_agent.disabled` | Sisyphusオーケストレーション全体を無効化 |
+| `disabled_agents` | エージェント定義を削除 |
+| `disabled_commands` | スラッシュコマンドを無効化 |
+| `disabled_hooks` | ライフサイクルフックを無効化 |
+| `agents.X.disable` | 個別エージェントを無効化 |
+
+### claude_codeオブジェクト
+
+互換レイヤーの各機能を個別にon/offできる：
+
+```json
+"claude_code": {
+  "hooks": true,     // .claude/hooks/
+  "commands": true,  // .claude/commands/
+  "skills": true,    // .claude/skills/
+  "agents": true,    // .claude/agents/
+  "mcps": true,      // .claude/mcp.json
+  "plugins": true    // .claude/plugins/
+}
+```
+
+## ref
+
+- [oh-my-opencode schema.json](https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json)
+- [oh-my-opencode configurations.md](https://github.com/code-yeongyu/oh-my-opencode/blob/dev/docs/configurations.md)
