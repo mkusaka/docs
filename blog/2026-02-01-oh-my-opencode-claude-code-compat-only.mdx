@@ -19,6 +19,7 @@ oh-my-opencodeをインストールすると、Claude Code互換機能だけで�
 
 - Sisyphus（オーケストレーションエージェント）
 - Atlas（ワークフロー自動化）
+- Hephaestus（gpt-5.3-codex専用の自律型ディープワーカー、v3.2.0で追加）
 - `/start-work`コマンド（Prometheusプランからの自動実行）
 - `keyword-detector`（キーワード検出による自動介入）
 
@@ -68,6 +69,9 @@ oh-my-opencodeをインストールすると、Claude Code互換機能だけで�
     },
     "prometheus": {
       "disable": true
+    },
+    "hephaestus": {
+      "disable": true
     }
   }
 }
@@ -83,7 +87,7 @@ oh-my-opencodeをインストールすると、Claude Code互換機能だけで�
 | `disabled_agents` | エージェント定義を削除 |
 | `disabled_commands` | スラッシュコマンドを無効化 |
 | `disabled_hooks` | ライフサイクルフックを無効化 |
-| `agents.X.disable` | 個別エージェントを無効化 |
+| `agents.X.disable` | 個別エージェントを無効化（スキーマの`disabled_agents`に未登録のエージェントもこちらで無効化可能） |
 
 ### claude_codeオブジェクト
 
