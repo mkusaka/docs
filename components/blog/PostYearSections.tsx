@@ -14,10 +14,10 @@ export function PostYearSections({ postsByYear }: PostYearSectionsProps) {
     <>
       {sortedYears.map((year) => (
         <div key={year} id={`year-${year}`} className="mb-10 scroll-mt-16">
-          <h3 className="text-sm font-medium text-neutral-300 mb-4 flex items-center gap-3">
+          <h3 className="text-sm font-medium text-foreground/80 mb-4 flex items-center gap-3">
             {year}
-            <span className="flex-1 h-px bg-white/[0.06]" />
-            <span className="text-xs text-neutral-600 font-normal">
+            <span className="flex-1 h-px bg-border" />
+            <span className="text-xs text-muted-foreground font-normal">
               {postsByYear[year].length} posts
             </span>
           </h3>

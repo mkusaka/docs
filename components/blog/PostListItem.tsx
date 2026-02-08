@@ -15,13 +15,13 @@ export function PostListItem({ post }: PostListItemProps) {
   return (
     <Link
       href={`/${post.slug}`}
-      className="group flex items-baseline gap-4 py-3.5 px-4 -mx-4 rounded-xl hover:bg-white/[0.03] transition-all no-underline"
+      className="group flex items-baseline gap-4 py-3.5 px-4 -mx-4 rounded-xl hover:bg-secondary transition-all no-underline"
     >
-      <time className="text-[0.8125rem] text-neutral-600 shrink-0 w-[80px]">
+      <time className="text-[0.8125rem] text-muted-foreground shrink-0 w-[80px]">
         {monthDay}
       </time>
       <div className="flex-1 min-w-0">
-        <h4 className="text-[0.9375rem] text-neutral-300 group-hover:text-white transition-colors truncate">
+        <h4 className="text-[0.9375rem] text-foreground/80 group-hover:text-foreground transition-colors truncate">
           {post.title}
         </h4>
       </div>
@@ -30,7 +30,7 @@ export function PostListItem({ post }: PostListItemProps) {
           {post.categories.map((cat) => (
             <span
               key={cat}
-              className="text-[0.6875rem] px-2 py-0.5 rounded bg-white/[0.04] text-neutral-600"
+              className="text-[0.6875rem] px-2 py-0.5 rounded bg-secondary text-muted-foreground"
             >
               {cat}
             </span>

@@ -37,15 +37,15 @@ export default async function TopicPage({ params }: Props) {
     <div className="flex max-w-[1320px] mx-auto">
       <Sidebar currentTopic={topic} />
 
-      <main className="flex-1 min-w-0 border-l border-white/[0.04] lg:border-l-0">
+      <main className="flex-1 min-w-0 border-l border-border lg:border-l-0">
         <div className="max-w-[880px] mx-auto px-6 sm:px-8 pt-12 pb-32">
           {/* Header */}
           <section className="mb-16">
             <div className="mb-6">
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] text-white leading-[1.1] mb-3">
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] text-foreground leading-[1.1] mb-3">
                 {topic}
               </h1>
-              <p className="text-neutral-500 text-[0.9375rem]">
+              <p className="text-muted-foreground text-[0.9375rem]">
                 {posts.length} posts
               </p>
             </div>
@@ -56,7 +56,7 @@ export default async function TopicPage({ params }: Props) {
           {/* Featured */}
           {featured.length > 0 && (
             <section className="mb-16">
-              <h2 className="text-[0.6875rem] font-medium text-neutral-400 uppercase tracking-[0.1em] mb-5">
+              <h2 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-5">
                 Latest in {topic}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

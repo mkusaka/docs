@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { SearchDialog } from "@/components/blog/SearchDialog";
 import "./globals.css";
@@ -25,13 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja" className="dark">
+    <html lang="ja" suppressHydrationWarning>
       <body
         className={`${geist.variable} font-[family-name:var(--font-geist),ui-sans-serif,system-ui,sans-serif] bg-background text-foreground antialiased min-h-screen`}
       >
-        <Navbar />
-        <SearchDialog />
-        {children}
+        <ThemeProvider>
+          <Navbar />
+          <SearchDialog />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

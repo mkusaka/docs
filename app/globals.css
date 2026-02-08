@@ -12,7 +12,29 @@
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.12);
+  background: oklch(0.141 0.005 285.823 / 0.12);
+}
+.dark ::selection {
+  background: oklch(1 0 0 / 0.12);
+}
+
+/* Shiki dual theme support */
+html:not(.dark) .shiki,
+html:not(.dark) .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
+  text-decoration: var(--shiki-light-text-decoration) !important;
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
 /* Scrollbar hide for sidebars */
