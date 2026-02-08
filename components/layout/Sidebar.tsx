@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { SearchIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getAllTopics, getAllPosts } from "@/lib/posts";
 
 interface SidebarProps {
@@ -20,36 +22,24 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
     <aside className="hidden lg:block w-[210px] shrink-0 sticky top-[52px] h-[calc(100vh-52px)] overflow-y-auto sidebar-scroll">
       <div className="py-8 pl-6 pr-4">
         {/* Search trigger */}
-        <button
-          className="w-full relative mb-6 text-left"
+        <Button
+          variant="outline"
+          className="w-full justify-start gap-2 mb-6 text-muted-foreground h-auto py-[7px] pl-2.5 pr-2"
           data-search-trigger
         >
-          <svg
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-600"
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <div className="w-full bg-transparent border border-white/[0.06] rounded-lg pl-8 pr-2 py-[7px] text-xs text-neutral-600 flex items-center justify-between cursor-pointer hover:border-white/[0.1] transition-colors">
-            Search
-            <span className="text-[0.6rem] text-neutral-700 border border-white/[0.06] rounded px-1 py-px">
-              ⌘ K
-            </span>
-          </div>
-        </button>
+          <SearchIcon className="size-3.5" />
+          <span className="flex-1 text-left text-xs">Search</span>
+          <kbd className="text-[0.6rem] text-muted-foreground/70 border rounded px-1 py-px">
+            ⌘ K
+          </kbd>
+        </Button>
 
         <Link
           href="/"
           className={`block text-sm rounded-lg px-3 py-2 mb-6 no-underline transition-all ${
             !currentTopic && !currentSlug
-              ? "text-white bg-white/[0.06]"
-              : "text-neutral-400 hover:text-white"
+              ? "text-foreground bg-accent"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           All posts
@@ -58,7 +48,7 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
         {/* Recent */}
         {currentSlug && (
           <div className="mb-8">
-            <h3 className="text-[0.6875rem] font-medium text-neutral-400 uppercase tracking-[0.1em] mb-3">
+            <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
               Recent
             </h3>
             <div className="space-y-px">
@@ -68,8 +58,8 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
                   href={`/${post.slug}`}
                   className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline leading-snug transition-all ${
                     post.slug === currentSlug
-                      ? "text-white/90 bg-white/[0.06]"
-                      : "text-neutral-500 hover:text-neutral-300 hover:bg-white/[0.03]"
+                      ? "text-foreground/90 bg-accent"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                   }`}
                 >
                   {post.title}
@@ -81,7 +71,7 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
 
         {/* Topics */}
         <div className="mb-8">
-          <h3 className="text-[0.6875rem] font-medium text-neutral-400 uppercase tracking-[0.1em] mb-3">
+          <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
             Topics
           </h3>
           <div className="space-y-px">
@@ -91,8 +81,8 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
                 href={`/topics/${topic}`}
                 className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline transition-all ${
                   topic === currentTopic
-                    ? "text-white bg-white/[0.06]"
-                    : "text-neutral-500 hover:text-neutral-300 hover:bg-white/[0.03]"
+                    ? "text-foreground bg-accent"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 }`}
               >
                 {topic}
@@ -103,7 +93,7 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
 
         {/* Archive */}
         <div>
-          <h3 className="text-[0.6875rem] font-medium text-neutral-400 uppercase tracking-[0.1em] mb-3">
+          <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
             Archive
           </h3>
           <div className="space-y-px">
@@ -111,7 +101,7 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
               <Link
                 key={year}
                 href={`/#year-${year}`}
-                className="block text-[0.8125rem] text-neutral-500 hover:text-neutral-300 hover:bg-white/[0.03] rounded-lg px-3 py-2 no-underline transition-all"
+                className="block text-[0.8125rem] text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-lg px-3 py-2 no-underline transition-all"
               >
                 {year}
               </Link>

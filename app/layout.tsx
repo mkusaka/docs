@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className="dark">
       <body
-        className={`${geist.variable} font-[family-name:var(--font-geist),ui-sans-serif,system-ui,sans-serif] bg-[#0d0d0d] text-[#e5e5e5] antialiased min-h-screen`}
+        className={`${geist.variable} font-[family-name:var(--font-geist),ui-sans-serif,system-ui,sans-serif] bg-background text-foreground antialiased min-h-screen`}
       >
         <Navbar />
         <SearchDialog />
