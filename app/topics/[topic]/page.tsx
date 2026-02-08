@@ -34,7 +34,7 @@ export default async function TopicPage({ params }: Props) {
   const postsByYear = groupByYear(posts);
 
   return (
-    <div className="flex max-w-[1320px] mx-auto">
+    <div className="flex max-w-[1320px] mx-auto overflow-x-hidden">
       <Sidebar currentTopic={topic} />
 
       <main className="flex-1 min-w-0 border-l border-border lg:border-l-0">

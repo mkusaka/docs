@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { SearchIcon } from "lucide-react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { SearchDialog } from "@/components/blog/SearchDialog";
@@ -34,6 +35,14 @@ export default function RootLayout({
           <Navbar />
           <SearchDialog />
           {children}
+          {/* Mobile search FAB */}
+          <button
+            data-search-trigger
+            className="lg:hidden fixed bottom-6 right-6 z-50 size-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform"
+            aria-label="Search"
+          >
+            <SearchIcon className="size-5" />
+          </button>
         </ThemeProvider>
       </body>
     </html>
