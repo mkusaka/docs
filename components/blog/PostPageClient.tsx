@@ -187,7 +187,7 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
         ) : showOriginal ? (
           <StreamingContent content={rawContent} isLoading={false} />
         ) : (
-          <StreamingContent content={completion} isLoading={generating} />
+          <StreamingContent content={completion} isLoading={generating} showCaret />
         )}
       </div>
 
