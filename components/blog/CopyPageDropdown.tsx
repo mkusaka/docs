@@ -14,12 +14,11 @@ interface CopyPageDropdownProps {
   slug: string;
   rawContent: string;
   aiContent?: string;
-  showOriginal: boolean;
   viewingMarkdown: boolean;
   onToggleViewMarkdown: () => void;
 }
 
-export function CopyPageDropdown({ slug, rawContent, aiContent, showOriginal, viewingMarkdown, onToggleViewMarkdown }: CopyPageDropdownProps) {
+export function CopyPageDropdown({ slug, rawContent, aiContent, viewingMarkdown, onToggleViewMarkdown }: CopyPageDropdownProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
   async function copyToClipboard(text: string, label: string) {
@@ -31,7 +30,7 @@ export function CopyPageDropdown({ slug, rawContent, aiContent, showOriginal, vi
   const baseUrl =
     typeof window !== "undefined" ? window.location.origin : "https://mkusaka.com";
   const url = `${baseUrl}/${slug}`;
-  const currentContent = !showOriginal && aiContent ? aiContent : rawContent;
+  const currentContent = aiContent || rawContent;
 
   return (
     <div className="flex">

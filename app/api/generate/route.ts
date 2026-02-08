@@ -6,6 +6,9 @@ import type { Language, Style } from "@/lib/types";
 
 function getStyleInstruction(style: Style): string {
   switch (style) {
+    case "original":
+      return "";
+
     case "quick":
       return `文体の指示:
 - 要点だけを簡潔にまとめてください。各ポイントは1〜2文で

@@ -20,6 +20,7 @@ const languages: { value: Language; label: string }[] = [
 ];
 
 const styles: { value: Style; label: string }[] = [
+  { value: "original", label: "Original" },
   { value: "quick", label: "Quick" },
   { value: "casual", label: "Casual" },
   { value: "polite", label: "Polite" },
@@ -72,7 +73,7 @@ export function StyleSelector({
   onChange,
   disabled,
 }: StyleSelectorProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   return (
     <Card className="mb-8 p-5 py-5 gap-0">
