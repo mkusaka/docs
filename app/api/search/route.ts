@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { getAllPosts } from "@/lib/posts";
 import { buildSearchSystemPrompt } from "@/lib/prompt";
 
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   const posts = getAllPosts();
 
   const result = streamText({
-    model: openai(process.env.OPENAI_MODEL || "gpt-5-mini"),
+    model: google(process.env.AI_MODEL || "gemini-3-flash-preview"),
     // System prompt contains all blog data + guardrails
     system: buildSearchSystemPrompt(posts),
     // User query is passed as user message only

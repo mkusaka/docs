@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { getPostBySlug } from "@/lib/posts";
 import { buildGenerateSystemPrompt } from "@/lib/prompt";
 import type { Language, Tone, DetailLevel } from "@/lib/types";
@@ -32,22 +32,23 @@ export async function POST(req: Request) {
 
   const detailInstruction =
     detail === "concise"
-      ? "要点のみ簡潔に。"
+      ? "短く簡潔に書いてください。各ポイントは1〜2文で。記事全体を短くまとめてください。"
       : detail === "detailed"
-        ? "詳しく丁寧に説明。背景知識も含めて。"
-        : "標準的な詳細度で。";
+        ? "各ポイントについて、なぜそうなのか・どういう場面で役立つかを丁寧に解説してください。ただし下書きに書かれていない事実やコマンドは追加しないでください。"
+        : "標準的な詳細度で書いてください。";
 
   const result = streamText({
-    model: openai(process.env.OPENAI_MODEL || "gpt-5-mini"),
+    model: google(process.env.AI_MODEL || "gemini-3-flash-preview"),
     system: buildGenerateSystemPrompt(),
-    prompt: `以下の記事を書き直してください。
+    prompt: `以下のメモ・下書きをもとに、ブログ記事を書いてください。
+重要: 下書きにない事実や具体例を追加しないでください。内容は下書きの範囲内に限定してください。
 
 スタイル指示:
 - ${languageInstruction}
 - ${toneInstruction}
 - ${detailInstruction}
 
-元の記事:
+下書き:
 ${post.rawContent}`,
   });
 

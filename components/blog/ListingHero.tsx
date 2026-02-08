@@ -32,7 +32,7 @@ export function ListingHero({ topic }: ListingHeroProps) {
           <span>{topic ? `${topic} Digest` : "Weekly Digest"}</span>
           <span className="text-muted-foreground/50">·</span>
           <span className="text-muted-foreground/70">
-            {process.env.NEXT_PUBLIC_OPENAI_MODEL || "gpt-5-mini"}
+            {process.env.NEXT_PUBLIC_AI_MODEL || "gemini-3-flash-preview"}
           </span>
         </div>
         <CardAction>
