@@ -30,8 +30,23 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
   const [viewingMarkdown, setViewingMarkdown] = useState(false);
   const initializedRef = useRef(false);
 
-  const { completion, isLoading, complete, stop, error } = useCompletion({
+  // Ref-based AbortController: reliably cancels old requests regardless of React state batching.
+  // SDK's stop() uses React state for its AbortController, which can be stale during rapid changes.
+  const transportAbortRef = useRef<AbortController | null>(null);
+
+  const fetchWithCancel: typeof fetch = useCallback((input, init = {}) => {
+    transportAbortRef.current?.abort();
+    const controller = new AbortController();
+    transportAbortRef.current = controller;
+    const signal = init.signal
+      ? AbortSignal.any([init.signal, controller.signal])
+      : controller.signal;
+    return globalThis.fetch(input, { ...init, signal });
+  }, []);
+
+  const { completion, complete, stop: sdkStop, error } = useCompletion({
     api: "/api/generate",
+    fetch: fetchWithCancel,
     body: {
       slug: meta.slug,
       language: style.language,
@@ -41,9 +56,36 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
     streamProtocol: "text",
   });
 
+  // Request token pattern: track generation state independently of AI SDK's isLoading
+  const requestIdRef = useRef(0);
+  const [generating, setGenerating] = useState(false);
+
+  const trackedComplete = useCallback(
+    async (prompt: string, options?: Parameters<typeof complete>[1]) => {
+      const id = ++requestIdRef.current;
+      setGenerating(true);
+      try {
+        return await complete(prompt, options);
+      } finally {
+        if (requestIdRef.current === id) {
+          setGenerating(false);
+        }
+      }
+    },
+    [complete],
+  );
+
   const generate = useCallback(() => {
-    complete("");
-  }, [complete]);
+    void trackedComplete("");
+  }, [trackedComplete]);
+
+  const handleStop = useCallback(() => {
+    requestIdRef.current++;
+    setGenerating(false);
+    transportAbortRef.current?.abort();
+    transportAbortRef.current = null;
+    sdkStop();
+  }, [sdkStop]);
 
   // Load saved preferences then auto-generate
   useEffect(() => {
@@ -60,21 +102,19 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
     if (ready) generate();
   }, [ready, generate]);
 
-  // Re-generate when style changes (via useEffect to ensure body is updated)
-  const styleChangedByUser = useRef(false);
-
   function handleStyleChange(newStyle: StyleOptions) {
-    styleChangedByUser.current = true;
     setStyle(newStyle);
     saveStyleOptions(newStyle);
+    // fetchWithCancel automatically aborts the previous request when complete() triggers a new fetch
+    void trackedComplete("", {
+      body: {
+        slug: meta.slug,
+        language: newStyle.language,
+        tone: newStyle.tone,
+        detail: newStyle.detail,
+      },
+    });
   }
-
-  useEffect(() => {
-    if (styleChangedByUser.current) {
-      styleChangedByUser.current = false;
-      complete("");
-    }
-  }, [style, complete]);
 
   return (
     <>
@@ -93,12 +133,11 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
       <StyleSelector
         value={style}
         onChange={handleStyleChange}
-        disabled={isLoading}
       />
 
       {/* Status */}
       <div className="flex items-center gap-2 mb-8 text-[0.8125rem] text-muted-foreground min-h-[28px]">
-        {isLoading ? (
+        {generating ? (
           <>
             <span className="w-[6px] h-[6px] rounded-full bg-emerald-400 animate-pulse-dot" />
             <span>
@@ -108,7 +147,7 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
             <Button
               variant="outline"
               size="xs"
-              onClick={stop}
+              onClick={handleStop}
               className="ml-auto"
             >
               Stop
@@ -144,11 +183,11 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
       {/* Content */}
       <div className="min-h-[200px]">
         {viewingMarkdown ? (
-          <MarkdownSource content={showOriginal ? rawContent : (completion || rawContent)} isLoading={!showOriginal && isLoading} />
+          <MarkdownSource content={showOriginal ? rawContent : (completion || rawContent)} isLoading={!showOriginal && generating} />
         ) : showOriginal ? (
           <StreamingContent content={rawContent} isLoading={false} />
         ) : (
-          <StreamingContent content={completion} isLoading={isLoading} />
+          <StreamingContent content={completion} isLoading={generating} />
         )}
       </div>
 

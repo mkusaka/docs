@@ -63,11 +63,6 @@ export function ListingHero({ topic }: ListingHeroProps) {
           </p>
         ) : completion ? (
           <Markdown isAnimating={isLoading}>{completion}</Markdown>
-        ) : isLoading ? (
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <span className="w-[6px] h-[6px] rounded-full bg-emerald-400 animate-pulse-dot" />
-            生成中...
-          </div>
         ) : null}
       </CardContent>
     </Card>
