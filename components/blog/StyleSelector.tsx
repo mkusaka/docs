@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SlidersHorizontalIcon } from "lucide-react";
 import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { Language, Tone, DetailLevel, StyleOptions } from "@/lib/types";
+import type { Language, Style, StyleOptions } from "@/lib/types";
 
 interface StyleSelectorProps {
   value: StyleOptions;
@@ -19,17 +19,12 @@ const languages: { value: Language; label: string }[] = [
   { value: "ko", label: "한국어" },
 ];
 
-const tones: { value: Tone; label: string }[] = [
+const styles: { value: Style; label: string }[] = [
+  { value: "quick", label: "Quick" },
   { value: "casual", label: "Casual" },
   { value: "polite", label: "Polite" },
-  { value: "technical", label: "Technical" },
-  { value: "neutral", label: "Neutral" },
-];
-
-const details: { value: DetailLevel; label: string }[] = [
-  { value: "concise", label: "Concise" },
-  { value: "standard", label: "Standard" },
-  { value: "detailed", label: "Detailed" },
+  { value: "engaging", label: "Engaging" },
+  { value: "playful", label: "Playful" },
 ];
 
 function ChipGroup<T extends string>({
@@ -106,17 +101,10 @@ export function StyleSelector({
             disabled={disabled}
           />
           <ChipGroup
-            label="Tone"
-            options={tones}
-            value={value.tone}
-            onChange={(v) => onChange({ ...value, tone: v })}
-            disabled={disabled}
-          />
-          <ChipGroup
-            label="Detail"
-            options={details}
-            value={value.detail}
-            onChange={(v) => onChange({ ...value, detail: v })}
+            label="Style"
+            options={styles}
+            value={value.style}
+            onChange={(v) => onChange({ ...value, style: v })}
             disabled={disabled}
           />
         </CardContent>

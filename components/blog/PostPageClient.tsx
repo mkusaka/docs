@@ -19,8 +19,7 @@ interface PostPageClientProps {
 
 const defaultStyle: StyleOptions = {
   language: "ja",
-  tone: "neutral",
-  detail: "standard",
+  style: "casual",
 };
 
 export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
@@ -50,8 +49,7 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
     body: {
       slug: meta.slug,
       language: style.language,
-      tone: style.tone,
-      detail: style.detail,
+      style: style.style,
     },
     streamProtocol: "text",
   });
@@ -110,8 +108,7 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
       body: {
         slug: meta.slug,
         language: newStyle.language,
-        tone: newStyle.tone,
-        detail: newStyle.detail,
+        style: newStyle.style,
       },
     });
   }
