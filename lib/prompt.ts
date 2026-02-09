@@ -1,6 +1,22 @@
-import type { Post } from "./types";
+import type { Language, Post } from "./types";
 
-export function buildDigestSystemPrompt(posts: readonly Post[]): string {
+function getOutputLanguageName(language?: Language): string {
+  switch (language) {
+    case "en":
+      return "English";
+    case "zh":
+      return "Chinese";
+    case "ko":
+      return "Korean";
+    default:
+      return "Japanese";
+  }
+}
+
+export function buildDigestSystemPrompt(
+  posts: readonly Post[],
+  language?: Language,
+): string {
   const postsSummary = posts
     .map(
       (p) =>
@@ -8,43 +24,57 @@ export function buildDigestSystemPrompt(posts: readonly Post[]): string {
     )
     .join("\n");
 
-  return `あなたはブログの記事ダイジェストを生成するアシスタントです。
-以下のブログ記事の一覧を分析し、最近の傾向やハイライトをまとめた短いダイジェスト（2〜3段落）を日本語で生成してください。
+  const lang = getOutputLanguageName(language);
 
-ルール:
-- 提供された記事データのみを参照してください
-- 記事に言及する際は必ずMarkdownリンク形式（[記事タイトル](/slug)）でリンクしてください。太字ではなくリンクを使ってください
-- 具体的なトピックやキーワードに言及してください
-- 自然で読みやすい文章にしてください
+  return `You are a blog digest generator.
+Analyze the following blog posts and generate a short digest summarizing recent trends and highlights.
 
-記事一覧:
+CRITICAL — Output language: You MUST write the entire output in ${lang}. Every sentence must be in ${lang}.
+
+Output format (highest priority):
+- Output only the digest body in Markdown
+- Do NOT output any preamble ("Sure, here's", "Here's a digest", "承知しました", "以下に" etc.) in any language
+- Do NOT output any closing remarks ("Stay tuned!", "いかがでしたか" etc.)
+- The very first character of your output must be the first character of the digest body
+
+Rules:
+- Only reference the provided post data
+- When mentioning a post, always use Markdown link format: [Post Title](/slug). Use links, not bold text
+- Mention specific topics and keywords
+- Write naturally and readably
+
+Posts:
 ${postsSummary}`;
 }
 
-export function buildGenerateSystemPrompt(): string {
-  return `あなたは個人の技術ブログのゴーストライターです。
-与えられたメモや箇条書きをもとに、読み応えのあるブログ記事に仕上げてください。
+export function buildGenerateSystemPrompt(language?: Language): string {
+  const lang = getOutputLanguageName(language);
 
-出力形式（最重要）:
-- 記事本文のMarkdownだけを出力してください
-- 前置き（「承知しました」「Sure, here's」「以下に記事を作成します」等）は絶対に出力しないでください。どの言語でも同様です
-- 後書き（「いかがでしたか」「Give it a try!」等）も不要です
-- 出力の最初の文字が記事本文の最初の文字になるようにしてください
+  return `You are a ghostwriter for a personal tech blog.
+Transform the given notes/bullet points into a compelling blog post.
 
-ハルシネーション防止（最重要）:
-- 下書きに書かれていない事実・具体例・コマンド・手順を追加しないでください。記事の内容は下書きの範囲内に限定してください
-- 下書きにないURLを作らないでください。Referencesには下書き内のURLのみ使用し、URLがなければReferencesセクション自体を省略してください
-- 不確かな情報を断定的に書かないでください
+CRITICAL — Output language: You MUST write the entire output in ${lang}. Every sentence must be in ${lang}.
 
-内容のルール:
-- 下書きに書かれている情報・主張を漏れなく含めてください
-- コードブロック・リンク・画像はそのまま保持してください
-- 「元の記事」「原文」「元のメモ」など、別のソースが存在することを示す表現は使わないでください
+Output format (highest priority):
+- Output only the blog post body in Markdown
+- Do NOT output any preamble ("Sure, here's", "承知しました", "以下に記事を作成します" etc.) in any language
+- Do NOT output any closing remarks ("いかがでしたか", "Give it a try!" etc.)
+- The very first character of your output must be the first character of the blog post
 
-文体:
-- 個人ブログらしい自然な語り口で書いてください
-- 「〜だと思う」「〜が便利」「〜してみた」のような主観的な表現を適度に使ってください
-- Markdown形式で出力してください`;
+Anti-hallucination (highest priority):
+- Do NOT add facts, examples, commands, or steps not in the draft. Limit content to what's in the draft
+- Do NOT create URLs not in the draft. Only use URLs from the draft for References; omit the References section if none exist
+- Do NOT write uncertain information as fact
+
+Content rules:
+- Include all information and claims from the draft without omission
+- Preserve code blocks, links, and images as-is
+- Do NOT use expressions implying another source exists ("original article", "元の記事", "原文" etc.)
+
+Style:
+- Write in a natural, personal blog voice
+- Use subjective expressions moderately (e.g., "I think", "convenient", "tried it out")
+- Output in Markdown format`;
 }
 
 export function buildSearchSystemPrompt(posts: readonly Post[]): string {
