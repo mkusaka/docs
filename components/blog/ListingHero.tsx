@@ -1,25 +1,56 @@
 "use client";
 
 import { useCompletion } from "@ai-sdk/react";
-import { useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Markdown } from "./Markdown";
+import { StyleSelector } from "./StyleSelector";
+import type { StyleOptions } from "@/lib/types";
 
 interface ListingHeroProps {
   topic?: string;
 }
 
+const defaultStyle: StyleOptions = {
+  language: "ja",
+  style: "detailed",
+};
+
 export function ListingHero({ topic }: ListingHeroProps) {
+  const [style, setStyle] = useState<StyleOptions>(defaultStyle);
+
   const { completion, isLoading, complete, error } = useCompletion({
     api: "/api/digest",
-    body: topic ? { topic } : undefined,
+    body: {
+      ...(topic ? { topic } : {}),
+      language: style.language,
+      style: style.style,
+    },
     streamProtocol: "text",
   });
 
+  const initialRef = useRef(false);
   useEffect(() => {
-    complete("");
+    if (!initialRef.current) {
+      initialRef.current = true;
+      complete("");
+    }
   }, [complete]);
+
+  const handleStyleChange = useCallback(
+    (newStyle: StyleOptions) => {
+      setStyle(newStyle);
+      void complete("", {
+        body: {
+          ...(topic ? { topic } : {}),
+          language: newStyle.language,
+          style: newStyle.style,
+        },
+      });
+    },
+    [complete, topic],
+  );
 
   return (
     <Card className="p-6 py-6 gap-0">
@@ -32,7 +63,7 @@ export function ListingHero({ topic }: ListingHeroProps) {
           <span>{topic ? `${topic} Digest` : "Weekly Digest"}</span>
           <span className="text-muted-foreground/50">·</span>
           <span className="text-muted-foreground/70">
-            {process.env.NEXT_PUBLIC_AI_MODEL || "gemini-3-flash-preview"}
+            {process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || "gemini-2.5-flash-lite"}
           </span>
         </div>
         <CardAction>
@@ -46,6 +77,16 @@ export function ListingHero({ topic }: ListingHeroProps) {
           </Button>
         </CardAction>
       </CardHeader>
+
+      {/* Style Selector */}
+      <div className="mb-5">
+        <StyleSelector
+          value={style}
+          onChange={handleStyleChange}
+          disabled={isLoading}
+          showOriginal={false}
+        />
+      </div>
 
       {/* AI Content */}
       <CardContent className="p-0 text-[0.9375rem] leading-[1.8] text-muted-foreground">

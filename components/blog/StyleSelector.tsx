@@ -10,6 +10,8 @@ interface StyleSelectorProps {
   value: StyleOptions;
   onChange: (options: StyleOptions) => void;
   disabled?: boolean;
+  /** When false, hides the "Original" option (e.g. for digest where there's no raw content). Default true. */
+  showOriginal?: boolean;
 }
 
 const languages: { value: Language; label: string }[] = [
@@ -69,6 +71,7 @@ export function StyleSelector({
   value,
   onChange,
   disabled,
+  showOriginal = true,
 }: StyleSelectorProps) {
   const [collapsed, setCollapsed] = useState(true);
 
@@ -100,7 +103,7 @@ export function StyleSelector({
           />
           <ChipGroup
             label="Style"
-            options={styles}
+            options={showOriginal ? styles : styles.filter((s) => s.value !== "original")}
             value={value.style}
             onChange={(v) => onChange({ ...value, style: v })}
             disabled={disabled}
