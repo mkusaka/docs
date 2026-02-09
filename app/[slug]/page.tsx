@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -62,9 +63,11 @@ export default async function PostPage({ params }: Props) {
           </div>
 
           {/* Title */}
-          <h1 className="text-[2.5rem] sm:text-5xl font-bold leading-[1.1] tracking-[-0.03em] mb-6 text-foreground">
-            {post.title}
-          </h1>
+          <ViewTransition name={`post-title-${slug}`}>
+            <h1 className="text-[2.5rem] sm:text-5xl font-bold leading-[1.1] tracking-[-0.03em] mb-6 text-foreground">
+              {post.title}
+            </h1>
+          </ViewTransition>
 
           {/* Subtitle */}
           {post.description && (

@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,9 +19,11 @@ export function PostCard({ post }: PostCardProps) {
       <Card className="p-5 py-5 gap-0 hover:bg-accent transition-all">
         <CardContent className="p-0">
           <time className="text-xs text-muted-foreground block mb-3">{monthYear}</time>
-          <h3 className="text-[0.9375rem] font-semibold text-foreground leading-snug mb-2">
-            {post.title}
-          </h3>
+          <ViewTransition name={`post-title-${post.slug}`}>
+            <h3 className="text-[0.9375rem] font-semibold text-foreground leading-snug mb-2">
+              {post.title}
+            </h3>
+          </ViewTransition>
           <p className="text-[0.8125rem] text-muted-foreground leading-relaxed line-clamp-2">
             {post.description}
           </p>

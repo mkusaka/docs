@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { SearchIcon } from "lucide-react";
@@ -34,7 +35,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Navbar />
           <SearchDialog />
-          {children}
+          <ViewTransition>{children}</ViewTransition>
           {/* Mobile search FAB */}
           <button
             data-search-trigger

@@ -78,6 +78,33 @@ html.dark .shiki span {
   animation: fade-in 0.4s ease-out;
 }
 
+/* View Transitions */
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+::view-transition-old(.page-transition) {
+  animation: 0.2s ease both vt-fade-out;
+}
+::view-transition-new(.page-transition) {
+  animation: 0.2s ease both vt-fade-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+  }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

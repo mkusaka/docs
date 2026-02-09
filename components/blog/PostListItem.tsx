@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import Link from "next/link";
 import type { PostMeta } from "@/lib/types";
 
@@ -21,9 +22,11 @@ export function PostListItem({ post }: PostListItemProps) {
         {monthDay}
       </time>
       <div className="flex-1 min-w-0">
-        <h4 className="text-[0.9375rem] text-foreground/80 group-hover:text-foreground transition-colors truncate">
-          {post.title}
-        </h4>
+        <ViewTransition name={`post-title-${post.slug}`}>
+          <h4 className="text-[0.9375rem] text-foreground/80 group-hover:text-foreground transition-colors truncate">
+            {post.title}
+          </h4>
+        </ViewTransition>
       </div>
       {post.categories.length > 0 && (
         <div className="hidden sm:flex gap-1.5 shrink-0">
