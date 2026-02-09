@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   const recentPosts = posts.slice(0, 10);
 
   const result = streamText({
-    model: google(process.env.AI_MODEL || "gemini-3-flash-preview"),
+    model: google(process.env.AI_DIGEST_MODEL || "gemini-2.5-flash-lite"),
     system: buildDigestSystemPrompt(recentPosts),
     prompt: topic
       ? `「${topic}」カテゴリの最近の記事についてダイジェストを生成してください。`
