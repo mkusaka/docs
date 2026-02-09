@@ -22,10 +22,7 @@ const languages: { value: Language; label: string }[] = [
 const styles: { value: Style; label: string }[] = [
   { value: "original", label: "Original" },
   { value: "quick", label: "Quick" },
-  { value: "casual", label: "Casual" },
-  { value: "polite", label: "Polite" },
-  { value: "engaging", label: "Engaging" },
-  { value: "playful", label: "Playful" },
+  { value: "detailed", label: "Detailed" },
 ];
 
 function ChipGroup<T extends string>({

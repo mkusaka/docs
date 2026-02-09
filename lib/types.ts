@@ -13,7 +13,7 @@ export interface Post extends PostMeta {
 }
 
 export type Language = "en" | "ja" | "zh" | "ko";
-export type Style = "original" | "quick" | "casual" | "polite" | "engaging" | "playful";
+export type Style = "original" | "quick" | "detailed";
 
 export interface StyleOptions {
   language: Language;

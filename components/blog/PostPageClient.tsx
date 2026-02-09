@@ -80,13 +80,14 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
     sdkStop();
   }, [sdkStop]);
 
-  const isOriginal = style.style === "original";
+  // Show raw content only when original + default language (ja)
+  const showRawContent = style.style === "original" && style.language === "ja";
 
   function handleStyleChange(newStyle: StyleOptions) {
     setStyle(newStyle);
 
-    if (newStyle.style === "original") {
-      // Stop any in-flight generation
+    if (newStyle.style === "original" && newStyle.language === "ja") {
+      // No API needed — show raw content
       handleStop();
       return;
     }
@@ -102,7 +103,7 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
   }
 
   // Displayed content
-  const displayContent = isOriginal ? rawContent : (completion || "");
+  const displayContent = showRawContent ? rawContent : (completion || "");
 
   return (
     <>
@@ -124,7 +125,7 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
       />
 
       {/* AI Status */}
-      {!isOriginal && (
+      {!showRawContent && (
         <div className="flex items-center gap-2 mb-8 text-[0.8125rem] text-muted-foreground min-h-[28px]">
           {generating ? (
             <>
@@ -161,7 +162,7 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
       )}
 
       {/* Error */}
-      {error && !isOriginal && (
+      {error && !showRawContent && (
         <div className="mb-8 p-4 border border-destructive/20 bg-destructive/5 rounded-xl text-sm text-destructive">
           生成に失敗しました。
           <Button variant="link" size="sm" onClick={generate} className="text-destructive">
@@ -173,8 +174,8 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
       {/* Content */}
       <div className="min-h-[200px]">
         {viewingMarkdown ? (
-          <MarkdownSource content={displayContent || rawContent} isLoading={!isOriginal && generating} />
-        ) : isOriginal ? (
+          <MarkdownSource content={displayContent || rawContent} isLoading={!showRawContent && generating} />
+        ) : showRawContent ? (
           <StreamingContent content={rawContent} isLoading={false} />
         ) : (
           <StreamingContent content={completion} isLoading={generating} showCaret />
