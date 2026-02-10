@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ListingHero } from "@/components/blog/ListingHero";
 import { PostCard } from "@/components/blog/PostCard";
 import { PostYearSections } from "@/components/blog/PostYearSections";
 import { getAllTopics, getPostsByTopic, groupByYear } from "@/lib/posts";
+import { getPreferredLanguageFromHeaders } from "@/lib/language";
 
 interface Props {
   params: Promise<{ topic: string }>;
@@ -32,6 +34,7 @@ export default async function TopicPage({ params }: Props) {
 
   const featured = posts.slice(0, 3);
   const postsByYear = groupByYear(posts);
+  const preferredLanguage = getPreferredLanguageFromHeaders(await headers());
 
   return (
     <div className="flex max-w-[1320px] mx-auto overflow-x-hidden">
@@ -50,7 +53,7 @@ export default async function TopicPage({ params }: Props) {
               </p>
             </div>
 
-            <ListingHero topic={topic} />
+            <ListingHero topic={topic} initialLanguage={preferredLanguage} />
           </section>
 
           {/* Featured */}

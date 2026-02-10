@@ -1,13 +1,16 @@
+import { headers } from "next/headers";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ListingHero } from "@/components/blog/ListingHero";
 import { PostCard } from "@/components/blog/PostCard";
 import { PostYearSections } from "@/components/blog/PostYearSections";
 import { getAllPosts, getPostsByYear } from "@/lib/posts";
+import { getPreferredLanguageFromHeaders } from "@/lib/language";
 
-export default function HomePage() {
+export default async function HomePage() {
   const allPosts = getAllPosts();
   const featured = allPosts.slice(0, 3);
   const postsByYear = getPostsByYear();
+  const preferredLanguage = getPreferredLanguageFromHeaders(await headers());
 
   return (
     <div className="flex max-w-[1320px] mx-auto overflow-x-hidden">
@@ -26,7 +29,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <ListingHero />
+            <ListingHero initialLanguage={preferredLanguage} />
           </section>
 
           {/* Featured */}
