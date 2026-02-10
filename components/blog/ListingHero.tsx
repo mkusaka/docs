@@ -2,23 +2,42 @@
 
 import { useCompletion } from "@ai-sdk/react";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardAction,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Markdown } from "./Markdown";
 import { StyleSelector } from "./StyleSelector";
-import type { StyleOptions } from "@/lib/types";
+import type { Language, StyleOptions } from "@/lib/types";
+import { isSupportedLanguage } from "@/lib/language";
 
 interface ListingHeroProps {
   topic?: string;
+  initialLanguage?: Language;
 }
 
-const defaultStyle: StyleOptions = {
-  language: "ja",
-  style: "quick",
-};
+const LANGUAGE_STORAGE_KEY = "preferred-language";
 
-export function ListingHero({ topic }: ListingHeroProps) {
-  const [style, setStyle] = useState<StyleOptions>(defaultStyle);
+function getStoredLanguage() {
+  if (typeof window === "undefined") return null;
+  const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  if (!stored || !isSupportedLanguage(stored)) return null;
+  return stored;
+}
+
+function storeLanguage(language: Language) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+}
+
+export function ListingHero({ topic, initialLanguage }: ListingHeroProps) {
+  const [style, setStyle] = useState<StyleOptions>(() => ({
+    language: initialLanguage ?? "ja",
+    style: "quick",
+  }));
 
   const { completion, isLoading, complete, error } = useCompletion({
     api: "/api/digest",
@@ -34,13 +53,26 @@ export function ListingHero({ topic }: ListingHeroProps) {
   useEffect(() => {
     if (!initialRef.current) {
       initialRef.current = true;
+      const storedLanguage = getStoredLanguage();
+      if (storedLanguage && storedLanguage !== style.language) {
+        setStyle((prev) => ({ ...prev, language: storedLanguage }));
+        void complete("", {
+          body: {
+            ...(topic ? { topic } : {}),
+            language: storedLanguage,
+            style: style.style,
+          },
+        });
+        return;
+      }
       complete("");
     }
-  }, [complete]);
+  }, [complete, style.language, style.style, topic]);
 
   const handleStyleChange = useCallback(
     (newStyle: StyleOptions) => {
       setStyle(newStyle);
+      storeLanguage(newStyle.language);
       void complete("", {
         body: {
           ...(topic ? { topic } : {}),
