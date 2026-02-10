@@ -6,9 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "preview": "pnpm build:content-index && opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "pnpm build:content-index && opennextjs-cloudflare build && wrangler deploy",
+    "upload": "pnpm build:content-index && opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "build:content-index": "node scripts/build-content-index.mjs",
     "postinstall": "husky install",
     "format": "prettier --write ."
