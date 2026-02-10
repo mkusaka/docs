@@ -1,0 +1,59 @@
+---
+title: "blog向けのopencode.json設定メモ"
+date: 2026-02-11
+description: "既存のblogのノリに合わせて、opencode.jsonの設定と関連instructionをまとめる"
+categories: [tips]
+tags: [opencode, configuration, blog]
+---
+
+## まとめ
+
+- blog用途のOpenCode設定は`opencode.json`に集約し、instructionを明示する
+- `share: "disabled"`で会話の共有を無効化しておくと安心
+
+## 目的
+
+OpenCodeの設定をblog向けに整理し、再現性のある形で残しておく。
+
+## 設定
+
+`~/.config/opencode/opencode.json`の例：
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "~/.config/opencode/instructions/japanese.md",
+    "~/.config/opencode/instructions/github.md"
+  ],
+  "share": "disabled",
+  "keybinds": {
+    "input_backspace": "backspace,shift+backspace,ctrl+h"
+  },
+  "permission": "allow",
+  "plugin": ["oh-my-opencode@latest"]
+}
+```
+
+## instructionの中身
+
+`~/.config/opencode/instructions/japanese.md`：
+
+```
+- Always respond in Japanese.
+- Keep technical terms as-is, but explain briefly when needed.
+- Write code comments in Japanese.
+- Explain error messages and output results in Japanese.
+```
+
+`~/.config/opencode/instructions/github.md`：
+
+```
+- Always use `gh` CLI for GitHub operations (issues, PRs, reviews, etc.).
+- Never use web scraping or manual URL construction for GitHub data.
+- Prefer commands like: `gh issue view`, `gh pr view`, `gh pr checks`, `gh pr diff`, `gh pr edit`, `gh pr create`, `gh pr list`, etc.
+```
+
+## ref
+
+- [OpenCode Configuration](https://opencode.ai/docs/configuration)

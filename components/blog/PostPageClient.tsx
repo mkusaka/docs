@@ -1,0 +1,256 @@
+"use client";
+
+import { useCompletion } from "@ai-sdk/react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { SlidersHorizontalIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { StyleSelector } from "./StyleSelector";
+import { StreamingContent } from "./StreamingContent";
+import { MarkdownSource } from "./MarkdownSource";
+import { CopyPageDropdown } from "./CopyPageDropdown";
+import type { Language, PostMeta, StyleOptions } from "@/lib/types";
+import { isSupportedLanguage } from "@/lib/language";
+
+interface PostPageClientProps {
+  meta: PostMeta;
+  rawContent: string;
+  initialLanguage?: Language;
+}
+
+const LANGUAGE_STORAGE_KEY = "preferred-language";
+
+function getStoredLanguage() {
+  if (typeof window === "undefined") return null;
+  const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  if (!stored || !isSupportedLanguage(stored)) return null;
+  return stored;
+}
+
+function storeLanguage(language: Language) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+}
+
+export function PostPageClient({
+  meta,
+  rawContent,
+  initialLanguage,
+}: PostPageClientProps) {
+  const [style, setStyle] = useState<StyleOptions>(() => ({
+    language: initialLanguage ?? "ja",
+    style: "original",
+  }));
+  const [viewingMarkdown, setViewingMarkdown] = useState(false);
+
+  // Ref-based AbortController: reliably cancels old requests regardless of React state batching.
+  // SDK's stop() uses React state for its AbortController, which can be stale during rapid changes.
+  const transportAbortRef = useRef<AbortController | null>(null);
+
+  const fetchWithCancel: typeof fetch = useCallback((input, init = {}) => {
+    transportAbortRef.current?.abort();
+    const controller = new AbortController();
+    transportAbortRef.current = controller;
+    const signal = init.signal
+      ? AbortSignal.any([init.signal, controller.signal])
+      : controller.signal;
+    return globalThis.fetch(input, { ...init, signal });
+  }, []);
+
+  const {
+    completion,
+    complete,
+    stop: sdkStop,
+    error,
+  } = useCompletion({
+    api: "/api/generate",
+    fetch: fetchWithCancel,
+    body: {
+      slug: meta.slug,
+      language: style.language,
+      style: style.style,
+    },
+    streamProtocol: "text",
+  });
+
+  // Request token pattern: track generation state independently of AI SDK's isLoading
+  const requestIdRef = useRef(0);
+  const [generating, setGenerating] = useState(false);
+
+  const trackedComplete = useCallback(
+    async (prompt: string, options?: Parameters<typeof complete>[1]) => {
+      const id = ++requestIdRef.current;
+      setGenerating(true);
+      try {
+        return await complete(prompt, options);
+      } finally {
+        if (requestIdRef.current === id) {
+          setGenerating(false);
+        }
+      }
+    },
+    [complete],
+  );
+
+  const generate = useCallback(() => {
+    void trackedComplete("");
+  }, [trackedComplete]);
+
+  const handleStop = useCallback(() => {
+    requestIdRef.current++;
+    setGenerating(false);
+    transportAbortRef.current?.abort();
+    transportAbortRef.current = null;
+    sdkStop();
+  }, [sdkStop]);
+
+  // Show raw content only when original + source language (ja)
+  const showRawContent = style.style === "original" && style.language === "ja";
+
+  const initialRenderRef = useRef(false);
+  useEffect(() => {
+    if (initialRenderRef.current) return;
+    initialRenderRef.current = true;
+
+    const storedLanguage = getStoredLanguage();
+    if (storedLanguage && storedLanguage !== style.language) {
+      const nextStyle = { ...style, language: storedLanguage };
+      setStyle(nextStyle);
+      if (nextStyle.style === "original" && nextStyle.language === "ja") {
+        handleStop();
+        return;
+      }
+      void trackedComplete("", {
+        body: {
+          slug: meta.slug,
+          language: nextStyle.language,
+          style: nextStyle.style,
+        },
+      });
+      return;
+    }
+
+    if (!showRawContent) {
+      void trackedComplete("");
+    }
+  }, [handleStop, meta.slug, showRawContent, style, trackedComplete]);
+
+  function handleStyleChange(newStyle: StyleOptions) {
+    setStyle(newStyle);
+    storeLanguage(newStyle.language);
+
+    if (newStyle.style === "original" && newStyle.language === "ja") {
+      // No API needed — show raw content
+      handleStop();
+      return;
+    }
+
+    // fetchWithCancel automatically aborts the previous request when complete() triggers a new fetch
+    void trackedComplete("", {
+      body: {
+        slug: meta.slug,
+        language: newStyle.language,
+        style: newStyle.style,
+      },
+    });
+  }
+
+  // Displayed content
+  const displayContent = showRawContent ? rawContent : completion || "";
+
+  return (
+    <>
+      {/* Meta + actions */}
+      <div className="flex items-center justify-between flex-wrap gap-4 mb-10">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <SlidersHorizontalIcon className="size-3.5 opacity-40" />
+            {Math.max(1, Math.ceil(rawContent.length / 1000))} min read
+          </span>
+        </div>
+        <CopyPageDropdown
+          slug={meta.slug}
+          rawContent={rawContent}
+          aiContent={completion}
+          viewingMarkdown={viewingMarkdown}
+          onToggleViewMarkdown={() => setViewingMarkdown((v) => !v)}
+        />
+      </div>
+
+      {/* Style Selector */}
+      <div className="mb-8">
+        <StyleSelector value={style} onChange={handleStyleChange} />
+      </div>
+
+      {/* AI Status */}
+      {!showRawContent && (
+        <div className="flex items-center gap-2 mb-8 text-[0.8125rem] text-muted-foreground min-h-[28px]">
+          {generating ? (
+            <>
+              <span className="w-[6px] h-[6px] rounded-full bg-emerald-400 animate-pulse-dot" />
+              <span>
+                Generating ·{" "}
+                {process.env.NEXT_PUBLIC_AI_MODEL || "gemini-3-flash-preview"}
+              </span>
+              <Button
+                variant="outline"
+                size="xs"
+                onClick={handleStop}
+                className="ml-auto"
+              >
+                Stop
+              </Button>
+            </>
+          ) : completion ? (
+            <>
+              <span className="text-muted-foreground">
+                Generated by{" "}
+                {process.env.NEXT_PUBLIC_AI_MODEL || "gemini-3-flash-preview"}
+              </span>
+              <Button
+                variant="outline"
+                size="xs"
+                onClick={generate}
+                className="ml-auto"
+              >
+                Regenerate
+              </Button>
+            </>
+          ) : null}
+        </div>
+      )}
+
+      {/* Error */}
+      {error && !showRawContent && (
+        <div className="mb-8 p-4 border border-destructive/20 bg-destructive/5 rounded-xl text-sm text-destructive">
+          生成に失敗しました。
+          <Button
+            variant="link"
+            size="sm"
+            onClick={generate}
+            className="text-destructive"
+          >
+            再試行
+          </Button>
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="min-h-[200px]">
+        {viewingMarkdown ? (
+          <MarkdownSource
+            content={displayContent || rawContent}
+            isLoading={!showRawContent && generating}
+          />
+        ) : showRawContent ? (
+          <StreamingContent content={rawContent} isLoading={false} />
+        ) : (
+          <StreamingContent
+            content={completion}
+            isLoading={generating}
+            showCaret
+          />
+        )}
+      </div>
+    </>
+  );
+}

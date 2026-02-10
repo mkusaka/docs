@@ -3,46 +3,49 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "preview": "pnpm build:content-index && opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "pnpm build:content-index && opennextjs-cloudflare build && wrangler deploy",
+    "upload": "pnpm build:content-index && opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "build:content-index": "node scripts/build-content-index.mjs",
     "postinstall": "husky install",
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@docusaurus/core": "3.9.2",
-    "@docusaurus/faster": "^3.9.2",
-    "@docusaurus/preset-classic": "3.9.2",
-    "@mdx-js/react": "^3.1.1",
+    "@ai-sdk/google": "^3.0.22",
+    "@ai-sdk/react": "^3.0.79",
+    "@streamdown/cjk": "^1.0.1",
+    "@streamdown/code": "^1.0.1",
+    "ai": "^6.0.77",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "docusaurus-plugin-copy-page-button": "^0.3.5",
-    "prism-react-renderer": "^2.4.1",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.563.0",
+    "next": "^16.1.6",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.4.3",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "react-dom": "^19.2.4",
+    "shiki": "^3.22.0",
+    "streamdown": "^2.1.0",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
-    "@docusaurus/types": "^3.9.2",
+    "@opennextjs/cloudflare": "^1.16.3",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.2.2",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "shadcn": "^3.8.4",
+    "tailwindcss": "^4.1.18",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.63.0"
   },
   "husky": {
     "hooks": {
@@ -50,7 +53,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,md}": [
+    "**/*.{js,jsx,ts,tsx,md,mdx,css,json}": [
       "prettier --write"
     ]
   },

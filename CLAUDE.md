@@ -4,44 +4,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal documentation website built with Docusaurus 2. The site serves as a blog and documentation platform, with blog posts as the primary content at the root path.
+Personal blog with AI-powered content generation. Built with Next.js 16 (App Router) on Cloudflare Workers via OpenNext. Blog posts are dynamically transformed by LLM with configurable language, tone, and detail level.
 
 ## Key Commands
 
-### Development
 ```bash
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm start
-
-# Build for production
-pnpm build
-
-# Serve production build locally
-pnpm serve
-
-# Format code
-pnpm format
+pnpm install              # Install dependencies
+pnpm dev                  # Start dev server (Turbopack)
+pnpm build                # Production build
+pnpm preview              # Build + preview on Workers
+pnpm deploy               # Build + deploy to Cloudflare
+pnpm build:content-index  # Rebuild content index from MDX
+pnpm format               # Format code with Prettier
 ```
 
-## Architecture & Structure
+## Architecture
 
-### Core Configuration
-- **`docusaurus.config.js`**: Main configuration file controlling site behavior, theme, and routing
-- **Blog as Homepage**: The blog is configured to serve from the root path (`routeBasePath: "/"`)
-- **Docusaurus v4**: Using experimental features including `experimental_faster` mode
+- **Runtime**: Cloudflare Workers via @opennextjs/cloudflare
+- **Framework**: Next.js 16 App Router (Turbopack)
+- **AI**: Vercel AI SDK v6 (`streamText`) + OpenAI API
+- **Styling**: Tailwind CSS v4, Design 7 (OpenAI-inspired dark UI)
+- **Markdown rendering**: Streamdown (streaming-optimized)
 
-### Content Organization
-- **`/blog/`**: Primary content directory containing MDX posts with dates in filenames (YYYY-MM-DD format)
-- **`/docs/`**: Documentation section (accessible via `/docs` route)
-- **`/src/css/custom.css`**: Custom styling
-- **`/static/`**: Static assets including fonts (Geist) and images
+### Key Routes
+- `/` — Blog listing (AI-generated digest hero + featured grid + all posts)
+- `/[slug]` — Post page (AI-generated with style controls)
+- `/topics/[topic]` — Topic-filtered listing
+- `/api/generate` — POST: Article AI generation (streamText)
+- `/api/digest` — POST: Weekly digest generation
+- `/api/search` — POST: Agentic search (full context + LLM)
+- `/api/raw/[slug]` — GET: Raw markdown (content negotiation target)
 
-### Important Technical Details
-- **MDX Support**: Blog posts use `.mdx` extension for enhanced markdown with React components
-- **Pre-commit Hooks**: Husky + lint-staged automatically format code on commit
-- **Node Version**: Managed by Volta (Node 22.18.0)
-- **Package Manager**: Uses pnpm for dependency management
-- **Dark Mode Default**: Site defaults to dark color scheme
+### Content
+- **`/content/blog/*.mdx`**: MDX posts (YYYY-MM-DD-slug.mdx)
+- **`/lib/generated/content-index.json`**: Build-time generated index (run `pnpm build:content-index` after adding/editing posts)
+- Frontmatter: title, date, description, categories, tags
+
+### Content Negotiation
+`Accept: text/markdown` on post URLs returns raw markdown via middleware rewrite to `/api/raw/[slug]`.
+
+## Important Technical Details
+- **Node**: Managed by Volta (24.13.0)
+- **Package Manager**: pnpm
+- **Pre-commit**: Husky + lint-staged (Prettier)
+- **Env**: `OPENAI_API_KEY` in `.dev.vars` (local) or Cloudflare Secrets (production)
