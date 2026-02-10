@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { SearchDialog } from "@/components/blog/SearchDialog";
 import "./globals.css";
+import { cookies } from "next/headers";
 
 const geist = localFont({
   src: "../public/fonts/Geist-Regular.ttf",
@@ -22,13 +23,17 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://mkusaka.com"),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const theme = cookieStore.get("theme")?.value;
+  const htmlClassName = theme === "dark" ? "dark" : undefined;
+
   return (
-    <html lang="ja" suppressHydrationWarning>
+    <html lang="ja" suppressHydrationWarning className={htmlClassName}>
       <body
         className={`${geist.variable} font-[family-name:var(--font-geist),ui-sans-serif,system-ui,sans-serif] bg-background text-foreground antialiased min-h-screen`}
       >
