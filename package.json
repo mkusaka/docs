@@ -8,6 +8,7 @@
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "build:content-index": "node scripts/build-content-index.mjs",
     "postinstall": "husky install",
     "format": "prettier --write ."
