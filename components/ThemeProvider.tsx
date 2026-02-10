@@ -2,6 +2,7 @@
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ComponentProps } from "react";
+import { ThemeCookieSync } from "@/components/ThemeCookieSync";
 
 export function ThemeProvider({
   children,
@@ -15,6 +16,7 @@ export function ThemeProvider({
       disableTransitionOnChange
       {...props}
     >
+      <ThemeCookieSync />
       {children}
     </NextThemesProvider>
   );
