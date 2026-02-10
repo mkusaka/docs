@@ -119,10 +119,12 @@ export function PostPageClient({ meta, rawContent }: PostPageClientProps) {
       </div>
 
       {/* Style Selector */}
-      <StyleSelector
-        value={style}
-        onChange={handleStyleChange}
-      />
+      <div className="mb-8">
+        <StyleSelector
+          value={style}
+          onChange={handleStyleChange}
+        />
+      </div>
 
       {/* AI Status */}
       {!showRawContent && (

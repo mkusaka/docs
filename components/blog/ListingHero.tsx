@@ -14,7 +14,7 @@ interface ListingHeroProps {
 
 const defaultStyle: StyleOptions = {
   language: "ja",
-  style: "detailed",
+  style: "quick",
 };
 
 export function ListingHero({ topic }: ListingHeroProps) {
@@ -79,7 +79,7 @@ export function ListingHero({ topic }: ListingHeroProps) {
       </CardHeader>
 
       {/* Style Selector */}
-      <div className="mb-5">
+      <div className="mb-4">
         <StyleSelector
           value={style}
           onChange={handleStyleChange}

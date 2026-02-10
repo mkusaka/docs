@@ -76,8 +76,8 @@ export function StyleSelector({
   const [collapsed, setCollapsed] = useState(true);
 
   return (
-    <Card className="mb-8 p-5 py-5 gap-0">
-      <CardHeader className="p-0 mb-4">
+    <Card className="p-5 py-5 gap-0">
+      <CardHeader className="p-0">
         <span className="text-[0.8125rem] font-medium text-muted-foreground flex items-center gap-2">
           <SlidersHorizontalIcon className="size-3.5 opacity-40" />
           Writing style
