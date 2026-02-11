@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   const posts = getAllPosts();
 
   const result = streamText({
-    model: google(process.env.AI_MODEL || "gemini-3-flash-preview"),
+    model: google(process.env.AI_DIGEST_MODEL || "gemini-2.5-flash-lite"),
     system: buildNotFoundSystemPrompt(posts, language),
     prompt: `The user landed on a 404 page. Generate a friendly message and recommend 3 articles.${getStyleInstruction(style)}`,
   });
