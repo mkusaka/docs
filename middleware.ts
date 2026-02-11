@@ -20,8 +20,12 @@ export function middleware(request: NextRequest) {
 
   // Accept: text/markdown → rewrite to raw API
   if (accept.includes("text/markdown") || accept.includes("text/plain")) {
-    const slug = pathname.slice(1); // remove leading /
-    if (slug && !slug.includes("/")) {
+    // Match /YYYY/MM/DD/slug pattern
+    const match = pathname.match(
+      /^\/\d{4}\/\d{2}\/\d{2}\/(.+)$/,
+    );
+    if (match) {
+      const slug = match[1];
       return NextResponse.rewrite(
         new URL(`/api/raw/${slug}`, request.url),
       );

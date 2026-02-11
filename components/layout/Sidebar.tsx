@@ -55,7 +55,7 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
               {recentPosts.map((post) => (
                 <Link
                   key={post.slug}
-                  href={`/${post.slug}`}
+                  href={`/${post.path}`}
                   className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline leading-snug transition-all ${
                     post.slug === currentSlug
                       ? "text-foreground/90 bg-accent"

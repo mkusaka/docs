@@ -15,7 +15,7 @@ export function PostCard({ post }: PostCardProps) {
   });
 
   return (
-    <Link href={`/${post.slug}`} className="group block no-underline">
+    <Link href={`/${post.path}`} className="group block no-underline">
       <Card className="p-5 py-5 gap-0 hover:bg-accent transition-all">
         <CardContent className="p-0">
           <time className="text-xs text-muted-foreground block mb-3">{monthYear}</time>

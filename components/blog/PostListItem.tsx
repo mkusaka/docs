@@ -15,7 +15,7 @@ export function PostListItem({ post }: PostListItemProps) {
 
   return (
     <Link
-      href={`/${post.slug}`}
+      href={`/${post.path}`}
       className="group flex items-baseline gap-4 py-3.5 px-4 -mx-4 rounded-xl hover:bg-secondary transition-all no-underline"
     >
       <time className="text-[0.8125rem] text-muted-foreground shrink-0 w-[80px]">
