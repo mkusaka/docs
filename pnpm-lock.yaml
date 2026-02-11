@@ -64,10 +64,10 @@ importers:
         version: 3.4.0
     devDependencies:
       '@opennextjs/cloudflare':
-        specifier: ^1.16.4
+        specifier: 1.16.4
         version: 1.16.4(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(wrangler@4.64.0)
       '@tailwindcss/postcss':
-        specifier: ^4.1.18
+        specifier: 4.1.18
         version: 4.1.18
       '@types/node':
         specifier: ^25.2.3
@@ -79,25 +79,25 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
       lefthook:
-        specifier: ^2.1.0
+        specifier: 2.1.0
         version: 2.1.0
       prettier:
-        specifier: ^3.8.1
+        specifier: 3.8.1
         version: 3.8.1
       shadcn:
-        specifier: ^3.8.4
+        specifier: 3.8.4
         version: 3.8.4(@types/node@25.2.3)(typescript@5.9.3)
       tailwindcss:
-        specifier: ^4.1.18
+        specifier: 4.1.18
         version: 4.1.18
       tw-animate-css:
-        specifier: ^1.4.0
+        specifier: 1.4.0
         version: 1.4.0
       typescript:
-        specifier: ^5.9.3
+        specifier: 5.9.3
         version: 5.9.3
       wrangler:
-        specifier: ^4.64.0
+        specifier: 4.64.0
         version: 4.64.0
 
 packages:
