@@ -14,6 +14,56 @@ interface NotFoundClientProps {
   initialLanguage?: Language;
 }
 
+const i18n: Record<
+  Language,
+  {
+    pageNotFound: string;
+    backToTop: string;
+    openSearch: string;
+    generating: string;
+    generationFailed: string;
+    retry: string;
+    regenerate: string;
+  }
+> = {
+  ja: {
+    pageNotFound: "ページが見つかりません",
+    backToTop: "トップへ戻る",
+    openSearch: "検索を開く",
+    generating: "生成中...",
+    generationFailed: "生成に失敗しました。",
+    retry: "再試行",
+    regenerate: "Regenerate",
+  },
+  en: {
+    pageNotFound: "Page not found",
+    backToTop: "Back to top",
+    openSearch: "Search",
+    generating: "Generating...",
+    generationFailed: "Generation failed.",
+    retry: "Retry",
+    regenerate: "Regenerate",
+  },
+  zh: {
+    pageNotFound: "页面未找到",
+    backToTop: "返回首页",
+    openSearch: "搜索",
+    generating: "生成中...",
+    generationFailed: "生成失败。",
+    retry: "重试",
+    regenerate: "Regenerate",
+  },
+  ko: {
+    pageNotFound: "페이지를 찾을 수 없습니다",
+    backToTop: "홈으로 돌아가기",
+    openSearch: "검색",
+    generating: "생성 중...",
+    generationFailed: "생성에 실패했습니다.",
+    retry: "재시도",
+    regenerate: "Regenerate",
+  },
+};
+
 const LANGUAGE_STORAGE_KEY = "preferred-language";
 
 function getStoredLanguage() {
@@ -76,6 +126,8 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
     [complete],
   );
 
+  const t = i18n[style.language];
+
   return (
     <div className="max-w-[880px] mx-auto px-6 sm:px-8 pt-16 pb-32">
       <div className="relative overflow-hidden rounded-2xl border bg-card/70 shadow-sm">
@@ -88,15 +140,15 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
             404
           </p>
           <h1 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-[-0.03em] text-foreground">
-            Page not found
+            {t.pageNotFound}
           </h1>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild>
-              <Link href="/">トップへ戻る</Link>
+              <Link href="/">{t.backToTop}</Link>
             </Button>
             <Button variant="outline" data-search-trigger>
               <SearchIcon className="size-4" />
-              検索を開く
+              {t.openSearch}
             </Button>
           </div>
         </div>
@@ -115,19 +167,19 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
         {isLoading && !completion && (
           <div className="flex items-center gap-2 text-[0.8125rem] text-muted-foreground">
             <span className="w-[6px] h-[6px] rounded-full bg-emerald-400 animate-pulse-dot" />
-            <span>Generating...</span>
+            <span>{t.generating}</span>
           </div>
         )}
         {error ? (
           <p className="text-destructive">
-            生成に失敗しました。
+            {t.generationFailed}
             <Button
               variant="link"
               size="sm"
               onClick={() => complete("")}
               className="text-muted-foreground hover:text-foreground"
             >
-              再試行
+              {t.retry}
             </Button>
           </p>
         ) : completion ? (
@@ -138,7 +190,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
       {completion && !isLoading && (
         <div className="mt-4 flex justify-end">
           <Button variant="outline" size="xs" onClick={() => complete("")}>
-            Regenerate
+            {t.regenerate}
           </Button>
         </div>
       )}
