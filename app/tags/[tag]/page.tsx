@@ -40,7 +40,7 @@ export default async function TagPage({ params }: Props) {
 
   return (
     <div className="flex max-w-[1320px] mx-auto overflow-x-hidden">
-      <Sidebar />
+      <Sidebar currentTag={tag} />
 
       <main className="flex-1 min-w-0 border-l border-border lg:border-l-0">
         <div className="max-w-[880px] mx-auto px-6 sm:px-8 pt-12 pb-32">

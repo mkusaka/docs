@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getAllTopics, getAllPosts } from "@/lib/posts";
+import { getAllPosts } from "@/lib/posts";
+import { getAllTags } from "@/lib/tags";
 
 interface SidebarProps {
   currentSlug?: string;
-  currentTopic?: string;
+  currentTag?: string;
 }
 
-export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
-  const topics = getAllTopics();
+export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
+  const tags = getAllTags();
   const allPosts = getAllPosts();
   const recentPosts = allPosts.slice(0, 4);
 
@@ -37,7 +38,7 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
         <Link
           href="/"
           className={`block text-sm rounded-lg px-3 py-2 mb-6 no-underline transition-all ${
-            !currentTopic && !currentSlug
+            !currentTag && !currentSlug
               ? "text-foreground bg-accent"
               : "text-muted-foreground hover:text-foreground"
           }`}
@@ -69,23 +70,23 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
           </div>
         )}
 
-        {/* Topics */}
+        {/* Tags */}
         <div className="mb-8">
           <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
-            Topics
+            Tags
           </h3>
           <div className="space-y-px">
-            {topics.map((topic) => (
+            {tags.map((tag) => (
               <Link
-                key={topic}
-                href={`/topics/${topic}`}
+                key={tag.slug}
+                href={`/tags/${tag.slug}`}
                 className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline transition-all ${
-                  topic === currentTopic
+                  tag.slug === currentTag
                     ? "text-foreground bg-accent"
                     : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 }`}
               >
-                {topic}
+                {tag.label}
               </Link>
             ))}
           </div>
