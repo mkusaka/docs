@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getAllTopics, getAllPosts } from "@/lib/posts";
+import { getAllPosts } from "@/lib/posts";
+import { getAllTags } from "@/lib/tags";
 
 interface SidebarProps {
   currentSlug?: string;
-  currentTopic?: string;
+  currentTag?: string;
 }
 
-export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
-  const topics = getAllTopics();
+export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
+  const tags = getAllTags();
   const allPosts = getAllPosts();
   const recentPosts = allPosts.slice(0, 4);
 
@@ -19,8 +20,8 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
   ].sort((a, b) => b.localeCompare(a));
 
   return (
-    <aside className="hidden lg:block w-[210px] shrink-0 sticky top-[52px] h-[calc(100vh-52px)] overflow-y-auto sidebar-scroll">
-      <div className="py-8 pl-6 pr-4">
+    <aside className="hidden lg:block w-[210px] shrink-0 sticky top-[52px] h-[calc(100vh-52px)]">
+      <div className="py-8 pl-6 pr-4 h-full flex flex-col">
         {/* Search trigger */}
         <Button
           variant="outline"
@@ -37,7 +38,7 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
         <Link
           href="/"
           className={`block text-sm rounded-lg px-3 py-2 mb-6 no-underline transition-all ${
-            !currentTopic && !currentSlug
+            !currentTag && !currentSlug
               ? "text-foreground bg-accent"
               : "text-muted-foreground hover:text-foreground"
           }`}
@@ -69,30 +70,8 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
           </div>
         )}
 
-        {/* Topics */}
-        <div className="mb-8">
-          <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
-            Topics
-          </h3>
-          <div className="space-y-px">
-            {topics.map((topic) => (
-              <Link
-                key={topic}
-                href={`/topics/${topic}`}
-                className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline transition-all ${
-                  topic === currentTopic
-                    ? "text-foreground bg-accent"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                }`}
-              >
-                {topic}
-              </Link>
-            ))}
-          </div>
-        </div>
-
         {/* Archive */}
-        <div>
+        <div className="mb-8">
           <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
             Archive
           </h3>
@@ -104,6 +83,31 @@ export function Sidebar({ currentSlug, currentTopic }: SidebarProps) {
                 className="block text-[0.8125rem] text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-lg px-3 py-2 no-underline transition-all"
               >
                 {year}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="min-h-0 flex-1 flex flex-col">
+          <Link
+            href="/tags"
+            className="text-[0.6875rem] font-medium text-muted-foreground hover:text-foreground uppercase tracking-[0.1em] mb-3 shrink-0 no-underline transition-colors"
+          >
+            Tags
+          </Link>
+          <div className="space-y-px overflow-y-auto sidebar-scroll">
+            {tags.map((tag) => (
+              <Link
+                key={tag.slug}
+                href={`/tags/${tag.slug}`}
+                className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline transition-all ${
+                  tag.slug === currentTag
+                    ? "text-foreground bg-accent"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                }`}
+              >
+                {tag.label}
               </Link>
             ))}
           </div>

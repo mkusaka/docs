@@ -1,4 +1,5 @@
 import { ViewTransition } from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
@@ -7,6 +8,7 @@ import { TableOfContents } from "@/components/layout/TableOfContents";
 import { PostPageClient } from "@/components/blog/PostPageClient";
 import { getAllSlugs, getPostBySlug } from "@/lib/posts";
 import { getPreferredLanguageFromHeaders } from "@/lib/language";
+import { tagToSlug } from "@/lib/tags";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -80,6 +82,21 @@ export default async function PostPage({ params }: Props) {
             <p className="text-lg text-muted-foreground leading-relaxed mb-6 max-w-[560px]">
               {post.description}
             </p>
+          )}
+
+          {/* Tags */}
+          {post.tags.length > 0 && (
+            <div className="flex gap-2 flex-wrap mb-8">
+              {post.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/tags/${tagToSlug(tag)}`}
+                  className="text-[0.75rem] px-2.5 py-1 rounded-md bg-secondary text-muted-foreground hover:text-foreground hover:bg-accent no-underline transition-colors"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
           )}
 
           <PostPageClient
