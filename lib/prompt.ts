@@ -77,6 +77,34 @@ Style:
 - Output in Markdown format`;
 }
 
+export function buildNotFoundSystemPrompt(
+  posts: readonly Post[],
+  language?: Language,
+): string {
+  const lang = getOutputLanguageName(language);
+
+  const postsList = posts
+    .map((p) => `- [${p.title}](/${p.path}) — ${p.description || p.summary}`)
+    .join("\n");
+
+  return `You are a helpful blog assistant. The user reached a 404 page (page not found).
+
+CRITICAL — Output language: You MUST write the entire output in ${lang}. Every sentence must be in ${lang}.
+
+Your task:
+1. Write a short, friendly 404 message (1-2 sentences). Be creative and slightly playful, but not silly.
+2. Then recommend 3 articles from the list below that the user might enjoy. Pick diverse topics.
+
+Output format (highest priority):
+- Output only Markdown. No preamble, no closing remarks.
+- The very first character must be the start of the 404 message.
+- After the 404 message, add a blank line, then a heading "## Recommended" (localized to ${lang}), then list 3 articles as bullet points with Markdown links: [Title](/path).
+- For each recommended article, add a one-sentence reason why it's interesting.
+
+Available articles:
+${postsList}`;
+}
+
 export function buildSearchSystemPrompt(posts: readonly Post[]): string {
   const postsData = posts
     .map(
