@@ -21,6 +21,12 @@ export const metadata: Metadata = {
   },
   description: "mkusaka's blog",
   metadataBase: new URL("https://mkusaka.com"),
+  alternates: {
+    types: {
+      "application/atom+xml": "/atom.xml",
+      "application/rss+xml": "/feed.xml",
+    },
+  },
 };
 
 export default async function RootLayout({
