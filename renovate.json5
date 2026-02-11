@@ -1,9 +1,21 @@
 {
-  extends: ["config:recommended", "group:allNonMajor", "group:definitelyTyped"],
-  rangeStrategy: "bump",
-  prConcurrentLimit: 0,
-  prHourlyLimit: 0,
-  commitBodyTable: true,
-  dependencyDashboard: true,
-  postUpdateOptions: ["yarnDedupeHighest"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "group:definitelyTyped"
+  ],
+  "packageRules": [
+    {
+      "description": "Group minor and patch updates for production dependencies",
+      "groupName": "dependencies (non-major)",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "Group minor and patch updates for dev dependencies",
+      "groupName": "devDependencies (non-major)",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"]
+    }
+  ]
 }
