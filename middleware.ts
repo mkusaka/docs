@@ -5,10 +5,10 @@ export function middleware(request: NextRequest) {
   const accept = request.headers.get("accept") || "";
   const pathname = request.nextUrl.pathname;
 
-  // Only apply to post routes (not /api/*, /topics/*, /_next/*, etc.)
+  // Only apply to post routes (not /api/*, /tags/*, /_next/*, etc.)
   if (
     pathname.startsWith("/api/") ||
-    pathname.startsWith("/topics/") ||
+    pathname.startsWith("/tags/") ||
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/fonts/") ||
     pathname.startsWith("/img/") ||

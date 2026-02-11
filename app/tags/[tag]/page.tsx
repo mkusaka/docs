@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
@@ -5,30 +6,35 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { ListingHero } from "@/components/blog/ListingHero";
 import { PostCard } from "@/components/blog/PostCard";
 import { PostYearSections } from "@/components/blog/PostYearSections";
-import { getAllTopics, getPostsByTopic, groupByYear } from "@/lib/posts";
+import { groupByYear } from "@/lib/posts";
 import { getPreferredLanguageFromHeaders } from "@/lib/language";
+import { getAllTagSlugs, getTagBySlug, getPostsByTagSlug } from "@/lib/tags";
 
 interface Props {
-  params: Promise<{ topic: string }>;
+  params: Promise<{ tag: string }>;
 }
 
 export async function generateStaticParams() {
-  return getAllTopics().map((topic) => ({ topic }));
+  return getAllTagSlugs().map((tag) => ({ tag }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { topic } = await params;
+  const { tag } = await params;
+  const tagInfo = getTagBySlug(tag);
+  if (!tagInfo) return {};
+
   return {
-    title: topic,
-    description: `${topic}カテゴリの記事一覧`,
+    title: `Posts tagged "${tagInfo.label}"`,
+    description: `${tagInfo.count} posts tagged with "${tagInfo.label}"`,
   };
 }
 
-export default async function TopicPage({ params }: Props) {
-  const { topic } = await params;
-  const posts = getPostsByTopic(topic);
+export default async function TagPage({ params }: Props) {
+  const { tag } = await params;
+  const tagInfo = getTagBySlug(tag);
+  const posts = getPostsByTagSlug(tag);
 
-  if (posts.length === 0) {
+  if (!tagInfo || posts.length === 0) {
     notFound();
   }
 
@@ -38,7 +44,7 @@ export default async function TopicPage({ params }: Props) {
 
   return (
     <div className="flex max-w-[1320px] mx-auto overflow-x-hidden">
-      <Sidebar currentTopic={topic} />
+      <Sidebar currentTag={tag} />
 
       <main className="flex-1 min-w-0 border-l border-border lg:border-l-0">
         <div className="max-w-[880px] mx-auto px-6 sm:px-8 pt-12 pb-32">
@@ -46,21 +52,24 @@ export default async function TopicPage({ params }: Props) {
           <section className="mb-16">
             <div className="mb-6">
               <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] text-foreground leading-[1.1] mb-3">
-                {topic}
+                {tagInfo.count} posts tagged with &ldquo;{tagInfo.label}&rdquo;
               </h1>
-              <p className="text-muted-foreground text-[0.9375rem]">
-                {posts.length} posts
-              </p>
+              <Link
+                href="/tags"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                View All Tags
+              </Link>
             </div>
 
-            <ListingHero topic={topic} initialLanguage={preferredLanguage} />
+            <ListingHero tag={tagInfo.label} initialLanguage={preferredLanguage} />
           </section>
 
           {/* Featured */}
           {featured.length > 0 && (
             <section className="mb-16">
               <h2 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-5">
-                Latest in {topic}
+                Latest
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {featured.map((post) => (
@@ -75,7 +84,6 @@ export default async function TopicPage({ params }: Props) {
             <h2 className="text-[0.6875rem] font-medium text-neutral-400 uppercase tracking-[0.1em] mb-5">
               All Posts
             </h2>
-
             <PostYearSections postsByYear={postsByYear} />
           </section>
         </div>

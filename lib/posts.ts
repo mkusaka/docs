@@ -41,18 +41,6 @@ export function getAllPathParams(): {
   });
 }
 
-export function getAllTopics(): string[] {
-  const topics = new Set<string>();
-  for (const post of posts) {
-    for (const cat of post.categories) topics.add(cat);
-  }
-  return Array.from(topics).sort();
-}
-
-export function getPostsByTopic(topic: string): Post[] {
-  return posts.filter((p) => p.categories.includes(topic));
-}
-
 export function getPostsByYear(): Record<string, Post[]> {
   return groupByYear(posts);
 }

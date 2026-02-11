@@ -25,6 +25,7 @@ function getStyleInstruction(style?: Style): string {
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const topic = body.topic as string | undefined;
+  const tag = body.tag as string | undefined;
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
 
@@ -32,13 +33,16 @@ export async function POST(req: Request) {
   if (topic) {
     posts = posts.filter((p) => p.categories.includes(topic));
   }
+  if (tag) {
+    posts = posts.filter((p) => p.tags.includes(tag));
+  }
   // Use the most recent posts for digest
   const recentPosts = posts.slice(0, 10);
 
   const result = streamText({
     model: google(process.env.AI_DIGEST_MODEL || "gemini-2.5-flash-lite"),
     system: buildDigestSystemPrompt(recentPosts, language),
-    prompt: `${topic ? `Generate a digest about recent "${topic}" posts.` : "Generate a digest about recent posts."}${getStyleInstruction(style)}`,
+    prompt: `${topic ? `Generate a digest about recent "${topic}" posts.` : tag ? `Generate a digest about posts tagged "${tag}".` : "Generate a digest about recent posts."}${getStyleInstruction(style)}`,
   });
 
   return result.toTextStreamResponse();
