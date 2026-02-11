@@ -20,8 +20,8 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
   ].sort((a, b) => b.localeCompare(a));
 
   return (
-    <aside className="hidden lg:block w-[210px] shrink-0 sticky top-[52px] h-[calc(100vh-52px)] overflow-y-auto sidebar-scroll">
-      <div className="py-8 pl-6 pr-4">
+    <aside className="hidden lg:block w-[210px] shrink-0 sticky top-[52px] h-[calc(100vh-52px)]">
+      <div className="py-8 pl-6 pr-4 h-full flex flex-col">
         {/* Search trigger */}
         <Button
           variant="outline"
@@ -70,30 +70,8 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
           </div>
         )}
 
-        {/* Tags */}
-        <div className="mb-8">
-          <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
-            Tags
-          </h3>
-          <div className="space-y-px">
-            {tags.map((tag) => (
-              <Link
-                key={tag.slug}
-                href={`/tags/${tag.slug}`}
-                className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline transition-all ${
-                  tag.slug === currentTag
-                    ? "text-foreground bg-accent"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                }`}
-              >
-                {tag.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
         {/* Archive */}
-        <div>
+        <div className="mb-8">
           <h3 className="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-3">
             Archive
           </h3>
@@ -105,6 +83,31 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
                 className="block text-[0.8125rem] text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-lg px-3 py-2 no-underline transition-all"
               >
                 {year}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="min-h-0 flex-1 flex flex-col">
+          <Link
+            href="/tags"
+            className="text-[0.6875rem] font-medium text-muted-foreground hover:text-foreground uppercase tracking-[0.1em] mb-3 shrink-0 no-underline transition-colors"
+          >
+            Tags
+          </Link>
+          <div className="space-y-px overflow-y-auto sidebar-scroll">
+            {tags.map((tag) => (
+              <Link
+                key={tag.slug}
+                href={`/tags/${tag.slug}`}
+                className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline transition-all ${
+                  tag.slug === currentTag
+                    ? "text-foreground bg-accent"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                }`}
+              >
+                {tag.label}
               </Link>
             ))}
           </div>
