@@ -29,6 +29,17 @@ export function getAllSlugs(): string[] {
   return posts.map((p) => p.slug);
 }
 
+export function getAllPathParams(): {
+  year: string;
+  month: string;
+  day: string;
+  slug: string;
+}[] {
+  return posts.map((p) => {
+    const parts = p.path.split("/");
+    return { year: parts[0], month: parts[1], day: parts[2], slug: parts[3] };
+  });
+}
 
 export function getPostsByYear(): Record<string, Post[]> {
   return groupByYear(posts);

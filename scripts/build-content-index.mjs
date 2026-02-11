@@ -11,6 +11,13 @@ function extractSlug(filename) {
   return filename.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.mdx?$/, "");
 }
 
+function extractFileDate(filename) {
+  // YYYY-MM-DD-slug.mdx → { year: "YYYY", month: "MM", day: "DD" }
+  const match = filename.match(/^(\d{4})-(\d{2})-(\d{2})-/);
+  if (!match) return null;
+  return { year: match[1], month: match[2], day: match[3] };
+}
+
 function extractSummary(content, maxLength = 200) {
   // Strip MDX/markdown syntax and get first N chars
   const plain = content
@@ -35,8 +42,15 @@ const posts = files
     const raw = fs.readFileSync(filepath, "utf-8");
     const { data, content } = matter(raw);
 
+    const slug = extractSlug(filename);
+    const fileDate = extractFileDate(filename);
+    const urlPath = fileDate
+      ? `${fileDate.year}/${fileDate.month}/${fileDate.day}/${slug}`
+      : slug;
+
     return {
-      slug: extractSlug(filename),
+      slug,
+      path: urlPath,
       title: data.title || filename,
       date: data.date
         ? data.date instanceof Date

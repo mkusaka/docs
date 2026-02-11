@@ -6,16 +6,16 @@ import { headers } from "next/headers";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TableOfContents } from "@/components/layout/TableOfContents";
 import { PostPageClient } from "@/components/blog/PostPageClient";
-import { getAllSlugs, getPostBySlug } from "@/lib/posts";
+import { getPostBySlug, getAllPathParams } from "@/lib/posts";
 import { getPreferredLanguageFromHeaders } from "@/lib/language";
 import { tagToSlug } from "@/lib/tags";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ year: string; month: string; day: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+  return getAllPathParams();
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -102,6 +102,7 @@ export default async function PostPage({ params }: Props) {
           <PostPageClient
             meta={{
               slug: post.slug,
+              path: post.path,
               title: post.title,
               date: post.date,
               description: post.description,
