@@ -16,6 +16,7 @@ import { isSupportedLanguage } from "@/lib/language";
 
 interface ListingHeroProps {
   topic?: string;
+  tag?: string;
   initialLanguage?: Language;
 }
 
@@ -33,7 +34,7 @@ function storeLanguage(language: Language) {
   window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
 }
 
-export function ListingHero({ topic, initialLanguage }: ListingHeroProps) {
+export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
   const [style, setStyle] = useState<StyleOptions>(() => ({
     language: initialLanguage ?? "ja",
     style: "quick",
@@ -43,6 +44,7 @@ export function ListingHero({ topic, initialLanguage }: ListingHeroProps) {
     api: "/api/digest",
     body: {
       ...(topic ? { topic } : {}),
+      ...(tag ? { tag } : {}),
       language: style.language,
       style: style.style,
     },
@@ -59,6 +61,7 @@ export function ListingHero({ topic, initialLanguage }: ListingHeroProps) {
         void complete("", {
           body: {
             ...(topic ? { topic } : {}),
+            ...(tag ? { tag } : {}),
             language: storedLanguage,
             style: style.style,
           },
@@ -67,7 +70,7 @@ export function ListingHero({ topic, initialLanguage }: ListingHeroProps) {
       }
       complete("");
     }
-  }, [complete, style.language, style.style, topic]);
+  }, [complete, style.language, style.style, topic, tag]);
 
   const handleStyleChange = useCallback(
     (newStyle: StyleOptions) => {
@@ -76,12 +79,13 @@ export function ListingHero({ topic, initialLanguage }: ListingHeroProps) {
       void complete("", {
         body: {
           ...(topic ? { topic } : {}),
+          ...(tag ? { tag } : {}),
           language: newStyle.language,
           style: newStyle.style,
         },
       });
     },
-    [complete, topic],
+    [complete, topic, tag],
   );
 
   return (
@@ -92,7 +96,7 @@ export function ListingHero({ topic, initialLanguage }: ListingHeroProps) {
           {isLoading && (
             <span className="w-[6px] h-[6px] rounded-full bg-emerald-400 animate-pulse-dot" />
           )}
-          <span>{topic ? `${topic} Digest` : "Weekly Digest"}</span>
+          <span>{topic ? `${topic} Digest` : tag ? `${tag} Digest` : "Weekly Digest"}</span>
           <span className="text-muted-foreground/50">·</span>
           <span className="text-muted-foreground/70">
             {process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || "gemini-2.5-flash-lite"}
