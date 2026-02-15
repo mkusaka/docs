@@ -1,0 +1,107 @@
+---
+title: "OpenCode ZenをCodex CLIのバックエンドとして使う"
+date: 2026-02-15
+description: "Codex CLIのmodel_providers + profilesでOpenCode Zenをバックエンドにする"
+categories: [tips]
+tags: [codex, opencode, opencode-zen, configuration]
+---
+
+## まとめ
+
+- Codex CLIは`model_providers`でカスタムプロバイダーを定義でき、OpenCode Zenも利用可能
+- `OPENAI_BASE_URL`の上書きではなく、`model_providers` + `profiles`の組み合わせが正解
+- `codex exec -p <profile>` で起動する（ルートレベルの`codex -p <profile> exec`はプロファイルが伝播されないバグがある）
+- OpenCode Zenの`/models`エンドポイントはCodex CLI独自フォーマットと異なるためエラーログが出るが、動作に支障はない
+
+## 問題
+
+OpenCode ZenはOpenAI互換のAPIゲートウェイで、GPT・Claude・Gemini等のモデルに統一的にアクセスできる。Codex CLIのバックエンドとして使いたいが、単純な`OPENAI_BASE_URL`の上書きでは動かない。
+
+```bash
+# これは動かない
+env OPENAI_BASE_URL="https://opencode.ai/zen/v1" \
+  OPENAI_API_KEY="$OPENCODE_ZEN_KEY" \
+  codex --model gpt-5.2-codex "hi"
+```
+
+## 解決方法
+
+### 1. config.tomlにプロバイダーとプロファイルを追加
+
+`~/.codex/config.toml`に以下を追加：
+
+```toml
+[model_providers.opencode]
+name = "OpenCode Zen"
+base_url = "https://opencode.ai/zen/v1"
+env_key = "OPENCODE_ZEN_KEY"
+wire_api = "responses"
+
+[profiles.zen]
+model = "gpt-5.2-codex"
+model_provider = "opencode"
+model_reasoning_effort = "xhigh"
+```
+
+### 2. 環境変数を設定
+
+```bash
+export OPENCODE_ZEN_KEY="your-api-key-here"
+```
+
+APIキーは https://opencode.ai/auth で取得できる。
+
+### 3. 起動
+
+```bash
+codex exec -p zen "hi"
+```
+
+対話モードも同様：
+
+```bash
+codex exec -p zen
+```
+
+シェル関数にしておくと便利：
+
+```bash
+zcodex() {
+  : "${OPENCODE_ZEN_KEY:?export OPENCODE_ZEN_KEY=...}"
+  codex exec -p zen "$@"
+}
+```
+
+## ハマりどころ
+
+### `-p`フラグの配置
+
+`codex -p zen exec "hi"` は動かない。`-p`がTUI側のCLI定義に吸われ、execサブコマンドに伝播されない。必ず`codex exec -p zen`の順序で指定する。
+
+### /modelsエンドポイントのエラーログ
+
+起動時に以下のようなエラーが出るが、無視してよい：
+
+```
+ERROR codex_core::models_manager::manager: failed to refresh available models:
+  failed to decode models response: missing field `models`
+```
+
+Codex CLIは`/models`に独自スキーマ（`{"models": [...]}`）を期待するが、OpenCode Zenは標準OpenAI形式（`{"data": [...]}`）を返す。ビルトインのモデル定義にフォールバックするため、実際の動作に影響はない。
+
+### 利用可能なモデル
+
+OpenCode Zenで使えるモデルは以下で確認できる：
+
+```bash
+curl -s -H "Authorization: Bearer $OPENCODE_ZEN_KEY" \
+  https://opencode.ai/zen/v1/models | jq '.data[].id'
+```
+
+Codex CLIで使う場合は`wire_api = "responses"`に対応したモデル（GPT系）を選ぶ。
+
+## ref
+
+- [Codex CLI Advanced Configuration](https://developers.openai.com/codex/config-advanced/)
+- [OpenCode Zen](https://opencode.ai/docs/zen/)
+- [Codex CLI Configuration Reference](https://developers.openai.com/codex/config-reference/)
