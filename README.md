@@ -64,14 +64,16 @@ pnpm build:content-index  # Rebuild content index
 ## Key Routes
 
 - `/` — Blog listing with AI-generated digest
-- `/[slug]` — Post page with style controls
-- `/YYYY/MM/DD/slug` — Old Docusaurus-style URLs (redirect support)
-- `/topics/[topic]` — Topic-filtered listing
+- `/YYYY/MM/DD/slug` — Post page with AI style controls
 - `/tags` — All tags listing
 - `/tags/[tag]` — Tag-filtered posts
-- `/api/search` — Agentic search endpoint
-- `/api/feed.xml` — Atom feed
-- `/api/rss.xml` — RSS feed
+- `/api/generate` — POST: Article AI generation (streaming)
+- `/api/digest` — POST: Weekly digest generation
+- `/api/search` — POST: Agentic search endpoint
+- `/api/not-found` — POST: AI-powered 404 recommendations
+- `/api/raw/[slug]` — GET: Raw markdown (content negotiation target)
+- `/feed.xml` — RSS feed
+- `/atom.xml` — Atom feed
 
 ### Smart 404 Page
 

@@ -28,12 +28,16 @@ pnpm format               # Format code with Prettier
 
 ### Key Routes
 - `/` — Blog listing (AI-generated digest hero + featured grid + all posts)
-- `/[slug]` — Post page (AI-generated with style controls)
-- `/topics/[topic]` — Topic-filtered listing
+- `/YYYY/MM/DD/slug` — Post page (AI-generated with style controls)
+- `/tags` — All tags listing
+- `/tags/[tag]` — Tag-filtered posts
 - `/api/generate` — POST: Article AI generation (streamText)
 - `/api/digest` — POST: Weekly digest generation
 - `/api/search` — POST: Agentic search (full context + LLM)
+- `/api/not-found` — POST: AI-powered 404 recommendations
 - `/api/raw/[slug]` — GET: Raw markdown (content negotiation target)
+- `/feed.xml` — RSS feed
+- `/atom.xml` — Atom feed
 
 ### Content
 - **`/content/blog/*.mdx`**: MDX posts (YYYY-MM-DD-slug.mdx)
