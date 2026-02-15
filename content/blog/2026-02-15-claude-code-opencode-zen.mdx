@@ -1,0 +1,56 @@
+---
+title: "OpenCode ZenをClaude Codeのバックエンドとして使う"
+date: 2026-02-15
+description: "ANTHROPIC_BASE_URLでClaude CodeのAPIリクエスト先をOpenCode Zenに切り替える"
+categories: [tips]
+tags: [claude-code, opencode, opencode-zen, configuration]
+---
+
+## まとめ
+
+- Claude Codeは`ANTHROPIC_BASE_URL`でAPIエンドポイントを切り替えられる
+- OpenCode ZenはAnthropic Messages API (`/v1/messages`) をそのままプロキシするので、環境変数2つで動く
+- Codex CLIのようなconfig.toml設定は不要
+
+## 設定
+
+### 1. 環境変数
+
+```bash
+export OPENCODE_ZEN_KEY="your-api-key-here"
+```
+
+APIキーは https://opencode.ai/auth で取得できる。
+
+### 2. シェル関数
+
+```bash
+zclaude() {
+  : "${OPENCODE_ZEN_KEY:?export OPENCODE_ZEN_KEY=...}"
+  ANTHROPIC_BASE_URL="https://opencode.ai/zen" \
+  ANTHROPIC_API_KEY="$OPENCODE_ZEN_KEY" \
+  claude --model claude-opus-4-6 "$@"
+}
+```
+
+`ANTHROPIC_BASE_URL="https://opencode.ai/zen"`を設定すると、Claude Codeのリクエスト先が`https://opencode.ai/zen/v1/messages`に変わる。
+
+### 3. 使い方
+
+```bash
+zclaude                              # 対話モード
+zclaude --model claude-sonnet-4-5    # モデル変更
+zclaude -p "このリポジトリを説明して"   # ワンショット
+```
+
+## 利用可能なモデル
+
+```bash
+curl -s -H "Authorization: Bearer $OPENCODE_ZEN_KEY" \
+  https://opencode.ai/zen/v1/models | jq '.data[] | select(.id | startswith("claude")) | .id'
+```
+
+## ref
+
+- [OpenCode Zen](https://opencode.ai/docs/zen/)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
