@@ -20,3 +20,18 @@ export interface StyleOptions {
   language: Language;
   style: Style;
 }
+
+export type DigestTools = {
+  showPostCards: {
+    input: { slugs: string[]; heading?: string };
+    output: { posts: PostMeta[]; heading?: string };
+  };
+  showTopicHighlight: {
+    input: { topic: string; summary: string; slugs: string[] };
+    output: { topic: string; summary: string; posts: PostMeta[] };
+  };
+  showTagCloud: {
+    input: { tags: string[] };
+    output: { tags: { name: string; count: number }[] };
+  };
+};
