@@ -9,16 +9,18 @@ function getStyleInstruction(style?: Style): string {
   switch (style) {
     case "quick":
       return `\nStyle instructions:
-- Keep text portions very concise (1-2 sentences each)
-- Favor using tools over writing long prose
-- Use showPostCards with 2-3 posts max`;
+- Keep text minimal: only a 1-sentence intro.
+- Rely primarily on tools: use showPostCards with all relevant posts grouped logically, and showTagCloud at the end.
+- Use showTopicHighlight for each major theme (2-3 topics), with brief summaries.
+- The visual UI components ARE the digest in quick mode.`;
 
     case "detailed":
     default:
       return `\nStyle instructions:
-- Write detailed connecting text between tool uses
-- Explain each topic's significance and context
-- Use showTopicHighlight for deeper analysis of each area`;
+- Write substantial prose covering every article: explain key points, background, and practical value.
+- Use Markdown links ([Title](/path)) when mentioning articles in text.
+- The TEXT is the primary digest. After the text, optionally add showPostCards for 2-3 featured posts and showTagCloud for navigation.
+- Do NOT rely on tools to convey information — your text should be a complete, standalone digest.`;
   }
 }
 

@@ -16,6 +16,12 @@ interface DigestPartsProps {
 }
 
 export function DigestParts({ parts, isAnimating }: DigestPartsProps) {
+  if (process.env.NODE_ENV === "development") {
+    console.log(
+      "[DigestParts] parts:",
+      parts.map((p) => ({ type: p.type, state: "state" in p ? p.state : undefined })),
+    );
+  }
   return (
     <div className="space-y-4">
       {parts.map((part, i) => {
