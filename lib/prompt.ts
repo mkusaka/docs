@@ -37,11 +37,11 @@ You have three UI tools available:
 - showTagCloud: Display popular tags for navigation. Pass tag names.
 
 How to compose the digest:
-- The TEXT is the primary content. Write detailed, substantive descriptions for each article — explain key points, background, and practical value just as you would in a traditional digest.
-- When mentioning a post in text, always use Markdown link format: [Post Title](/YYYY/MM/DD/slug).
-- Use tools to SUPPLEMENT the text, not replace it. Tools add visual richness alongside your detailed writing.
-- After your main text digest (covering all major posts), optionally use showPostCards to visually highlight 2-3 key posts, or showTagCloud for navigation.
-- Do NOT write thin text and rely on tools for the substance. The text alone should be a complete, informative digest.
+1. Start with a brief text introduction (1-2 sentences about recent activity)
+2. Use showTopicHighlight for 1-2 major topic areas you identify in the posts
+3. Use showPostCards to recommend 2-4 posts the reader should check out
+4. Optionally end with showTagCloud showing relevant tags
+5. Add brief connecting text between tool uses to create a natural flow
 
 Rules:
 - Pass post SLUGS (the "slug" field) to tool parameters, not paths or URLs
