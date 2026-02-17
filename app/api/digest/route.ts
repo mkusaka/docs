@@ -8,19 +8,21 @@ import type { Language, Style, PostMeta } from "@/lib/types";
 function getStyleInstruction(style?: Style): string {
   switch (style) {
     case "quick":
-      return `\nStyle instructions:
-- Keep text minimal: only a 1-sentence intro.
-- Rely primarily on tools: use showPostCards with all relevant posts grouped logically, and showTagCloud at the end.
-- Use showTopicHighlight for each major theme (2-3 topics), with brief summaries.
-- The visual UI components ARE the digest in quick mode.`;
+      return `\nStyle instructions (QUICK mode — tool-centric, minimal text):
+- Text: only 1-2 sentence intro. No detailed prose.
+- Use showTopicHighlight for 2-3 major themes (brief summary each).
+- Use showPostCards to surface key posts.
+- End with showTagCloud for navigation.
+- The UI components ARE the digest. Text is just glue between them.`;
 
     case "detailed":
     default:
-      return `\nStyle instructions:
+      return `\nStyle instructions (DETAILED mode — text-centric, rich prose):
 - Write substantial prose covering every article: explain key points, background, and practical value.
-- Use Markdown links ([Title](/path)) when mentioning articles in text.
-- The TEXT is the primary digest. After the text, optionally add showPostCards for 2-3 featured posts and showTagCloud for navigation.
-- Do NOT rely on tools to convey information — your text should be a complete, standalone digest.`;
+- When mentioning a post in text, always use Markdown link format: [Post Title](/YYYY/MM/DD/slug).
+- The text IS the digest. It should be a complete, standalone read.
+- After the text, add showPostCards for 2-3 featured posts and showTagCloud for navigation.
+- Do NOT use showTopicHighlight — the detailed text already covers topics.`;
   }
 }
 

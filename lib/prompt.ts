@@ -36,12 +36,7 @@ You have three UI tools available:
 - showTopicHighlight: Highlight a topic/theme with a summary and related posts. Pass topic name, summary text, and related post slugs.
 - showTagCloud: Display popular tags for navigation. Pass tag names.
 
-How to compose the digest:
-1. Start with a brief text introduction (1-2 sentences about recent activity)
-2. Use showTopicHighlight for 1-2 major topic areas you identify in the posts
-3. Use showPostCards to recommend 2-4 posts the reader should check out
-4. Optionally end with showTagCloud showing relevant tags
-5. Add brief connecting text between tool uses to create a natural flow
+Follow the "Style instructions" in the user message to decide how to compose the digest (how much text vs tools to use).
 
 Rules:
 - Pass post SLUGS (the "slug" field) to tool parameters, not paths or URLs
