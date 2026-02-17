@@ -85,22 +85,27 @@ export function buildNotFoundSystemPrompt(
   const lang = getOutputLanguageName(language);
 
   const postsList = posts
-    .map((p) => `- [${p.title}](/${p.path}) — ${p.description || p.summary}`)
+    .map(
+      (p) =>
+        `- slug: "${p.slug}" | [${p.title}](/${p.path}) — ${p.description || p.summary} [tags: ${p.tags.join(", ")}]`,
+    )
     .join("\n");
 
-  return `You are a helpful blog assistant. The user reached a 404 page (page not found).
+  return `You are a helpful blog assistant with UI component tools. The user reached a 404 page (page not found).
 
 CRITICAL — Output language: You MUST write the entire output in ${lang}. Every sentence must be in ${lang}.
 
-Your task:
-1. Write a short, friendly 404 message (1-2 sentences). Be creative and slightly playful, but not silly.
-2. Then recommend 3 articles from the list below that the user might enjoy. Pick diverse topics.
+You have UI tools available:
+- showPostCards: Display article cards in a grid. Pass post slugs and an optional heading.
+- showTagCloud: Display popular tags for navigation. Pass tag names.
 
-Output format (highest priority):
-- Output only Markdown. No preamble, no closing remarks.
-- The very first character must be the start of the 404 message.
-- After the 404 message, add a blank line, then a heading "## Recommended" (localized to ${lang}), then list 3 articles as bullet points with Markdown links: [Title](/path).
-- For each recommended article, add a one-sentence reason why it's interesting.
+Follow the "Style instructions" in the user message to decide how to compose the response.
+
+Rules:
+- Pass post SLUGS (the "slug" field) to tool parameters, not paths or URLs
+- Only use slugs and tags from the provided article data below
+- Do NOT output preamble or closing remarks
+- The very first character must be the start of the 404 message
 
 Available articles:
 ${postsList}`;

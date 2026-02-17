@@ -1,18 +1,22 @@
 "use client";
 
-import { useCompletion } from "@ai-sdk/react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Markdown } from "./Markdown";
+import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
-import type { Language, StyleOptions } from "@/lib/types";
+import type { Language, StyleOptions, DigestTools } from "@/lib/types";
+import type { UIMessage } from "ai";
 import { isSupportedLanguage } from "@/lib/language";
 
 interface NotFoundClientProps {
   initialLanguage?: Language;
 }
+
+type NotFoundMessage = UIMessage<unknown, never, DigestTools>;
 
 const i18n: Record<
   Language,
@@ -84,14 +88,23 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
     style: "quick",
   }));
 
-  const { completion, isLoading, complete, error } = useCompletion({
-    api: "/api/not-found",
-    body: {
-      language: style.language,
-      style: style.style,
-    },
-    streamProtocol: "text",
-  });
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: "/api/not-found" }),
+    [],
+  );
+
+  const { messages, sendMessage, regenerate, setMessages, status, error } =
+    useChat<NotFoundMessage>({ transport });
+
+  const isLoading = status === "streaming" || status === "submitted";
+
+  const makeBody = useCallback(
+    (lang?: Language, sty?: string) => ({
+      language: lang ?? style.language,
+      style: sty ?? style.style,
+    }),
+    [style.language, style.style],
+  );
 
   const initialRef = useRef(false);
   useEffect(() => {
@@ -100,33 +113,40 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
       const storedLanguage = getStoredLanguage();
       if (storedLanguage && storedLanguage !== style.language) {
         setStyle((prev) => ({ ...prev, language: storedLanguage }));
-        void complete("", {
-          body: {
-            language: storedLanguage,
-            style: style.style,
-          },
-        });
+        void sendMessage(
+          { text: "404" },
+          { body: makeBody(storedLanguage) },
+        );
         return;
       }
-      complete("");
+      void sendMessage({ text: "404" }, { body: makeBody() });
     }
-  }, [complete, style.language, style.style]);
+  }, [sendMessage, style.language, makeBody]);
 
   const handleStyleChange = useCallback(
     (newStyle: StyleOptions) => {
       setStyle(newStyle);
       storeLanguage(newStyle.language);
-      void complete("", {
-        body: {
-          language: newStyle.language,
-          style: newStyle.style,
-        },
-      });
+      setMessages([]);
+      void sendMessage(
+        { text: "404" },
+        { body: makeBody(newStyle.language, newStyle.style) },
+      );
     },
-    [complete],
+    [sendMessage, setMessages, makeBody],
   );
 
+  const handleRegenerate = useCallback(() => {
+    regenerate({ body: makeBody() });
+  }, [regenerate, makeBody]);
+
+  const handleRetry = useCallback(() => {
+    setMessages([]);
+    void sendMessage({ text: "404" }, { body: makeBody() });
+  }, [sendMessage, setMessages, makeBody]);
+
   const t = i18n[style.language];
+  const lastAssistant = messages.findLast((m) => m.role === "assistant");
 
   return (
     <div className="max-w-[880px] mx-auto px-6 sm:px-8 pt-16 pb-32">
@@ -164,7 +184,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
       </div>
 
       <div className="mt-8 text-[0.9375rem] leading-[1.8] text-muted-foreground min-h-[200px]">
-        {isLoading && !completion && (
+        {isLoading && !lastAssistant && (
           <div className="flex items-center gap-2 text-[0.8125rem] text-muted-foreground">
             <span className="w-[6px] h-[6px] rounded-full bg-emerald-400 animate-pulse-dot" />
             <span>{t.generating}</span>
@@ -176,20 +196,20 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
             <Button
               variant="link"
               size="sm"
-              onClick={() => complete("")}
+              onClick={handleRetry}
               className="text-muted-foreground hover:text-foreground"
             >
               {t.retry}
             </Button>
           </p>
-        ) : completion ? (
-          <Markdown isAnimating={isLoading}>{completion}</Markdown>
+        ) : lastAssistant ? (
+          <DigestParts parts={lastAssistant.parts} isAnimating={isLoading} />
         ) : null}
       </div>
 
-      {completion && !isLoading && (
+      {lastAssistant && !isLoading && (
         <div className="mt-4 flex justify-end">
-          <Button variant="outline" size="xs" onClick={() => complete("")}>
+          <Button variant="outline" size="xs" onClick={handleRegenerate}>
             {t.regenerate}
           </Button>
         </div>
