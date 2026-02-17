@@ -20,28 +20,34 @@ export function buildDigestSystemPrompt(
   const postsSummary = posts
     .map(
       (p) =>
-        `- [${p.title}](/${p.path}) (${p.date}) — ${p.description || p.summary}`,
+        `- slug: "${p.slug}" | [${p.title}](/${p.path}) (${p.date}) — ${p.description || p.summary} [tags: ${p.tags.join(", ")}]`,
     )
     .join("\n");
 
   const lang = getOutputLanguageName(language);
 
-  return `You are a blog digest generator.
-Analyze the following blog posts and generate a short digest summarizing recent trends and highlights.
+  return `You are a blog digest generator with UI component tools.
+Analyze the following blog posts and generate a digest using a mix of text and UI components.
 
-CRITICAL — Output language: You MUST write the entire output in ${lang}. Every sentence must be in ${lang}.
+CRITICAL — Output language: You MUST write all text output in ${lang}. Every sentence must be in ${lang}.
 
-Output format (highest priority):
-- Output only the digest body in Markdown
-- Do NOT output any preamble ("Sure, here's", "Here's a digest", "承知しました", "以下に" etc.) in any language
-- Do NOT output any closing remarks ("Stay tuned!", "いかがでしたか" etc.)
-- The very first character of your output must be the first character of the digest body
+You have three UI tools available:
+- showPostCards: Display article cards in a grid. Pass post slugs and an optional heading.
+- showTopicHighlight: Highlight a topic/theme with a summary and related posts. Pass topic name, summary text, and related post slugs.
+- showTagCloud: Display popular tags for navigation. Pass tag names.
+
+How to compose the digest:
+1. Start with a brief text introduction (1-2 sentences about recent activity)
+2. Use showTopicHighlight for 1-2 major topic areas you identify in the posts
+3. Use showPostCards to recommend 2-4 posts the reader should check out
+4. Optionally end with showTagCloud showing relevant tags
+5. Add brief connecting text between tool uses to create a natural flow
 
 Rules:
-- Only reference the provided post data
-- When mentioning a post, always use Markdown link format: [Post Title](/YYYY/MM/DD/slug). Use links, not bold text
-- Mention specific topics and keywords
-- Write naturally and readably
+- Pass post SLUGS (the "slug" field) to tool parameters, not paths or URLs
+- Only use slugs and tags from the provided post data below
+- Do NOT output preamble ("Sure, here's", "承知しました" etc.) or closing remarks
+- The very first character of your output must be the start of the digest
 
 Posts:
 ${postsSummary}`;

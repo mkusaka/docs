@@ -1,7 +1,8 @@
 "use client";
 
-import { useCompletion } from "@ai-sdk/react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -9,9 +10,10 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Markdown } from "./Markdown";
+import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
-import type { Language, StyleOptions } from "@/lib/types";
+import type { Language, StyleOptions, DigestTools } from "@/lib/types";
+import type { UIMessage } from "ai";
 import { isSupportedLanguage } from "@/lib/language";
 
 interface ListingHeroProps {
@@ -19,6 +21,8 @@ interface ListingHeroProps {
   tag?: string;
   initialLanguage?: Language;
 }
+
+type DigestMessage = UIMessage<unknown, never, DigestTools>;
 
 const LANGUAGE_STORAGE_KEY = "preferred-language";
 
@@ -40,16 +44,25 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
     style: "quick",
   }));
 
-  const { completion, isLoading, complete, error } = useCompletion({
-    api: "/api/digest",
-    body: {
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: "/api/digest" }),
+    [],
+  );
+
+  const { messages, sendMessage, regenerate, setMessages, status, error } =
+    useChat<DigestMessage>({ transport });
+
+  const isLoading = status === "streaming" || status === "submitted";
+
+  const makeBody = useCallback(
+    (lang?: Language, sty?: string) => ({
       ...(topic ? { topic } : {}),
       ...(tag ? { tag } : {}),
-      language: style.language,
-      style: style.style,
-    },
-    streamProtocol: "text",
-  });
+      language: lang ?? style.language,
+      style: sty ?? style.style,
+    }),
+    [topic, tag, style.language, style.style],
+  );
 
   const initialRef = useRef(false);
   useEffect(() => {
@@ -58,35 +71,39 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
       const storedLanguage = getStoredLanguage();
       if (storedLanguage && storedLanguage !== style.language) {
         setStyle((prev) => ({ ...prev, language: storedLanguage }));
-        void complete("", {
-          body: {
-            ...(topic ? { topic } : {}),
-            ...(tag ? { tag } : {}),
-            language: storedLanguage,
-            style: style.style,
-          },
-        });
+        void sendMessage(
+          { text: "Generate digest" },
+          { body: makeBody(storedLanguage) },
+        );
         return;
       }
-      complete("");
+      void sendMessage({ text: "Generate digest" }, { body: makeBody() });
     }
-  }, [complete, style.language, style.style, topic, tag]);
+  }, [sendMessage, style.language, makeBody]);
 
   const handleStyleChange = useCallback(
     (newStyle: StyleOptions) => {
       setStyle(newStyle);
       storeLanguage(newStyle.language);
-      void complete("", {
-        body: {
-          ...(topic ? { topic } : {}),
-          ...(tag ? { tag } : {}),
-          language: newStyle.language,
-          style: newStyle.style,
-        },
-      });
+      setMessages([]);
+      void sendMessage(
+        { text: "Generate digest" },
+        { body: makeBody(newStyle.language, newStyle.style) },
+      );
     },
-    [complete, topic, tag],
+    [sendMessage, setMessages, makeBody],
   );
+
+  const handleRegenerate = useCallback(() => {
+    regenerate({ body: makeBody() });
+  }, [regenerate, makeBody]);
+
+  const handleRetry = useCallback(() => {
+    setMessages([]);
+    void sendMessage({ text: "Generate digest" }, { body: makeBody() });
+  }, [sendMessage, setMessages, makeBody]);
+
+  const lastAssistant = messages.findLast((m) => m.role === "assistant");
 
   return (
     <Card className="p-6 py-6 gap-0">
@@ -106,7 +123,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
           <Button
             variant="outline"
             size="xs"
-            onClick={() => complete("")}
+            onClick={handleRegenerate}
             disabled={isLoading}
           >
             Regenerate
@@ -132,14 +149,14 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
             <Button
               variant="link"
               size="sm"
-              onClick={() => complete("")}
+              onClick={handleRetry}
               className="text-muted-foreground hover:text-foreground"
             >
               再試行
             </Button>
           </p>
-        ) : completion ? (
-          <Markdown isAnimating={isLoading}>{completion}</Markdown>
+        ) : lastAssistant ? (
+          <DigestParts parts={lastAssistant.parts} isAnimating={isLoading} />
         ) : null}
       </CardContent>
     </Card>
