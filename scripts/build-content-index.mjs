@@ -32,9 +32,7 @@ function extractSummary(content, maxLength = 200) {
   return plain.slice(0, maxLength);
 }
 
-const files = fs
-  .readdirSync(CONTENT_DIR)
-  .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
+const files = fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
 
 const posts = files
   .map((filename) => {
@@ -44,9 +42,7 @@ const posts = files
 
     const slug = extractSlug(filename);
     const fileDate = extractFileDate(filename);
-    const urlPath = fileDate
-      ? `${fileDate.year}/${fileDate.month}/${fileDate.day}/${slug}`
-      : slug;
+    const urlPath = fileDate ? `${fileDate.year}/${fileDate.month}/${fileDate.day}/${slug}` : slug;
 
     return {
       slug,

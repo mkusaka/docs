@@ -15,7 +15,9 @@ pnpm build                # Production build
 pnpm preview              # Build + preview on Workers
 pnpm deploy               # Build + deploy to Cloudflare
 pnpm build:content-index  # Rebuild content index from MDX
-pnpm format               # Format code with Prettier
+pnpm format               # Format code with oxfmt
+pnpm format:check         # Check formatting with oxfmt
+pnpm lint                 # Lint with oxlint
 ```
 
 ## Architecture
@@ -27,6 +29,7 @@ pnpm format               # Format code with Prettier
 - **Markdown rendering**: Streamdown (streaming-optimized)
 
 ### Key Routes
+
 - `/` — Blog listing (AI-generated digest hero + featured grid + all posts)
 - `/YYYY/MM/DD/slug` — Post page (AI-generated with style controls)
 - `/tags` — All tags listing
@@ -40,15 +43,18 @@ pnpm format               # Format code with Prettier
 - `/atom.xml` — Atom feed
 
 ### Content
+
 - **`/content/blog/*.mdx`**: MDX posts (YYYY-MM-DD-slug.mdx)
 - **`/lib/generated/content-index.json`**: Build-time generated index (run `pnpm build:content-index` after adding/editing posts)
 - Frontmatter: title, date, description, categories, tags
 
 ### Content Negotiation
+
 `Accept: text/markdown` on post URLs returns raw markdown via middleware rewrite to `/api/raw/[slug]`.
 
 ## Important Technical Details
+
 - **Node**: Managed by Volta (24.13.0)
 - **Package Manager**: pnpm
-- **Pre-commit**: Husky + lint-staged (Prettier)
+- **Pre-commit**: Lefthook (oxfmt + oxlint)
 - **Env**: `OPENAI_API_KEY` in `.dev.vars` (local) or Cloudflare Secrets (production)

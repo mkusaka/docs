@@ -16,16 +16,24 @@ export function MarkdownSource({ content, isLoading = false }: MarkdownSourcePro
       return;
     }
     let cancelled = false;
-    import("shiki").then(({ codeToHtml }) =>
-      codeToHtml(content, {
-        lang: "markdown",
-        themes: { light: "github-light-default", dark: "github-dark-default" },
-        defaultColor: false,
+    import("shiki")
+      .then(({ codeToHtml }) =>
+        codeToHtml(content, {
+          lang: "markdown",
+          themes: {
+            light: "github-light-default",
+            dark: "github-dark-default",
+          },
+          defaultColor: false,
+        }),
+      )
+      .then((result) => {
+        if (!cancelled) setHtml(result);
       })
-    ).then((result) => {
-      if (!cancelled) setHtml(result);
-    }).catch(() => {});
-    return () => { cancelled = true; };
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, [content, isLoading]);
 
   if (!html) {

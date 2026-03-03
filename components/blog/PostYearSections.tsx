@@ -6,9 +6,7 @@ interface PostYearSectionsProps {
 }
 
 export function PostYearSections({ postsByYear }: PostYearSectionsProps) {
-  const sortedYears = Object.keys(postsByYear).sort((a, b) =>
-    b.localeCompare(a),
-  );
+  const sortedYears = Object.keys(postsByYear).sort((a, b) => b.localeCompare(a));
 
   return (
     <>

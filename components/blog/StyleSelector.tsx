@@ -83,11 +83,7 @@ export function StyleSelector({
           Writing style
         </span>
         <CardAction>
-          <Button
-            variant="ghost"
-            size="xs"
-            onClick={() => setCollapsed(!collapsed)}
-          >
+          <Button variant="ghost" size="xs" onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? "Expand" : "Collapse"}
           </Button>
         </CardAction>

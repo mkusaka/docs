@@ -35,6 +35,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check formatting (oxfmt)
+        run: pnpm oxfmt --check .
+
+      - name: Lint (oxlint)
+        run: pnpm oxlint --deny-warnings .
+
       - name: Build content index
         run: pnpm build:content-index
 

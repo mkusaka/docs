@@ -39,42 +39,30 @@ export async function POST(req: Request) {
   const promptText = `The user landed on a 404 page. Generate a friendly message and recommend articles.${getStyleInstruction(style)}`;
 
   const defaultModel = process.env.AI_DIGEST_MODEL || "gemini-3-flash-preview";
-  const japaneseModel =
-    process.env.AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview";
+  const japaneseModel = process.env.AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview";
   const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
 
   const result = streamText({
     model: google(modelName),
     system: buildNotFoundSystemPrompt(posts, language),
     messages:
-      modelMessages.length > 0
-        ? modelMessages
-        : [{ role: "user" as const, content: promptText }],
+      modelMessages.length > 0 ? modelMessages : [{ role: "user" as const, content: promptText }],
     tools: {
       showPostCards: tool({
-        description:
-          "Display a grid of article cards. Use to show recommended articles.",
+        description: "Display a grid of article cards. Use to show recommended articles.",
         inputSchema: z.object({
           slugs: z.array(z.string()).describe("Post slugs to display"),
-          heading: z
-            .string()
-            .optional()
-            .describe("Optional heading above the cards"),
+          heading: z.string().optional().describe("Optional heading above the cards"),
         }),
         execute: async ({ slugs, heading }) => {
-          const found = slugs
-            .map((s) => postMap.get(s))
-            .filter((p): p is PostMeta => p != null);
+          const found = slugs.map((s) => postMap.get(s)).filter((p): p is PostMeta => p != null);
           return { posts: found, heading };
         },
       }),
       showTagCloud: tool({
-        description:
-          "Display a tag cloud showing popular tags for navigation.",
+        description: "Display a tag cloud showing popular tags for navigation.",
         inputSchema: z.object({
-          tags: z
-            .array(z.string())
-            .describe("Tag names to display in the cloud"),
+          tags: z.array(z.string()).describe("Tag names to display in the cloud"),
         }),
         execute: async ({ tags: tagNames }) => {
           const tagCounts = new Map<string, number>();

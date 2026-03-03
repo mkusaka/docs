@@ -13,10 +13,7 @@ function getOutputLanguageName(language?: Language): string {
   }
 }
 
-export function buildDigestSystemPrompt(
-  posts: readonly Post[],
-  language?: Language,
-): string {
+export function buildDigestSystemPrompt(posts: readonly Post[], language?: Language): string {
   const postsSummary = posts
     .map(
       (p) =>
@@ -78,10 +75,7 @@ Style:
 - Output in Markdown format`;
 }
 
-export function buildNotFoundSystemPrompt(
-  posts: readonly Post[],
-  language?: Language,
-): string {
+export function buildNotFoundSystemPrompt(posts: readonly Post[], language?: Language): string {
   const lang = getOutputLanguageName(language);
 
   const postsList = posts

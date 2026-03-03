@@ -15,9 +15,9 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
   const recentPosts = allPosts.slice(0, 4);
 
   // Group posts by year for archive
-  const years = [
-    ...new Set(allPosts.map((p) => p.date.slice(0, 4))),
-  ].sort((a, b) => b.localeCompare(a));
+  const years = [...new Set(allPosts.map((p) => p.date.slice(0, 4)))].sort((a, b) =>
+    b.localeCompare(a),
+  );
 
   return (
     <aside className="hidden lg:block w-[210px] shrink-0 sticky top-[52px] h-[calc(100vh-52px)]">

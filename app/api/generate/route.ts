@@ -41,9 +41,7 @@ export async function POST(req: Request) {
   const outputLanguage = language ?? "ja";
   const defaultModel = process.env.AI_MODEL || "gemini-3-flash-preview";
   const japaneseModel =
-    process.env.AI_MODEL_JA ||
-    process.env.AI_MODEL_QUICK ||
-    "gemini-3.1-flash-lite-preview";
+    process.env.AI_MODEL_JA || process.env.AI_MODEL_QUICK || "gemini-3.1-flash-lite-preview";
   const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
 
   const result = streamText({

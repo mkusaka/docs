@@ -19,7 +19,10 @@ export function DigestParts({ parts, isAnimating }: DigestPartsProps) {
   if (process.env.NODE_ENV === "development") {
     console.log(
       "[DigestParts] parts:",
-      parts.map((p) => ({ type: p.type, state: "state" in p ? p.state : undefined })),
+      parts.map((p) => ({
+        type: p.type,
+        state: "state" in p ? p.state : undefined,
+      })),
     );
   }
   return (
@@ -35,28 +38,19 @@ export function DigestParts({ parts, isAnimating }: DigestPartsProps) {
 
           case "tool-showPostCards":
             if (part.state === "output-available") {
-              return (
-                <PostCardsSection key={part.toolCallId} data={part.output} />
-              );
+              return <PostCardsSection key={part.toolCallId} data={part.output} />;
             }
             return <ToolSkeleton key={part.toolCallId} />;
 
           case "tool-showTopicHighlight":
             if (part.state === "output-available") {
-              return (
-                <TopicHighlightSection
-                  key={part.toolCallId}
-                  data={part.output}
-                />
-              );
+              return <TopicHighlightSection key={part.toolCallId} data={part.output} />;
             }
             return <ToolSkeleton key={part.toolCallId} />;
 
           case "tool-showTagCloud":
             if (part.state === "output-available") {
-              return (
-                <TagCloudSection key={part.toolCallId} data={part.output} />
-              );
+              return <TagCloudSection key={part.toolCallId} data={part.output} />;
             }
             return <ToolSkeleton key={part.toolCallId} />;
 
@@ -68,11 +62,7 @@ export function DigestParts({ parts, isAnimating }: DigestPartsProps) {
   );
 }
 
-function PostCardsSection({
-  data,
-}: {
-  data: { posts: PostMeta[]; heading?: string };
-}) {
+function PostCardsSection({ data }: { data: { posts: PostMeta[]; heading?: string } }) {
   if (data.posts.length === 0) return null;
   return (
     <div>
@@ -97,12 +87,8 @@ function TopicHighlightSection({
 }) {
   return (
     <div className="rounded-lg border border-border bg-accent/30 p-4">
-      <h3 className="text-sm font-semibold text-foreground mb-1.5">
-        {data.topic}
-      </h3>
-      <p className="text-[0.8125rem] text-muted-foreground leading-relaxed mb-3">
-        {data.summary}
-      </p>
+      <h3 className="text-sm font-semibold text-foreground mb-1.5">{data.topic}</h3>
+      <p className="text-[0.8125rem] text-muted-foreground leading-relaxed mb-3">{data.summary}</p>
       {data.posts.length > 0 && (
         <ul className="space-y-1">
           {data.posts.map((post) => (
@@ -121,11 +107,7 @@ function TopicHighlightSection({
   );
 }
 
-function TagCloudSection({
-  data,
-}: {
-  data: { tags: { name: string; count: number }[] };
-}) {
+function TagCloudSection({ data }: { data: { tags: { name: string; count: number }[] } }) {
   if (data.tags.length === 0) return null;
   return (
     <div className="flex flex-wrap gap-2">
@@ -136,9 +118,7 @@ function TagCloudSection({
             className="text-[0.75rem] cursor-pointer hover:bg-accent transition-colors"
           >
             {tag.name}
-            {tag.count > 0 && (
-              <span className="ml-1 text-muted-foreground">({tag.count})</span>
-            )}
+            {tag.count > 0 && <span className="ml-1 text-muted-foreground">({tag.count})</span>}
           </Badge>
         </Link>
       ))}
