@@ -29,6 +29,7 @@ export async function POST(req: Request) {
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
   const uiMessages = body.messages ?? [];
+  const outputLanguage = language ?? "ja";
 
   const posts = getAllPosts();
   const postMap = new Map(posts.map((p) => [p.slug, p as PostMeta]));
@@ -37,8 +38,13 @@ export async function POST(req: Request) {
 
   const promptText = `The user landed on a 404 page. Generate a friendly message and recommend articles.${getStyleInstruction(style)}`;
 
+  const defaultModel = process.env.AI_DIGEST_MODEL || "gemini-3-flash-preview";
+  const japaneseModel =
+    process.env.AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview";
+  const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
+
   const result = streamText({
-    model: google(process.env.AI_DIGEST_MODEL || "gemini-2.5-flash-lite"),
+    model: google(modelName),
     system: buildNotFoundSystemPrompt(posts, language),
     messages:
       modelMessages.length > 0
