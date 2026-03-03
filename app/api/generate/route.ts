@@ -21,8 +21,7 @@ function getStyleInstruction(style: Style): string {
 - Use polite language throughout
 - Include background explanations on why something matters and in what scenarios it's useful (but do NOT add facts not in the draft)
 - Write step-by-step so first-time readers can follow
-- Convey the practical value of each point with concrete use cases
-- Write in the style of popular tech articles on Qiita or Zenn`;
+- Convey the practical value of each point with concrete use cases`;
   }
 }
 
@@ -39,8 +38,16 @@ export async function POST(req: Request) {
     return new Response("Post not found", { status: 404 });
   }
 
+  const outputLanguage = language ?? "ja";
+  const defaultModel = process.env.AI_MODEL || "gemini-3-flash-preview";
+  const japaneseModel =
+    process.env.AI_MODEL_JA ||
+    process.env.AI_MODEL_QUICK ||
+    "gemini-3.1-flash-lite-preview";
+  const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
+
   const result = streamText({
-    model: google(process.env.AI_MODEL || "gemini-3-flash-preview"),
+    model: google(modelName),
     system: buildGenerateSystemPrompt(language),
     prompt: `Write a blog post based on the following notes/draft.
 IMPORTANT: Do NOT add facts or examples not in the draft. Content must stay within the scope of the draft.

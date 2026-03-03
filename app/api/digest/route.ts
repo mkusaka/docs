@@ -33,6 +33,7 @@ export async function POST(req: Request) {
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
   const uiMessages = body.messages ?? [];
+  const outputLanguage = language ?? "ja";
 
   let posts = getAllPosts();
   if (topic) {
@@ -50,8 +51,13 @@ export async function POST(req: Request) {
 
   const promptText = `${topic ? `Generate a digest about recent "${topic}" posts.` : tag ? `Generate a digest about posts tagged "${tag}".` : "Generate a digest about recent posts."}${getStyleInstruction(style)}`;
 
+  const defaultModel = process.env.AI_DIGEST_MODEL || "gemini-3-flash-preview";
+  const japaneseModel =
+    process.env.AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview";
+  const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
+
   const result = streamText({
-    model: google(process.env.AI_DIGEST_MODEL || "gemini-2.5-flash-lite"),
+    model: google(modelName),
     system: buildDigestSystemPrompt(recentPosts, language),
     messages:
       modelMessages.length > 0

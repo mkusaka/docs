@@ -63,6 +63,11 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
     }),
     [topic, tag, style.language, style.style],
   );
+  const displayedModel =
+    style.language === "ja"
+      ? process.env.NEXT_PUBLIC_AI_DIGEST_MODEL_JA ||
+        "gemini-3.1-flash-lite-preview"
+      : process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || "gemini-3-flash-preview";
 
   const initialRef = useRef(false);
   useEffect(() => {
@@ -115,9 +120,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
           )}
           <span>{topic ? `${topic} Digest` : tag ? `${tag} Digest` : "Weekly Digest"}</span>
           <span className="text-muted-foreground/50">·</span>
-          <span className="text-muted-foreground/70">
-            {process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || "gemini-2.5-flash-lite"}
-          </span>
+          <span className="text-muted-foreground/70">{displayedModel}</span>
         </div>
         <CardAction>
           <Button
