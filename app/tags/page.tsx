@@ -24,19 +24,13 @@ export default function TagsPage() {
 
           <div className="flex flex-wrap gap-3">
             {tags.map((tag) => (
-              <Link
-                key={tag.slug}
-                href={`/tags/${tag.slug}`}
-                className="no-underline"
-              >
+              <Link key={tag.slug} href={`/tags/${tag.slug}`} className="no-underline">
                 <Badge
                   variant="secondary"
                   className="text-sm px-3 py-1.5 hover:bg-accent transition-colors cursor-pointer"
                 >
                   {tag.label}
-                  <span className="ml-1.5 text-muted-foreground">
-                    {tag.count}
-                  </span>
+                  <span className="ml-1.5 text-muted-foreground">{tag.count}</span>
                 </Badge>
               </Link>
             ))}

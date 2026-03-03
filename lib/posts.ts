@@ -8,7 +8,7 @@ export function getAllPosts(): readonly Post[] {
 }
 
 export function getAllPostMeta(): PostMeta[] {
-  return posts.map(({ rawContent, summary, ...meta }) => meta);
+  return posts.map(({ rawContent: _rawContent, summary: _summary, ...meta }) => meta);
 }
 
 export function groupByYear(items: readonly Post[]): Record<string, Post[]> {

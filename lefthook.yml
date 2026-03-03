@@ -1,7 +1,10 @@
 pre-commit:
   parallel: true
   commands:
-    prettier:
-      glob: "*.{js,jsx,ts,tsx,md,mdx,css,json}"
-      run: pnpm prettier --write {staged_files}
+    oxfmt:
+      glob: "*.{js,jsx,ts,tsx,md,mdx,css,json,jsonc,mjs,yml,yaml}"
+      run: pnpm oxfmt {staged_files}
       stage_fixed: true
+    oxlint:
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
+      run: pnpm oxlint --deny-warnings {staged_files}

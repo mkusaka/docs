@@ -6,7 +6,11 @@ import Link from "next/link";
 import { Streamdown } from "streamdown";
 import { cjk } from "@streamdown/cjk";
 
-function CodeBlock({ node, children, ...props }: ComponentPropsWithoutRef<"pre"> & { node?: unknown }) {
+function CodeBlock({
+  node: _node,
+  children,
+  ...props
+}: ComponentPropsWithoutRef<"pre"> & { node?: unknown }) {
   const [copied, setCopied] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
 
@@ -16,16 +20,24 @@ function CodeBlock({ node, children, ...props }: ComponentPropsWithoutRef<"pre">
   useEffect(() => {
     if (!text) return;
     let cancelled = false;
-    import("shiki").then(({ codeToHtml }) =>
-      codeToHtml(text, {
-        lang: lang || "text",
-        themes: { light: "github-light-default", dark: "github-dark-default" },
-        defaultColor: false,
+    import("shiki")
+      .then(({ codeToHtml }) =>
+        codeToHtml(text, {
+          lang: lang || "text",
+          themes: {
+            light: "github-light-default",
+            dark: "github-dark-default",
+          },
+          defaultColor: false,
+        }),
+      )
+      .then((html) => {
+        if (!cancelled) setHighlightedHtml(html);
       })
-    ).then((html) => {
-      if (!cancelled) setHighlightedHtml(html);
-    }).catch(() => {});
-    return () => { cancelled = true; };
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, [text, lang]);
 
   const handleCopy = useCallback(() => {
@@ -56,11 +68,29 @@ function CodeBlock({ node, children, ...props }: ComponentPropsWithoutRef<"pre">
         title="Copy code"
       >
         {copied ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
@@ -92,20 +122,54 @@ function extractLang(children: ReactNode): string | undefined {
 
 function makeComponents(onLinkClick?: () => void) {
   return {
-    a: ({ node, href, children, ...props }: ComponentPropsWithoutRef<"a"> & { node?: unknown }) => {
+    a: ({
+      node: _node,
+      href,
+      children,
+      ...props
+    }: ComponentPropsWithoutRef<"a"> & { node?: unknown }) => {
       if (href && href.startsWith("/")) {
-        return <Link href={href} onClick={onLinkClick} className="text-foreground/80 underline underline-offset-2 hover:text-foreground transition-colors">{children}</Link>;
+        return (
+          <Link
+            href={href}
+            onClick={onLinkClick}
+            className="text-foreground/80 underline underline-offset-2 hover:text-foreground transition-colors"
+          >
+            {children}
+          </Link>
+        );
       }
-      return <a href={href} {...props} className="text-foreground/80 underline underline-offset-2 hover:text-foreground transition-colors">{children}</a>;
+      return (
+        <a
+          href={href}
+          {...props}
+          className="text-foreground/80 underline underline-offset-2 hover:text-foreground transition-colors"
+        >
+          {children}
+        </a>
+      );
     },
-    img: ({ node, ...props }: ComponentPropsWithoutRef<"img"> & { node?: unknown }) => (
+    img: ({ node: _node, ...props }: ComponentPropsWithoutRef<"img"> & { node?: unknown }) => (
       <img {...props} className="max-w-full rounded-lg my-4" />
     ),
     pre: CodeBlock,
-    code: ({ node, inline, className, children, ...props }: ComponentPropsWithoutRef<"code"> & { node?: unknown; inline?: boolean; className?: string }) => {
+    code: ({
+      node: _node,
+      inline,
+      className,
+      children,
+      ...props
+    }: ComponentPropsWithoutRef<"code"> & {
+      node?: unknown;
+      inline?: boolean;
+      className?: string;
+    }) => {
       if (inline) {
         return (
-          <code {...props} className="text-[0.8125rem] text-foreground bg-accent px-1.5 py-0.5 rounded-md font-mono">
+          <code
+            {...props}
+            className="text-[0.8125rem] text-foreground bg-accent px-1.5 py-0.5 rounded-md font-mono"
+          >
             {children}
           </code>
         );
@@ -131,7 +195,12 @@ export function Markdown({ children, isAnimating = false, onLinkClick }: Markdow
   const components = onLinkClick ? makeComponents(onLinkClick) : defaultComponents;
 
   return (
-    <Streamdown plugins={{ cjk }} isAnimating={isAnimating} linkSafety={{ enabled: false }} components={components}>
+    <Streamdown
+      plugins={{ cjk }}
+      isAnimating={isAnimating}
+      linkSafety={{ enabled: false }}
+      components={components}
+    >
       {children}
     </Streamdown>
   );

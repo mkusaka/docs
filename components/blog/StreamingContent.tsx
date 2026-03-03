@@ -8,11 +8,7 @@ interface StreamingContentProps {
   showCaret?: boolean;
 }
 
-export function StreamingContent({
-  content,
-  isLoading,
-  showCaret = false,
-}: StreamingContentProps) {
+export function StreamingContent({ content, isLoading, showCaret = false }: StreamingContentProps) {
   if (!content && !isLoading) return null;
 
   return (

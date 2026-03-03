@@ -3,12 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import {
-  Card,
-  CardHeader,
-  CardAction,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
@@ -44,13 +39,11 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
     style: "quick",
   }));
 
-  const transport = useMemo(
-    () => new DefaultChatTransport({ api: "/api/digest" }),
-    [],
-  );
+  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/digest" }), []);
 
-  const { messages, sendMessage, regenerate, setMessages, status, error } =
-    useChat<DigestMessage>({ transport });
+  const { messages, sendMessage, regenerate, setMessages, status, error } = useChat<DigestMessage>({
+    transport,
+  });
 
   const isLoading = status === "streaming" || status === "submitted";
 
@@ -65,8 +58,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
   );
   const displayedModel =
     style.language === "ja"
-      ? process.env.NEXT_PUBLIC_AI_DIGEST_MODEL_JA ||
-        "gemini-3.1-flash-lite-preview"
+      ? process.env.NEXT_PUBLIC_AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview"
       : process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || "gemini-3-flash-preview";
 
   const initialRef = useRef(false);
@@ -76,10 +68,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
       const storedLanguage = getStoredLanguage();
       if (storedLanguage && storedLanguage !== style.language) {
         setStyle((prev) => ({ ...prev, language: storedLanguage }));
-        void sendMessage(
-          { text: "Generate digest" },
-          { body: makeBody(storedLanguage) },
-        );
+        void sendMessage({ text: "Generate digest" }, { body: makeBody(storedLanguage) });
         return;
       }
       void sendMessage({ text: "Generate digest" }, { body: makeBody() });
@@ -123,12 +112,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
           <span className="text-muted-foreground/70">{displayedModel}</span>
         </div>
         <CardAction>
-          <Button
-            variant="outline"
-            size="xs"
-            onClick={handleRegenerate}
-            disabled={isLoading}
-          >
+          <Button variant="outline" size="xs" onClick={handleRegenerate} disabled={isLoading}>
             Regenerate
           </Button>
         </CardAction>

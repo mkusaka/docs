@@ -21,14 +21,10 @@ export function middleware(request: NextRequest) {
   // Accept: text/markdown → rewrite to raw API
   if (accept.includes("text/markdown") || accept.includes("text/plain")) {
     // Match /YYYY/MM/DD/slug pattern
-    const match = pathname.match(
-      /^\/\d{4}\/\d{2}\/\d{2}\/(.+)$/,
-    );
+    const match = pathname.match(/^\/\d{4}\/\d{2}\/\d{2}\/(.+)$/);
     if (match) {
       const slug = match[1];
-      return NextResponse.rewrite(
-        new URL(`/api/raw/${slug}`, request.url),
-      );
+      return NextResponse.rewrite(new URL(`/api/raw/${slug}`, request.url));
     }
   }
 
@@ -36,7 +32,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|fonts/|img/).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|fonts/|img/).*)"],
 };

@@ -20,10 +20,7 @@ export function PostCard({ post }: PostCardProps) {
         <time className="text-xs text-muted-foreground block mb-3">{monthYear}</time>
         <ViewTransition name={`post-title-${post.slug}`}>
           <h3 className="text-[0.9375rem] font-semibold text-foreground leading-snug mb-2">
-            <Link
-              href={`/${post.path}`}
-              className="no-underline after:absolute after:inset-0"
-            >
+            <Link href={`/${post.path}`} className="no-underline after:absolute after:inset-0">
               {post.title}
             </Link>
           </h3>

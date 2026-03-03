@@ -94,9 +94,7 @@ export function SearchDialog() {
         {/* Results */}
         <div className="flex-1 overflow-y-auto p-5">
           {error ? (
-            <p className="text-sm text-destructive">
-              検索に失敗しました。もう一度お試しください。
-            </p>
+            <p className="text-sm text-destructive">検索に失敗しました。もう一度お試しください。</p>
           ) : completion ? (
             <div className="text-[0.9375rem] leading-[1.8] text-muted-foreground">
               <Markdown isAnimating={isLoading} onLinkClick={() => setOpen(false)}>

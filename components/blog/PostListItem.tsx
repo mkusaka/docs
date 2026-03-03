@@ -18,9 +18,7 @@ export function PostListItem({ post }: PostListItemProps) {
       href={`/${post.path}`}
       className="group flex items-baseline gap-4 py-3.5 px-4 -mx-4 rounded-xl hover:bg-secondary transition-all no-underline"
     >
-      <time className="text-[0.8125rem] text-muted-foreground shrink-0 w-[80px]">
-        {monthDay}
-      </time>
+      <time className="text-[0.8125rem] text-muted-foreground shrink-0 w-[80px]">{monthDay}</time>
       <div className="flex-1 min-w-0">
         <ViewTransition name={`post-title-${post.slug}`}>
           <h4 className="text-[0.9375rem] text-foreground/80 group-hover:text-foreground transition-colors truncate">

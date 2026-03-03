@@ -52,10 +52,7 @@ export default async function PostPage({ params }: Props) {
       <Sidebar currentSlug={slug} />
 
       <main className="flex-1 min-w-0 border-l border-border lg:border-l-0">
-        <div
-          className="max-w-[680px] mx-auto px-6 sm:px-8 pt-12 pb-32 relative"
-          data-toc-content
-        >
+        <div className="max-w-[680px] mx-auto px-6 sm:px-8 pt-12 pb-32 relative" data-toc-content>
           {/* Subtle glow */}
           <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[radial-gradient(ellipse,rgba(0,0,0,0.02)_0%,transparent_70%)] dark:bg-[radial-gradient(ellipse,rgba(255,255,255,0.015)_0%,transparent_70%)] pointer-events-none" />
 

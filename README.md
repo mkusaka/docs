@@ -82,7 +82,9 @@ pnpm build:content-index  # Rebuild content index
 ## Code Formatting
 
 ```bash
-pnpm format           # Format with Prettier
+pnpm format           # Format with oxfmt
+pnpm format:check     # Check formatting with oxfmt
+pnpm lint             # Lint with oxlint
 ```
 
-Pre-commit hooks (Lefthook) run automatically on commit.
+Pre-commit hooks (Lefthook) run oxfmt and oxlint automatically on commit.

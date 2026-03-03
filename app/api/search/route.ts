@@ -14,10 +14,9 @@ export async function POST(req: Request) {
   }
 
   if (query.length > MAX_QUERY_LENGTH) {
-    return new Response(
-      `Query too long (max ${MAX_QUERY_LENGTH} characters)`,
-      { status: 400 },
-    );
+    return new Response(`Query too long (max ${MAX_QUERY_LENGTH} characters)`, {
+      status: 400,
+    });
   }
 
   const posts = getAllPosts();

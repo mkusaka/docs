@@ -88,10 +88,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
     style: "quick",
   }));
 
-  const transport = useMemo(
-    () => new DefaultChatTransport({ api: "/api/not-found" }),
-    [],
-  );
+  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/not-found" }), []);
 
   const { messages, sendMessage, regenerate, setMessages, status, error } =
     useChat<NotFoundMessage>({ transport });
@@ -113,10 +110,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
       const storedLanguage = getStoredLanguage();
       if (storedLanguage && storedLanguage !== style.language) {
         setStyle((prev) => ({ ...prev, language: storedLanguage }));
-        void sendMessage(
-          { text: "404" },
-          { body: makeBody(storedLanguage) },
-        );
+        void sendMessage({ text: "404" }, { body: makeBody(storedLanguage) });
         return;
       }
       void sendMessage({ text: "404" }, { body: makeBody() });
@@ -128,10 +122,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
       setStyle(newStyle);
       storeLanguage(newStyle.language);
       setMessages([]);
-      void sendMessage(
-        { text: "404" },
-        { body: makeBody(newStyle.language, newStyle.style) },
-      );
+      void sendMessage({ text: "404" }, { body: makeBody(newStyle.language, newStyle.style) });
     },
     [sendMessage, setMessages, makeBody],
   );
@@ -156,9 +147,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
           <div className="absolute -bottom-28 left-6 h-72 w-72 rounded-full bg-secondary/60 blur-3xl" />
         </div>
         <div className="relative p-8 sm:p-12">
-          <p className="text-[0.6875rem] uppercase tracking-[0.35em] text-muted-foreground">
-            404
-          </p>
+          <p className="text-[0.6875rem] uppercase tracking-[0.35em] text-muted-foreground">404</p>
           <h1 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-[-0.03em] text-foreground">
             {t.pageNotFound}
           </h1>
