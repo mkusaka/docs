@@ -41,7 +41,7 @@
     "@types/node": "25.3.3",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "lefthook": "2.1.1",
+    "lefthook": "2.1.2",
     "oxfmt": "0.36.0",
     "oxlint": "1.51.0",
     "shadcn": "3.8.5",
