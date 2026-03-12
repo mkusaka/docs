@@ -3,8 +3,7 @@
   extends: ["config:best-practices", "group:definitelyTyped"],
   packageRules: [
     {
-      description:
-        "Automerge minor and patch updates for production npm dependencies after a 7 day minimum release age",
+      description: "Automerge minor and patch updates for production npm dependencies after a 7 day minimum release age",
       groupName: "dependencies (non-major)",
       matchManagers: ["npm"],
       matchDepTypes: ["dependencies"],
@@ -14,8 +13,7 @@
       minimumReleaseAge: "7 days",
     },
     {
-      description:
-        "Automerge minor and patch updates for development npm dependencies after a 7 day minimum release age",
+      description: "Automerge minor and patch updates for development npm dependencies after a 7 day minimum release age",
       groupName: "devDependencies (non-major)",
       matchManagers: ["npm"],
       matchDepTypes: ["devDependencies"],
@@ -25,8 +23,7 @@
       minimumReleaseAge: "7 days",
     },
     {
-      description:
-        "Automerge minor, patch, digest, and pinDigest GitHub Actions updates after a 7 day minimum release age",
+      description: "Automerge minor, patch, digest, and pinDigest GitHub Actions updates after a 7 day minimum release age",
       groupName: "github-actions (non-major)",
       matchManagers: ["github-actions"],
       matchUpdateTypes: ["minor", "patch", "digest", "pinDigest"],
