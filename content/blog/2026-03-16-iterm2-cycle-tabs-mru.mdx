@@ -1,0 +1,33 @@
+---
+title: "iTerm2でタブを閉じたとき「直前に見ていたタブ」に戻る設定"
+date: 2026-03-16
+description: "iTerm2にはタブを閉じたとき自動で直前のタブに戻る設定はないが、Cycle Tabs Forward/BackwardをキーバインドすることでMRU順のタブ切り替えができる"
+categories: [tools]
+tags: [iTerm2, terminal, keybinding, tips]
+---
+
+## まとめ
+
+- iTerm2にはタブを閉じたとき自動で「直前に見ていたタブ」に戻る専用の設定はない
+- ただし **Cycle Tabs Forward / Backward** というアクションがあり、これはMRU（Most Recently Used）順でタブを切り替える
+- これをキーバインドしておけば、閉じた後に1回押すだけで直前のタブに戻れる
+
+## 設定方法
+
+1. `Settings > Keys > Key Mappings` を開く
+2. `+` ボタンで新しいショートカットを追加
+3. 好きなキーの組み合わせを入力（例: `⌥Tab` など）
+4. Action を **Cycle Tabs Backward** に設定
+
+これで通常の `Next Tab` / `Previous Tab`（タブの並び順）とは別に、**直前に使っていたタブに戻る**キーが使えるようになる。
+
+## 補足
+
+- `Next Tab` / `Previous Tab` はタブバーの並び順で移動する
+- `Cycle Tabs Forward` / `Cycle Tabs Backward` はMRU順（最近使った順）で移動する。Cmd+Tabのタブ切り替えと同じ感覚
+- 閉じたタブ自体を復活させたい場合は `Edit > Undo Close Session/Tab/Window` で5秒以内なら元に戻せる（猶予時間は `Profiles > Session` で調整可能）
+
+## 参考
+
+- [Keys Profiles Preferences - Documentation - iTerm2](https://iterm2.com/3.3/documentation-preferences-profiles-keys.html)
+- [Menu Items - Documentation - iTerm2](https://iterm2.com/3.0/documentation-menu-items.html)
