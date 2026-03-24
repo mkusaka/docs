@@ -1,8 +1,9 @@
 import { streamText, tool, convertToModelMessages, stepCountIs } from "ai";
-import { google } from "@ai-sdk/google";
 import { z } from "zod";
 import { getAllPosts } from "@/lib/posts";
 import { buildNotFoundSystemPrompt } from "@/lib/prompt";
+import { resolveDigestModelName } from "@/lib/ai-model-config";
+import { resolveProviderOptions, resolveTextModel } from "@/lib/ai-provider";
 import type { Language, Style, PostMeta } from "@/lib/types";
 
 function getStyleInstruction(style?: Style): string {
@@ -29,8 +30,6 @@ export async function POST(req: Request) {
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
   const uiMessages = body.messages ?? [];
-  const outputLanguage = language ?? "ja";
-
   const posts = getAllPosts();
   const postMap = new Map(posts.map((p) => [p.slug, p as PostMeta]));
 
@@ -38,12 +37,11 @@ export async function POST(req: Request) {
 
   const promptText = `The user landed on a 404 page. Generate a friendly message and recommend articles.${getStyleInstruction(style)}`;
 
-  const defaultModel = process.env.AI_DIGEST_MODEL || "gemini-3-flash-preview";
-  const japaneseModel = process.env.AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview";
-  const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
+  const modelName = resolveDigestModelName(language);
 
   const result = streamText({
-    model: google(modelName),
+    model: resolveTextModel(modelName),
+    providerOptions: resolveProviderOptions(modelName),
     system: buildNotFoundSystemPrompt(posts, language),
     messages:
       modelMessages.length > 0 ? modelMessages : [{ role: "user" as const, content: promptText }],

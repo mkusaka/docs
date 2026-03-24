@@ -7,6 +7,7 @@ import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
+import { DEFAULT_DIGEST_MODEL, DEFAULT_DIGEST_MODEL_JA } from "@/lib/ai-model-config";
 import type { Language, StyleOptions, DigestTools } from "@/lib/types";
 import type { UIMessage } from "ai";
 import { isSupportedLanguage } from "@/lib/language";
@@ -58,8 +59,8 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
   );
   const displayedModel =
     style.language === "ja"
-      ? process.env.NEXT_PUBLIC_AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview"
-      : process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || "gemini-3-flash-preview";
+      ? process.env.NEXT_PUBLIC_AI_DIGEST_MODEL_JA || DEFAULT_DIGEST_MODEL_JA
+      : process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || DEFAULT_DIGEST_MODEL;
 
   const initialRef = useRef(false);
   useEffect(() => {

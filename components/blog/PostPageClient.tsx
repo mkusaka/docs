@@ -8,6 +8,7 @@ import { StyleSelector } from "./StyleSelector";
 import { StreamingContent } from "./StreamingContent";
 import { MarkdownSource } from "./MarkdownSource";
 import { CopyPageDropdown } from "./CopyPageDropdown";
+import { DEFAULT_GENERATE_MODEL, DEFAULT_GENERATE_MODEL_JA } from "@/lib/ai-model-config";
 import type { Language, PostMeta, StyleOptions } from "@/lib/types";
 import { isSupportedLanguage } from "@/lib/language";
 
@@ -156,8 +157,8 @@ export function PostPageClient({ meta, rawContent, initialLanguage }: PostPageCl
     style.language === "ja"
       ? process.env.NEXT_PUBLIC_AI_MODEL_JA ||
         process.env.NEXT_PUBLIC_AI_MODEL_QUICK ||
-        "gemini-3.1-flash-lite-preview"
-      : process.env.NEXT_PUBLIC_AI_MODEL || "gemini-3-flash-preview";
+        DEFAULT_GENERATE_MODEL_JA
+      : process.env.NEXT_PUBLIC_AI_MODEL || DEFAULT_GENERATE_MODEL;
 
   return (
     <>

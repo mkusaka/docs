@@ -1,7 +1,8 @@
 import { streamText } from "ai";
-import { google } from "@ai-sdk/google";
 import { getPostBySlug } from "@/lib/posts";
 import { buildGenerateSystemPrompt } from "@/lib/prompt";
+import { resolveGenerateModelName } from "@/lib/ai-model-config";
+import { resolveProviderOptions, resolveTextModel } from "@/lib/ai-provider";
 import type { Language, Style } from "@/lib/types";
 
 function getStyleInstruction(style: Style): string {
@@ -38,14 +39,11 @@ export async function POST(req: Request) {
     return new Response("Post not found", { status: 404 });
   }
 
-  const outputLanguage = language ?? "ja";
-  const defaultModel = process.env.AI_MODEL || "gemini-3-flash-preview";
-  const japaneseModel =
-    process.env.AI_MODEL_JA || process.env.AI_MODEL_QUICK || "gemini-3.1-flash-lite-preview";
-  const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
+  const modelName = resolveGenerateModelName(language);
 
   const result = streamText({
-    model: google(modelName),
+    model: resolveTextModel(modelName),
+    providerOptions: resolveProviderOptions(modelName),
     system: buildGenerateSystemPrompt(language),
     prompt: `Write a blog post based on the following notes/draft.
 IMPORTANT: Do NOT add facts or examples not in the draft. Content must stay within the scope of the draft.
