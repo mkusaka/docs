@@ -2,7 +2,7 @@ import { streamText } from "ai";
 import { getAllPosts } from "@/lib/posts";
 import { buildSearchSystemPrompt } from "@/lib/prompt";
 import { DEFAULT_SEARCH_MODEL } from "@/lib/ai-model-config";
-import { resolveProviderOptions, resolveTextModel } from "@/lib/ai-provider";
+import { resolveTextModelConfig } from "@/lib/ai-provider";
 
 const MAX_QUERY_LENGTH = 200;
 
@@ -23,10 +23,10 @@ export async function POST(req: Request) {
   const posts = getAllPosts();
 
   const modelName = process.env.AI_MODEL || DEFAULT_SEARCH_MODEL;
+  const modelConfig = resolveTextModelConfig(modelName);
 
   const result = streamText({
-    model: resolveTextModel(modelName),
-    providerOptions: resolveProviderOptions(modelName),
+    ...modelConfig,
     // System prompt contains all blog data + guardrails
     system: buildSearchSystemPrompt(posts),
     // User query is passed as user message only

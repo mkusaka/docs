@@ -1,6 +1,10 @@
 import { performance } from "node:perf_hooks";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
+import {
+  buildGenerateSystemPrompt,
+  buildGenerateUserPrompt,
+} from "../lib/generate-prompt-shared.js";
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 const OPENAI_MODELS = (process.env.OPENAI_MODELS || "gpt-5-mini,gpt-5-nano")
@@ -9,6 +13,7 @@ const OPENAI_MODELS = (process.env.OPENAI_MODELS || "gpt-5-mini,gpt-5-nano")
   .filter(Boolean);
 const OPENAI_REASONING_EFFORT = process.env.OPENAI_REASONING_EFFORT || "low";
 const OPENAI_JUDGE_MODEL = process.env.OPENAI_JUDGE_MODEL || "gpt-5.4";
+const OPENAI_JUDGE_REASONING_EFFORT = process.env.OPENAI_JUDGE_REASONING_EFFORT || "minimal";
 const RUNS_PER_CASE = Number.parseInt(process.env.RUNS_PER_CASE || "1", 10);
 const REQUEST_TIMEOUT_MS = Number.parseInt(process.env.REQUEST_TIMEOUT_MS || "120000", 10);
 
@@ -64,78 +69,6 @@ const cases = [
     post,
   };
 });
-
-function getOutputLanguageName(language) {
-  switch (language) {
-    case "en":
-      return "English";
-    case "zh":
-      return "Chinese";
-    case "ko":
-      return "Korean";
-    default:
-      return "Japanese";
-  }
-}
-
-function buildGenerateSystemPrompt(language) {
-  const lang = getOutputLanguageName(language);
-
-  return `You are a ghostwriter for a personal tech blog.
-Transform the given notes/bullet points into a compelling blog post.
-
-CRITICAL — Output language: You MUST write the entire output in ${lang}. Every sentence must be in ${lang}.
-
-Output format (highest priority):
-- Output only the blog post body in Markdown
-- Do NOT output any preamble ("Sure, here's", "承知しました", "以下に記事を作成します" etc.) in any language
-- Do NOT output any closing remarks ("いかがでしたか", "Give it a try!" etc.)
-- The very first character of your output must be the first character of the blog post
-
-Anti-hallucination (highest priority):
-- Do NOT add facts, examples, commands, or steps not in the draft. Limit content to what's in the draft
-- Do NOT create URLs not in the draft. Only use URLs from the draft for References; omit the References section if none exist
-- Do NOT write uncertain information as fact
-
-Content rules:
-- Include all information and claims from the draft without omission
-- Preserve code blocks, links, and images as-is
-- Do NOT use expressions implying another source exists ("original article", "元の記事", "原文" etc.)
-
-Style:
-- Write in a natural, personal blog voice
-- Use subjective expressions moderately (e.g., "I think", "convenient", "tried it out")
-- Output in Markdown format`;
-}
-
-function getStyleInstruction(style) {
-  switch (style) {
-    case "quick":
-      return `\nStyle instructions:
-- Output only 3-5 bullet points summarizing the key takeaways. Nothing else.
-- Do NOT add prose, explanations, references, or code blocks after the bullets. End with the bullets.
-- Each bullet must be one sentence, concise.
-- No headings (#). Use only bullet points (-).`;
-    case "detailed":
-      return `\nStyle instructions:
-- Use polite language throughout
-- Include background explanations on why something matters and in what scenarios it's useful (but do NOT add facts not in the draft)
-- Write step-by-step so first-time readers can follow
-- Convey the practical value of each point with concrete use cases`;
-    case "original":
-    default:
-      return "";
-  }
-}
-
-function buildGenerateUserPrompt(post, style) {
-  return `Write a blog post based on the following notes/draft.
-IMPORTANT: Do NOT add facts or examples not in the draft. Content must stay within the scope of the draft.
-${getStyleInstruction(style)}
-
-Draft:
-${post.rawContent}`;
-}
 
 function extractUrls(text) {
   const matches = text.match(/https?:\/\/[^\s<>"'`)\]）】。、，]+/g);
@@ -319,11 +252,11 @@ async function callGemini({ system, prompt }) {
   };
 }
 
-async function callOpenAI({ model, system, prompt }) {
+async function callOpenAI({ model, system, prompt, reasoningEffort = OPENAI_REASONING_EFFORT }) {
   const body = {
     model,
     reasoning: {
-      effort: OPENAI_REASONING_EFFORT,
+      effort: reasoningEffort,
     },
     instructions: system,
     input: prompt,
@@ -426,6 +359,7 @@ ${run.output}`;
     model: OPENAI_JUDGE_MODEL,
     system,
     prompt,
+    reasoningEffort: OPENAI_JUDGE_REASONING_EFFORT,
   });
   const parsed = extractJsonObject(judged.output);
   if (!parsed) {
@@ -465,18 +399,18 @@ function summarizeRuns(results) {
         continue;
       }
 
-      const firstRun = completedRuns[0];
+      const judgedRun = completedRuns.find((run) => run.evaluation) ?? completedRuns[0];
       rows.push({
         caseId: benchmarkCase.id,
         model: modelResult.model,
         status: "ok",
-        accuracy: firstRun.evaluation.accuracy_score,
-        instructionFit: firstRun.evaluation.instruction_fit_score,
-        languagePass: firstRun.evaluation.script_language_pass,
+        accuracy: judgedRun.evaluation.accuracy_score,
+        instructionFit: judgedRun.evaluation.instruction_fit_score,
+        languagePass: judgedRun.evaluation.script_language_pass,
         totalMsAvg: round(average(completedRuns.map((run) => run.totalMs))),
         headersMsAvg: round(average(completedRuns.map((run) => run.headersMs))),
-        hallucinatedUrls: firstRun.evaluation.heuristics.hallucinatedUrls.length,
-        quickFormatPass: firstRun.evaluation.heuristics.quickFormatPass,
+        hallucinatedUrls: judgedRun.evaluation.heuristics.hallucinatedUrls.length,
+        quickFormatPass: judgedRun.evaluation.heuristics.quickFormatPass,
       });
     }
   }
@@ -520,7 +454,9 @@ function toMarkdown(results, rows) {
     lines.push(`### ${benchmarkCase.id}`);
     lines.push("");
     for (const modelResult of benchmarkCase.runsByModel) {
-      const run = modelResult.runs.find((item) => item.status === "ok");
+      const run =
+        modelResult.runs.find((item) => item.status === "ok" && item.evaluation) ??
+        modelResult.runs.find((item) => item.status === "ok");
       if (!run) {
         lines.push(
           `- ${modelResult.model}: failed (${modelResult.runs[0]?.error || "unknown error"})`,
@@ -551,7 +487,7 @@ const results = {
 
 for (const benchmarkCase of cases) {
   const system = buildGenerateSystemPrompt(benchmarkCase.language);
-  const prompt = buildGenerateUserPrompt(benchmarkCase.post, benchmarkCase.style);
+  const prompt = buildGenerateUserPrompt(benchmarkCase.post.rawContent, benchmarkCase.style);
   const caseResult = {
     id: benchmarkCase.id,
     slug: benchmarkCase.slug,
@@ -573,6 +509,7 @@ for (const benchmarkCase of cases) {
       model: runner.label,
       runs: [],
     };
+    let hasEvaluation = false;
 
     for (let attempt = 0; attempt < RUNS_PER_CASE; attempt += 1) {
       console.error(
@@ -580,18 +517,26 @@ for (const benchmarkCase of cases) {
       );
       try {
         const run = await runner.fn();
-        console.error(
-          `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=judging`,
-        );
-        const evaluation = await judgeOutput({ benchmarkCase, run });
+        let evaluation;
+        if (!hasEvaluation) {
+          console.error(
+            `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=judging`,
+          );
+          evaluation = await judgeOutput({ benchmarkCase, run });
+          hasEvaluation = true;
+        }
         modelResult.runs.push({
           status: "ok",
           attempt: attempt + 1,
           headersMs: round(run.headersMs),
           totalMs: round(run.totalMs),
           finishReason: run.finishReason,
-          output: run.output,
-          evaluation,
+          ...(evaluation
+            ? {
+                output: run.output,
+                evaluation,
+              }
+            : {}),
         });
       } catch (error) {
         console.error(

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "simplify": {
+      "source": "mkusaka/ccskills",
+      "sourceType": "github",
+      "computedHash": "994337b4ea7635a995c621fd2a0e13e550223913f9716803c4f208a8166271a4"
+    }
+  }
+}

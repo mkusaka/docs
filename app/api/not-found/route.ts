@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getAllPosts } from "@/lib/posts";
 import { buildNotFoundSystemPrompt } from "@/lib/prompt";
 import { resolveDigestModelName } from "@/lib/ai-model-config";
-import { resolveProviderOptions, resolveTextModel } from "@/lib/ai-provider";
+import { resolveTextModelConfig } from "@/lib/ai-provider";
 import type { Language, Style, PostMeta } from "@/lib/types";
 
 function getStyleInstruction(style?: Style): string {
@@ -38,10 +38,10 @@ export async function POST(req: Request) {
   const promptText = `The user landed on a 404 page. Generate a friendly message and recommend articles.${getStyleInstruction(style)}`;
 
   const modelName = resolveDigestModelName(language);
+  const modelConfig = resolveTextModelConfig(modelName);
 
   const result = streamText({
-    model: resolveTextModel(modelName),
-    providerOptions: resolveProviderOptions(modelName),
+    ...modelConfig,
     system: buildNotFoundSystemPrompt(posts, language),
     messages:
       modelMessages.length > 0 ? modelMessages : [{ role: "user" as const, content: promptText }],

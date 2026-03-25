@@ -7,7 +7,7 @@ import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
-import { DEFAULT_DIGEST_MODEL, DEFAULT_DIGEST_MODEL_JA } from "@/lib/ai-model-config";
+import { resolveDigestDisplayModel } from "@/lib/ai-model-config";
 import type { Language, StyleOptions, DigestTools } from "@/lib/types";
 import type { UIMessage } from "ai";
 import { isSupportedLanguage } from "@/lib/language";
@@ -57,10 +57,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
     }),
     [topic, tag, style.language, style.style],
   );
-  const displayedModel =
-    style.language === "ja"
-      ? process.env.NEXT_PUBLIC_AI_DIGEST_MODEL_JA || DEFAULT_DIGEST_MODEL_JA
-      : process.env.NEXT_PUBLIC_AI_DIGEST_MODEL || DEFAULT_DIGEST_MODEL;
+  const displayedModel = resolveDigestDisplayModel(style.language);
 
   const initialRef = useRef(false);
   useEffect(() => {

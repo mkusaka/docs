@@ -8,7 +8,7 @@ import { StyleSelector } from "./StyleSelector";
 import { StreamingContent } from "./StreamingContent";
 import { MarkdownSource } from "./MarkdownSource";
 import { CopyPageDropdown } from "./CopyPageDropdown";
-import { DEFAULT_GENERATE_MODEL, DEFAULT_GENERATE_MODEL_JA } from "@/lib/ai-model-config";
+import { resolveGenerateDisplayModel } from "@/lib/ai-model-config";
 import type { Language, PostMeta, StyleOptions } from "@/lib/types";
 import { isSupportedLanguage } from "@/lib/language";
 
@@ -153,12 +153,7 @@ export function PostPageClient({ meta, rawContent, initialLanguage }: PostPageCl
 
   // Displayed content
   const displayContent = showRawContent ? rawContent : completion || "";
-  const displayedModel =
-    style.language === "ja"
-      ? process.env.NEXT_PUBLIC_AI_MODEL_JA ||
-        process.env.NEXT_PUBLIC_AI_MODEL_QUICK ||
-        DEFAULT_GENERATE_MODEL_JA
-      : process.env.NEXT_PUBLIC_AI_MODEL || DEFAULT_GENERATE_MODEL;
+  const displayedModel = resolveGenerateDisplayModel(style.language);
 
   return (
     <>
