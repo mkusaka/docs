@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.24",
+    "@ai-sdk/openai": "^3.0.48",
     "@ai-sdk/react": "^3.0.81",
     "@streamdown/cjk": "^1.0.2",
     "@streamdown/code": "^1.0.2",

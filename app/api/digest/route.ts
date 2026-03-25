@@ -1,8 +1,9 @@
 import { streamText, tool, convertToModelMessages, stepCountIs } from "ai";
-import { google } from "@ai-sdk/google";
 import { z } from "zod";
 import { getAllPosts } from "@/lib/posts";
 import { buildDigestSystemPrompt } from "@/lib/prompt";
+import { resolveDigestModelName } from "@/lib/ai-model-config";
+import { resolveTextModelConfig } from "@/lib/ai-provider";
 import type { Language, Style, PostMeta } from "@/lib/types";
 
 function getStyleInstruction(style?: Style): string {
@@ -33,8 +34,6 @@ export async function POST(req: Request) {
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
   const uiMessages = body.messages ?? [];
-  const outputLanguage = language ?? "ja";
-
   let posts = getAllPosts();
   if (topic) {
     posts = posts.filter((p) => p.categories.includes(topic));
@@ -51,12 +50,11 @@ export async function POST(req: Request) {
 
   const promptText = `${topic ? `Generate a digest about recent "${topic}" posts.` : tag ? `Generate a digest about posts tagged "${tag}".` : "Generate a digest about recent posts."}${getStyleInstruction(style)}`;
 
-  const defaultModel = process.env.AI_DIGEST_MODEL || "gemini-3-flash-preview";
-  const japaneseModel = process.env.AI_DIGEST_MODEL_JA || "gemini-3.1-flash-lite-preview";
-  const modelName = outputLanguage === "ja" ? japaneseModel : defaultModel;
+  const modelName = resolveDigestModelName(language);
+  const modelConfig = resolveTextModelConfig(modelName);
 
   const result = streamText({
-    model: google(modelName),
+    ...modelConfig,
     system: buildDigestSystemPrompt(recentPosts, language),
     messages:
       modelMessages.length > 0 ? modelMessages : [{ role: "user" as const, content: promptText }],
