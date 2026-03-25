@@ -504,54 +504,56 @@ for (const benchmarkCase of cases) {
     })),
   ];
 
-  for (const runner of modelRunners) {
-    const modelResult = {
-      model: runner.label,
-      runs: [],
-    };
-    let hasEvaluation = false;
+  caseResult.runsByModel = await Promise.all(
+    modelRunners.map(async (runner) => {
+      const modelResult = {
+        model: runner.label,
+        runs: [],
+      };
+      let hasEvaluation = false;
 
-    for (let attempt = 0; attempt < RUNS_PER_CASE; attempt += 1) {
-      console.error(
-        `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=generation`,
-      );
-      try {
-        const run = await runner.fn();
-        let evaluation;
-        if (!hasEvaluation) {
-          console.error(
-            `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=judging`,
-          );
-          evaluation = await judgeOutput({ benchmarkCase, run });
-          hasEvaluation = true;
-        }
-        modelResult.runs.push({
-          status: "ok",
-          attempt: attempt + 1,
-          headersMs: round(run.headersMs),
-          totalMs: round(run.totalMs),
-          finishReason: run.finishReason,
-          ...(evaluation
-            ? {
-                output: run.output,
-                evaluation,
-              }
-            : {}),
-        });
-      } catch (error) {
+      for (let attempt = 0; attempt < RUNS_PER_CASE; attempt += 1) {
         console.error(
-          `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=error error=${error instanceof Error ? error.message : String(error)}`,
+          `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=generation`,
         );
-        modelResult.runs.push({
-          status: "error",
-          attempt: attempt + 1,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        try {
+          const run = await runner.fn();
+          let evaluation;
+          if (!hasEvaluation) {
+            console.error(
+              `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=judging`,
+            );
+            evaluation = await judgeOutput({ benchmarkCase, run });
+            hasEvaluation = true;
+          }
+          modelResult.runs.push({
+            status: "ok",
+            attempt: attempt + 1,
+            headersMs: round(run.headersMs),
+            totalMs: round(run.totalMs),
+            finishReason: run.finishReason,
+            ...(evaluation
+              ? {
+                  output: run.output,
+                  evaluation,
+                }
+              : {}),
+          });
+        } catch (error) {
+          console.error(
+            `[run] case=${benchmarkCase.id} model=${runner.label} attempt=${attempt + 1} phase=error error=${error instanceof Error ? error.message : String(error)}`,
+          );
+          modelResult.runs.push({
+            status: "error",
+            attempt: attempt + 1,
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
       }
-    }
 
-    caseResult.runsByModel.push(modelResult);
-  }
+      return modelResult;
+    }),
+  );
 
   results.cases.push(caseResult);
 }
