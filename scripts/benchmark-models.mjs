@@ -2,7 +2,7 @@ import { performance } from "node:perf_hooks";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.1-flash-lite-preview";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 const OPENAI_MODELS = (process.env.OPENAI_MODELS || "gpt-5-mini,gpt-5-nano")
   .split(",")
   .map((value) => value.trim())

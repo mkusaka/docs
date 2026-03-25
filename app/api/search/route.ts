@@ -1,7 +1,7 @@
 import { streamText } from "ai";
 import { getAllPosts } from "@/lib/posts";
 import { buildSearchSystemPrompt } from "@/lib/prompt";
-import { DEFAULT_GENERATE_MODEL } from "@/lib/ai-model-config";
+import { DEFAULT_SEARCH_MODEL } from "@/lib/ai-model-config";
 import { resolveProviderOptions, resolveTextModel } from "@/lib/ai-provider";
 
 const MAX_QUERY_LENGTH = 200;
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
   const posts = getAllPosts();
 
-  const modelName = process.env.AI_MODEL || DEFAULT_GENERATE_MODEL;
+  const modelName = process.env.AI_MODEL || DEFAULT_SEARCH_MODEL;
 
   const result = streamText({
     model: resolveTextModel(modelName),

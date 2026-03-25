@@ -1,9 +1,10 @@
 import type { Language } from "./types";
 
-export const DEFAULT_GENERATE_MODEL = "gemini-3-flash-preview";
+export const DEFAULT_GENERATE_MODEL = "gemini-2.5-flash-lite";
 export const DEFAULT_GENERATE_MODEL_JA = "gpt-5-mini";
-export const DEFAULT_DIGEST_MODEL = "gemini-3-flash-preview";
+export const DEFAULT_DIGEST_MODEL = "gemini-2.5-flash-lite";
 export const DEFAULT_DIGEST_MODEL_JA = "gpt-5-mini";
+export const DEFAULT_SEARCH_MODEL = "gemini-3-flash-preview";
 
 export function resolveGenerateModelName(language?: Language): string {
   const outputLanguage = language ?? "ja";
