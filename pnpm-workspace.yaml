@@ -1,0 +1,13 @@
+allowBuilds:
+  esbuild: true
+  lefthook: true
+  msw: true
+  sharp: true
+  workerd: true
+
+onlyBuiltDependencies:
+  - esbuild
+  - lefthook
+  - msw
+  - sharp
+  - workerd
