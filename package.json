@@ -53,14 +53,5 @@
   },
   "engines": {
     "node": "^24.13.1"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "lefthook",
-      "msw",
-      "sharp",
-      "workerd"
-    ]
   }
 }
