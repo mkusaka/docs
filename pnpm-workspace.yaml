@@ -9,3 +9,9 @@ allowBuilds:
   msw: true
   sharp: true
   workerd: true
+minimumReleaseAgeStrict: true
+strictDepBuilds: true
+trustPolicy: no-downgrade
+blockExoticSubdeps: true
+trustPolicyExclude:
+  - "semver@6.3.1"
