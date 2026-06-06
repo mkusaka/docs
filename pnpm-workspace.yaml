@@ -7,10 +7,3 @@ allowBuilds:
   msw: true
   sharp: true
   workerd: true
-
-onlyBuiltDependencies:
-  - esbuild
-  - lefthook
-  - msw
-  - sharp
-  - workerd
