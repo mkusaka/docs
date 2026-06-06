@@ -1,0 +1,249 @@
+---
+title: "Codex CLIで複数アカウントを切り替える"
+date: 2026-06-06
+description: "CODEX_HOMEを切り替えてCodex CLIのauth.jsonだけを分離し、sessionsや設定は共有する"
+categories: [tips]
+tags: [codex, cli, configuration]
+---
+
+## まとめ
+
+- Codex CLIは`CODEX_HOME`配下に`auth.json`、`config.toml`、sessions、history、SQLite state等を置く
+- `auth.json`だけを分けたい場合、別の`CODEX_HOME`を作って、それ以外をデフォルト側へsymlinkする
+- `CODEX_PROFILE`はCodex CLI標準の環境変数ではないが、シェル関数で`CODEX_PROFILE` → `CODEX_HOME`へ変換すればAWS profileっぽく使える
+- `codex_apps`はChatGPT auth/runtime側に寄るため、`auth.json`を切り替えると利用アカウントも切り替わる
+- 通常MCP OAuth credentialを共有したい場合は`.credentials.json`もsymlinkできるが、どのアカウントの外部サービス認証を使うかは意識する
+
+## やりたいこと
+
+Codex CLIを複数のChatGPTアカウントで使い分けたい。
+
+ただし、設定や履歴まで完全に分けたいわけではない。やりたいのはだいたいこれ：
+
+```text
+default profile:
+  ~/.codex/auth.json
+
+alternate profile:
+  ~/.codex-alternate/auth.json
+
+shared:
+  config.toml
+  sessions/
+  history.jsonl
+  state_*.sqlite
+  logs_*.sqlite
+  skills/
+  plugins/
+  cache/
+```
+
+つまり、**認証だけ分けて、Codexの作業状態は共有する**。
+
+## 前提確認
+
+まず現在のCodex CLIがfile storageを使っているか確認する。
+
+```bash
+codex doctor --summary
+```
+
+詳細表示では、以下のように出る。
+
+```text
+auth storage mode: File
+auth file: ~/.codex/auth.json
+```
+
+ログイン状態だけならこれでよい。
+
+```bash
+codex login status
+```
+
+## alternate用のCODEX_HOMEを作る
+
+ここではデフォルトを`~/.codex`、もう一つを`~/.codex-alternate`にする。
+
+```bash
+mkdir -p "$HOME/.codex-alternate"
+```
+
+alternate側でログインする。
+
+```bash
+CODEX_HOME="$HOME/.codex-alternate" codex login
+```
+
+ログイン状態を確認する。
+
+```bash
+CODEX_HOME="$HOME/.codex-alternate" codex login status
+```
+
+## auth.json以外を共有する
+
+`~/.codex-alternate/auth.json`だけを残して、それ以外は`~/.codex`へのsymlinkにする。
+
+Codexが動いている最中でもSQLiteのWALは基本的に扱えるが、移行作業としては一度Codex CLIを閉じてからやる方が安心。
+
+```bash
+backup="$HOME/.codex-alternate-local-backup-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$backup"
+
+find "$HOME/.codex-alternate" \
+  -mindepth 1 \
+  -maxdepth 1 \
+  ! -name auth.json \
+  -exec mv {} "$backup"/ \;
+
+find "$HOME/.codex" \
+  -mindepth 1 \
+  -maxdepth 1 \
+  ! -name auth.json \
+  ! -name 'auth.*' \
+  ! -name .credentials.json \
+  -exec sh -c '
+    for src do
+      ln -s "$src" "$HOME/.codex-alternate/$(basename "$src")"
+    done
+  ' sh {} +
+```
+
+確認する。
+
+```bash
+find ~/.codex-alternate -mindepth 1 -maxdepth 1 ! -type l -print
+```
+
+`auth.json`だけが出ればよい。
+
+```text
+/Users/you/.codex-alternate/auth.json
+```
+
+代表的な共有状態はこうなる。
+
+```text
+~/.codex-alternate/auth.json         # alternate専用
+~/.codex-alternate/config.toml       -> ~/.codex/config.toml
+~/.codex-alternate/sessions          -> ~/.codex/sessions
+~/.codex-alternate/history.jsonl     -> ~/.codex/history.jsonl
+~/.codex-alternate/state_5.sqlite    -> ~/.codex/state_5.sqlite
+~/.codex-alternate/logs_2.sqlite     -> ~/.codex/logs_2.sqlite
+~/.codex-alternate/goals_1.sqlite    -> ~/.codex/goals_1.sqlite
+~/.codex-alternate/memories_1.sqlite -> ~/.codex/memories_1.sqlite
+~/.codex-alternate/skills            -> ~/.codex/skills
+~/.codex-alternate/plugins           -> ~/.codex/plugins
+```
+
+## CODEX_PROFILEで切り替える
+
+Codex CLI標準に`CODEX_PROFILE`という環境変数はない。なので、シェル関数で作る。
+
+`~/.zshrc`などに追加する：
+
+```zsh
+codex() {
+  local profile="${CODEX_PROFILE:-default}"
+  local codex_home
+
+  case "$profile" in
+    default|primary)
+      codex_home="$HOME/.codex"
+      ;;
+    alternate|secondary)
+      codex_home="$HOME/.codex-alternate"
+      ;;
+    *)
+      echo "unknown CODEX_PROFILE: $profile" >&2
+      echo "expected: default or alternate" >&2
+      return 2
+      ;;
+  esac
+
+  CODEX_HOME="$codex_home" command codex "$@"
+}
+```
+
+使い方：
+
+```bash
+codex
+CODEX_PROFILE=alternate codex
+```
+
+`exec`や`login status`も同じ。
+
+```bash
+codex login status
+CODEX_PROFILE=alternate codex login status
+
+codex exec "Reply OK"
+CODEX_PROFILE=alternate codex exec "Reply OK"
+```
+
+## cxporterも同じノリにする
+
+`cxporter`もCodex config/authを読むので、同じ`CODEX_PROFILE`解決にしておくと混乱しにくい。
+
+```zsh
+cxporter() {
+  local profile="${CODEX_PROFILE:-default}"
+  local codex_home
+
+  case "$profile" in
+    default|primary)
+      codex_home="$HOME/.codex"
+      ;;
+    alternate|secondary)
+      codex_home="$HOME/.codex-alternate"
+      ;;
+    *)
+      echo "unknown CODEX_PROFILE: $profile" >&2
+      echo "expected: default or alternate" >&2
+      return 2
+      ;;
+  esac
+
+  CODEX_HOME="$codex_home" command cxporter "$@"
+}
+```
+
+これで以下のように使える。
+
+```bash
+cxporter list --server codex_apps
+CODEX_PROFILE=alternate cxporter list --server codex_apps
+```
+
+## MCP credentialの扱い
+
+通常MCP OAuth credentialのfile storeは`.credentials.json`に入る。これを共有したい場合はsymlinkできる。
+
+```bash
+ln -s "$HOME/.codex/.credentials.json" "$HOME/.codex-alternate/.credentials.json"
+```
+
+共有すると、alternate profileでも同じ外部サービス identity になる。
+
+一方、`codex_apps`は通常MCPの`.credentials.json`とは別物。ChatGPT auth / Codex runtime側でconnector surfaceとauthが合成される。
+
+```text
+default codex_apps   -> ~/.codex/auth.json のChatGPT account
+alternate codex_apps -> ~/.codex-alternate/auth.json のChatGPT account
+```
+
+`codex_apps`だけを`.credentials.json`で共有する、という運用は基本的にできない。
+
+## 注意点
+
+- `auth.json`は共有しない
+- sessions/history/state/logsは混ざる
+- 履歴も完全に分けたい場合は、symlinkせずに`CODEX_HOME`を完全分離する
+
+## ref
+
+- `codex --help`
+- `codex login --help`
+- `codex doctor --summary`
