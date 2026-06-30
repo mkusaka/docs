@@ -8,7 +8,7 @@
     "build": "pnpm build:content-index && astro build",
     "preview": "pnpm build && wrangler dev",
     "deploy": "pnpm build && wrangler deploy",
-    "upload": "pnpm build && wrangler deploy",
+    "upload": "pnpm build && wrangler versions upload",
     "build:content-index": "node scripts/build-content-index.mjs",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
