@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Sidebar } from "../../components/layout/Sidebar";
+import { ListingHero } from "../../components/blog/ListingHero";
+import { PostCard } from "../../components/blog/PostCard";
+import { PostYearSections } from "../../components/blog/PostYearSections";
+import { getAllPosts, getPostsByYear } from "../../lib/posts";
+
+const allPosts = getAllPosts();
+const featured = allPosts.slice(0, 3);
+const postsByYear = getPostsByYear();
+---
+
+<BaseLayout>
+  <div class="flex max-w-[1320px] mx-auto overflow-x-hidden">
+    <Sidebar />
+
+    <main class="flex-1 min-w-0 border-l border-border lg:border-l-0">
+      <div class="max-w-[880px] mx-auto px-6 sm:px-8 pt-12 pb-32">
+        <section class="mb-16">
+          <div class="mb-6">
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-[-0.03em] text-foreground leading-[1.1] mb-3">
+              Blog
+            </h1>
+            <p class="text-muted-foreground text-[0.9375rem]">
+              開発メモ、ツール紹介、デバッグTIPS
+            </p>
+          </div>
+
+          <ListingHero initialLanguage="ja" client:load />
+        </section>
+
+        <section class="mb-16">
+          <h2 class="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-5">
+            Latest
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {featured.map((post) => <PostCard post={post} />)}
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-5">
+            All Posts
+          </h2>
+
+          <PostYearSections postsByYear={postsByYear} />
+        </section>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

@@ -4,16 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal blog with AI-powered content generation. Built with Next.js 16 (App Router) on Cloudflare Workers via OpenNext. Blog posts are dynamically transformed by LLM with configurable language, tone, and detail level.
+Personal blog with AI-powered content generation. Built with Astro static pages and a Cloudflare Worker API. Blog posts are dynamically transformed by LLM with configurable language, tone, and detail level.
 
 ## Key Commands
 
 ```bash
 pnpm install              # Install dependencies
-pnpm dev                  # Start dev server (Turbopack)
+pnpm dev                  # Build and start local Worker dev server
+pnpm dev:astro            # Page-only Astro dev server
 pnpm build                # Production build
 pnpm preview              # Build + preview on Workers
 pnpm deploy               # Build + deploy to Cloudflare
+pnpm upload               # Upload a Worker version for Cloudflare preview builds
 pnpm build:content-index  # Rebuild content index from MDX
 pnpm format               # Format code with oxfmt
 pnpm format:check         # Check formatting with oxfmt
@@ -22,8 +24,8 @@ pnpm lint                 # Lint with oxlint
 
 ## Architecture
 
-- **Runtime**: Cloudflare Workers via @opennextjs/cloudflare
-- **Framework**: Next.js 16 App Router (Turbopack)
+- **Runtime**: Cloudflare Workers with Static Assets
+- **Framework**: Astro static pages + React islands
 - **AI**: Vercel AI SDK v6 (`streamText`) + OpenAI API
 - **Styling**: Tailwind CSS v4, Design 7 (OpenAI-inspired dark UI)
 - **Markdown rendering**: Streamdown (streaming-optimized)
@@ -50,11 +52,11 @@ pnpm lint                 # Lint with oxlint
 
 ### Content Negotiation
 
-`Accept: text/markdown` on post URLs returns raw markdown via middleware rewrite to `/api/raw/[slug]`.
+`Accept: text/markdown` on post URLs returns raw markdown from the Worker, matching `/api/raw/[slug]`.
 
 ## Important Technical Details
 
-- **Node**: Managed by Volta (24.13.0)
+- **Node**: ^24.13.1
 - **Package Manager**: pnpm
 - **Pre-commit**: Lefthook (oxfmt + oxlint)
 - **Env**: `OPENAI_API_KEY` in `.dev.vars` (local) or Cloudflare Secrets (production)

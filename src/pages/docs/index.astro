@@ -1,0 +1,16 @@
+---
+import matter from "gray-matter";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Markdown } from "../../../components/blog/Markdown";
+import rawDoc from "../../../docs/index.md?raw";
+
+const { content } = matter(rawDoc);
+---
+
+<BaseLayout title="Docs" description="mkusaka docs">
+  <main class="max-w-[760px] mx-auto px-6 sm:px-8 pt-12 pb-32">
+    <article class="text-[0.9375rem] leading-[1.8] text-muted-foreground">
+      <Markdown client:load>{content}</Markdown>
+    </article>
+  </main>
+</BaseLayout>

@@ -1,20 +1,7 @@
 "use client";
 
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import type { ComponentProps } from "react";
-import { ThemeCookieSync } from "@/components/ThemeCookieSync";
+import type { ReactNode } from "react";
 
-export function ThemeProvider({ children, ...props }: ComponentProps<typeof NextThemesProvider>) {
-  return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-      {...props}
-    >
-      <ThemeCookieSync />
-      {children}
-    </NextThemesProvider>
-  );
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  return <>{children}</>;
 }

@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { NotFoundClient } from "../../components/blog/NotFoundClient";
+---
+
+<BaseLayout title="Page not found" description="Page not found">
+  <div class="flex max-w-[1320px] mx-auto overflow-x-hidden">
+    <main class="flex-1 min-w-0">
+      <NotFoundClient initialLanguage="ja" client:load />
+    </main>
+  </div>
+</BaseLayout>

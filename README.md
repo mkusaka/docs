@@ -1,6 +1,6 @@
 # Personal Blog
 
-AI-powered content generation blog. Built with Next.js 16 (App Router) on Cloudflare Workers via OpenNext.
+AI-powered content generation blog. Built with Astro static pages and a Cloudflare Worker API.
 
 ## Features
 
@@ -11,7 +11,7 @@ AI-powered content generation blog. Built with Next.js 16 (App Router) on Cloudf
 
 ## Prerequisites
 
-- Node.js ^24.13.1 (managed by Volta)
+- Node.js ^24.13.1
 - pnpm
 - OpenAI API key
 
@@ -32,7 +32,8 @@ OPENAI_API_KEY=your_key_here
 ## Development
 
 ```bash
-pnpm dev              # Start dev server (Turbopack)
+pnpm dev              # Build and start local Worker dev server
+pnpm dev:astro        # Page-only Astro dev server
 ```
 
 ## Build & Deploy
@@ -41,6 +42,7 @@ pnpm dev              # Start dev server (Turbopack)
 pnpm build            # Production build
 pnpm preview          # Build + preview on Workers locally
 pnpm deploy           # Build + deploy to Cloudflare
+pnpm upload           # Upload a Worker version for Cloudflare preview builds
 ```
 
 ## Content Management

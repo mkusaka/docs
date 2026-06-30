@@ -5,6 +5,10 @@
 /.next
 /out
 
+# Astro
+/.astro
+/dist
+
 # OpenNext / Cloudflare
 /.open-next
 /.wrangler

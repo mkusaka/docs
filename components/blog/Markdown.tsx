@@ -2,7 +2,6 @@
 
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
 import { Streamdown } from "streamdown";
 import { cjk } from "@streamdown/cjk";
 
@@ -130,13 +129,13 @@ function makeComponents(onLinkClick?: () => void) {
     }: ComponentPropsWithoutRef<"a"> & { node?: unknown }) => {
       if (href && href.startsWith("/")) {
         return (
-          <Link
+          <a
             href={href}
             onClick={onLinkClick}
             className="text-foreground/80 underline underline-offset-2 hover:text-foreground transition-colors"
           >
             {children}
-          </Link>
+          </a>
         );
       }
       return (

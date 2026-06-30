@@ -1,0 +1,93 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import { Sidebar } from "../../../../../components/layout/Sidebar";
+import { TableOfContents } from "../../../../../components/layout/TableOfContents";
+import { PostPageClient } from "../../../../../components/blog/PostPageClient";
+import { getAllPathParams, getPostBySlug } from "../../../../../lib/posts";
+import { tagToSlug } from "../../../../../lib/tags";
+
+export function getStaticPaths() {
+  return getAllPathParams().map((params) => ({
+    params,
+    props: {
+      post: getPostBySlug(params.slug),
+    },
+  }));
+}
+
+const { post } = Astro.props;
+if (!post) {
+  return Astro.redirect("/404");
+}
+
+const category = post.categories[0] || "";
+---
+
+<BaseLayout title={post.title} description={post.description}>
+  <div class="flex max-w-[1320px] mx-auto overflow-x-hidden">
+    <Sidebar currentSlug={post.slug} />
+
+    <main class="flex-1 min-w-0 border-l border-border lg:border-l-0">
+      <div class="max-w-[680px] mx-auto px-6 sm:px-8 pt-12 pb-32 relative" data-toc-content>
+        <div class="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[radial-gradient(ellipse,rgba(0,0,0,0.02)_0%,transparent_70%)] dark:bg-[radial-gradient(ellipse,rgba(255,255,255,0.015)_0%,transparent_70%)] pointer-events-none"></div>
+
+        <div class="flex items-center gap-3 text-sm text-muted-foreground mb-8">
+          <time>{post.date}</time>
+          {
+            category && (
+              <>
+                <span class="text-muted-foreground/50">·</span>
+                <span>{category}</span>
+              </>
+            )
+          }
+        </div>
+
+        <h1 class="text-[2.5rem] sm:text-5xl font-bold leading-[1.1] tracking-[-0.03em] mb-6 text-foreground">
+          {post.title}
+        </h1>
+
+        {
+          post.description && (
+            <p class="text-lg text-muted-foreground leading-relaxed mb-6 max-w-[560px]">
+              {post.description}
+            </p>
+          )
+        }
+
+        {
+          post.tags.length > 0 && (
+            <div class="flex gap-2 flex-wrap mb-8">
+              {post.tags.map((tag) => (
+                <a
+                  key={tag}
+                  href={`/tags/${tagToSlug(tag)}`}
+                  class="text-[0.75rem] px-2.5 py-1 rounded-md bg-secondary text-muted-foreground hover:text-foreground hover:bg-accent no-underline transition-colors"
+                >
+                  {tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
+
+        <PostPageClient
+          client:load
+          meta={{
+            slug: post.slug,
+            path: post.path,
+            title: post.title,
+            date: post.date,
+            description: post.description,
+            categories: post.categories,
+            tags: post.tags,
+          }}
+          rawContent={post.rawContent}
+          initialLanguage="ja"
+        />
+      </div>
+    </main>
+
+    <TableOfContents client:load />
+  </div>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+import { Navbar } from "../../components/layout/Navbar";
+import { SearchDialog } from "../../components/blog/SearchDialog";
+import "../styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "docs", description = "mkusaka's blog" } = Astro.props;
+const pageTitle = title === "docs" ? "docs" : `${title} - docs`;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="alternate" type="application/atom+xml" href="/atom.xml" />
+    <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
+    <link rel="icon" href="/img/favicon.ico" />
+    <script is:inline>
+      (() => {
+        const stored = window.localStorage.getItem("theme");
+        const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        const theme = stored === "dark" || stored === "light" ? stored : system;
+        document.documentElement.classList.toggle("dark", theme === "dark");
+        document.documentElement.classList.toggle("light", theme === "light");
+      })();
+    </script>
+  </head>
+  <body
+    class="bg-background text-foreground antialiased min-h-screen"
+    style="font-family: Geist, ui-sans-serif, system-ui, sans-serif;"
+  >
+    <Navbar client:load />
+    <SearchDialog client:load />
+    <slot />
+    <button
+      data-search-trigger
+      class="lg:hidden fixed bottom-6 right-6 z-50 size-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform"
+      aria-label="Search"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+    </button>
+  </body>
+</html>
