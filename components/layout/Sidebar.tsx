@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAllPosts } from "@/lib/posts";
@@ -35,7 +34,7 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
           </kbd>
         </Button>
 
-        <Link
+        <a
           href="/"
           className={`block text-sm rounded-lg px-3 py-2 mb-6 no-underline transition-all ${
             !currentTag && !currentSlug
@@ -44,7 +43,7 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
           }`}
         >
           All posts
-        </Link>
+        </a>
 
         {/* Recent */}
         {currentSlug && (
@@ -54,7 +53,7 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
             </h3>
             <div className="space-y-px">
               {recentPosts.map((post) => (
-                <Link
+                <a
                   key={post.slug}
                   href={`/${post.path}`}
                   className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline leading-snug transition-all ${
@@ -64,7 +63,7 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
                   }`}
                 >
                   {post.title}
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -77,28 +76,28 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
           </h3>
           <div className="space-y-px">
             {years.map((year) => (
-              <Link
+              <a
                 key={year}
                 href={`/#year-${year}`}
                 className="block text-[0.8125rem] text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-lg px-3 py-2 no-underline transition-all"
               >
                 {year}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
 
         {/* Tags */}
         <div className="min-h-0 flex-1 flex flex-col">
-          <Link
+          <a
             href="/tags"
             className="text-[0.6875rem] font-medium text-muted-foreground hover:text-foreground uppercase tracking-[0.1em] mb-3 shrink-0 no-underline transition-colors"
           >
             Tags
-          </Link>
+          </a>
           <div className="space-y-px overflow-y-auto sidebar-scroll">
             {tags.map((tag) => (
-              <Link
+              <a
                 key={tag.slug}
                 href={`/tags/${tag.slug}`}
                 className={`block text-[0.8125rem] rounded-lg px-3 py-2 no-underline transition-all ${
@@ -108,7 +107,7 @@ export function Sidebar({ currentSlug, currentTag }: SidebarProps) {
                 }`}
               >
                 {tag.label}
-              </Link>
+              </a>
             ))}
           </div>
         </div>

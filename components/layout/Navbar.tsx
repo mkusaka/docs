@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -6,25 +5,25 @@ export function Navbar() {
   return (
     <nav className="h-[52px] border-b border-border flex items-center justify-between px-6 sticky top-0 z-50 bg-background/90 backdrop-blur-2xl">
       <div className="flex items-center gap-8">
-        <Link
+        <a
           href="/"
           className="text-[0.9375rem] font-semibold text-foreground no-underline tracking-[-0.01em]"
         >
           docs
-        </Link>
+        </a>
         <div className="hidden sm:flex gap-6">
-          <Link
+          <a
             href="/"
             className="text-[0.8125rem] text-muted-foreground no-underline hover:text-foreground transition-colors duration-200"
           >
             Blog
-          </Link>
-          <Link
+          </a>
+          <a
             href="/docs"
             className="text-[0.8125rem] text-muted-foreground no-underline hover:text-foreground transition-colors duration-200"
           >
             Docs
-          </Link>
+          </a>
         </div>
       </div>
       <div className="flex items-center gap-2">

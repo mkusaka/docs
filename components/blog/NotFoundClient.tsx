@@ -3,7 +3,6 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DigestParts } from "./DigestParts";
@@ -153,7 +152,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
           </h1>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild>
-              <Link href="/">{t.backToTop}</Link>
+              <a href="/">{t.backToTop}</a>
             </Button>
             <Button variant="outline" data-search-trigger>
               <SearchIcon className="size-4" />

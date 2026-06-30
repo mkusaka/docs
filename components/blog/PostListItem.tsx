@@ -1,5 +1,3 @@
-import { ViewTransition } from "react";
-import Link from "next/link";
 import type { PostMeta } from "@/lib/types";
 
 interface PostListItemProps {
@@ -14,17 +12,15 @@ export function PostListItem({ post }: PostListItemProps) {
   });
 
   return (
-    <Link
+    <a
       href={`/${post.path}`}
       className="group flex items-baseline gap-4 py-3.5 px-4 -mx-4 rounded-xl hover:bg-secondary transition-all no-underline"
     >
       <time className="text-[0.8125rem] text-muted-foreground shrink-0 w-[80px]">{monthDay}</time>
       <div className="flex-1 min-w-0">
-        <ViewTransition name={`post-title-${post.slug}`}>
-          <h4 className="text-[0.9375rem] text-foreground/80 group-hover:text-foreground transition-colors truncate">
-            {post.title}
-          </h4>
-        </ViewTransition>
+        <h4 className="text-[0.9375rem] text-foreground/80 group-hover:text-foreground transition-colors truncate">
+          {post.title}
+        </h4>
       </div>
       {post.categories.length > 0 && (
         <div className="hidden sm:flex gap-1.5 shrink-0">
@@ -38,6 +34,6 @@ export function PostListItem({ post }: PostListItemProps) {
           ))}
         </div>
       )}
-    </Link>
+    </a>
   );
 }

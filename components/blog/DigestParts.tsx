@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import type { UIMessage } from "ai";
 import { Markdown } from "./Markdown";
 import { PostCard } from "./PostCard";
 import { Badge } from "@/components/ui/badge";
+import { tagToSlug } from "@/lib/tags";
 import type { DigestTools, PostMeta } from "@/lib/types";
 
 type DigestMessage = UIMessage<unknown, never, DigestTools>;
@@ -16,7 +16,7 @@ interface DigestPartsProps {
 }
 
 export function DigestParts({ parts, isAnimating }: DigestPartsProps) {
-  if (process.env.NODE_ENV === "development") {
+  if (import.meta.env.DEV) {
     console.log(
       "[DigestParts] parts:",
       parts.map((p) => ({
@@ -93,12 +93,12 @@ function TopicHighlightSection({
         <ul className="space-y-1">
           {data.posts.map((post) => (
             <li key={post.slug}>
-              <Link
+              <a
                 href={`/${post.path}`}
                 className="text-[0.8125rem] text-foreground hover:text-primary transition-colors"
               >
                 {post.title}
-              </Link>
+              </a>
             </li>
           ))}
         </ul>
@@ -112,7 +112,7 @@ function TagCloudSection({ data }: { data: { tags: { name: string; count: number
   return (
     <div className="flex flex-wrap gap-2">
       {data.tags.map((tag) => (
-        <Link key={tag.name} href={`/tags/${tag.name}`}>
+        <a key={tag.name} href={`/tags/${tagToSlug(tag.name)}`}>
           <Badge
             variant="secondary"
             className="text-[0.75rem] cursor-pointer hover:bg-accent transition-colors"
@@ -120,7 +120,7 @@ function TagCloudSection({ data }: { data: { tags: { name: string; count: number
             {tag.name}
             {tag.count > 0 && <span className="ml-1 text-muted-foreground">({tag.count})</span>}
           </Badge>
-        </Link>
+        </a>
       ))}
     </div>
   );

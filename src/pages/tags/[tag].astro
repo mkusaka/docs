@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Sidebar } from "../../../components/layout/Sidebar";
+import { ListingHero } from "../../../components/blog/ListingHero";
+import { PostCard } from "../../../components/blog/PostCard";
+import { PostYearSections } from "../../../components/blog/PostYearSections";
+import { groupByYear } from "../../../lib/posts";
+import { getAllTagSlugs, getTagBySlug, getPostsByTagSlug } from "../../../lib/tags";
+
+export function getStaticPaths() {
+  return getAllTagSlugs().map((tag) => ({
+    params: { tag },
+    props: {
+      tagInfo: getTagBySlug(tag),
+      posts: getPostsByTagSlug(tag),
+    },
+  }));
+}
+
+const { tagInfo, posts } = Astro.props;
+if (!tagInfo || posts.length === 0) {
+  return Astro.redirect("/404");
+}
+
+const featured = posts.slice(0, 3);
+const postsByYear = groupByYear(posts);
+const title = `Posts tagged "${tagInfo.label}"`;
+---
+
+<BaseLayout title={title} description={`${tagInfo.count} posts tagged with "${tagInfo.label}"`}>
+  <div class="flex max-w-[1320px] mx-auto overflow-x-hidden">
+    <Sidebar currentTag={Astro.params.tag} />
+
+    <main class="flex-1 min-w-0 border-l border-border lg:border-l-0">
+      <div class="max-w-[880px] mx-auto px-6 sm:px-8 pt-12 pb-32">
+        <section class="mb-16">
+          <div class="mb-6">
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-[-0.03em] text-foreground leading-[1.1] mb-3">
+              {tagInfo.count} posts tagged with &ldquo;{tagInfo.label}&rdquo;
+            </h1>
+            <a
+              href="/tags"
+              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              View All Tags
+            </a>
+          </div>
+
+          <ListingHero tag={tagInfo.label} initialLanguage="ja" client:load />
+        </section>
+
+        {
+          featured.length > 0 && (
+            <section class="mb-16">
+              <h2 class="text-[0.6875rem] font-medium text-muted-foreground uppercase tracking-[0.1em] mb-5">
+                Latest
+              </h2>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {featured.map((post) => <PostCard post={post} />)}
+              </div>
+            </section>
+          )
+        }
+
+        <section>
+          <h2 class="text-[0.6875rem] font-medium text-neutral-400 uppercase tracking-[0.1em] mb-5">
+            All Posts
+          </h2>
+          <PostYearSections postsByYear={postsByYear} />
+        </section>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
