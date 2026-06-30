@@ -15,6 +15,7 @@ pnpm dev:astro            # Page-only Astro dev server
 pnpm build                # Production build
 pnpm preview              # Build + preview on Workers
 pnpm deploy               # Build + deploy to Cloudflare
+pnpm upload               # Backward-compatible deploy alias for Cloudflare build command
 pnpm build:content-index  # Rebuild content index from MDX
 pnpm format               # Format code with oxfmt
 pnpm format:check         # Check formatting with oxfmt

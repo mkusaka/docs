@@ -42,6 +42,7 @@ pnpm dev:astro        # Page-only Astro dev server
 pnpm build            # Production build
 pnpm preview          # Build + preview on Workers locally
 pnpm deploy           # Build + deploy to Cloudflare
+pnpm upload           # Backward-compatible deploy alias for Cloudflare build command
 ```
 
 ## Content Management
