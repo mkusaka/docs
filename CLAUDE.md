@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal blog with AI-powered content generation. Built with Astro static pages and a Cloudflare Worker API. Blog posts are dynamically transformed by LLM with configurable language, tone, and detail level.
+Personal tech blog and docs site with AI-assisted rendering, digest, search, and recommendations. Built with Astro static pages and a Cloudflare Worker API. Blog posts are dynamically transformed by LLM with configurable language, tone, and detail level.
 
 ## Key Commands
 
@@ -26,7 +26,7 @@ pnpm lint                 # Lint with oxlint
 
 - **Runtime**: Cloudflare Workers with Static Assets
 - **Framework**: Astro static pages + React islands
-- **AI**: Vercel AI SDK v6 (`streamText`) + OpenAI API
+- **AI**: Vercel AI SDK v6 (`streamText`) + OpenAI or Google Generative AI
 - **Styling**: Tailwind CSS v4, Design 7 (OpenAI-inspired dark UI)
 - **Markdown rendering**: Streamdown (streaming-optimized)
 
@@ -34,6 +34,7 @@ pnpm lint                 # Lint with oxlint
 
 - `/` — Blog listing (AI-generated digest hero + featured grid + all posts)
 - `/YYYY/MM/DD/slug` — Post page (AI-generated with style controls)
+- `/docs` — Local markdown docs page
 - `/tags` — All tags listing
 - `/tags/[tag]` — Tag-filtered posts
 - `/api/generate` — POST: Article AI generation (streamText)
@@ -59,4 +60,4 @@ pnpm lint                 # Lint with oxlint
 - **Node**: ^24.13.1
 - **Package Manager**: pnpm
 - **Pre-commit**: Lefthook (oxfmt + oxlint)
-- **Env**: `OPENAI_API_KEY` in `.dev.vars` (local) or Cloudflare Secrets (production)
+- **Env**: `OPENAI_API_KEY` and/or `GOOGLE_GENERATIVE_AI_API_KEY` in `.dev.vars` (local) or Cloudflare Secrets (production)

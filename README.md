@@ -1,10 +1,12 @@
-# Personal Blog
+# docs
 
-AI-powered content generation blog. Built with Astro static pages and a Cloudflare Worker API.
+Personal tech blog and docs site built with Astro static pages and a Cloudflare Worker API. Posts can be rendered, summarized, searched, and recommended with LLM-powered endpoints.
 
 ## Features
 
-- AI-powered article transformation (configurable language, tone, detail level)
+- AI-powered article rendering (configurable language, tone, detail level)
+- Agentic search and smart 404 recommendations
+- Docs page generated from local markdown
 - Streaming markdown rendering with Streamdown
 - Dark UI (Design 7 - OpenAI-inspired)
 - Content negotiation for raw markdown access
@@ -13,7 +15,7 @@ AI-powered content generation blog. Built with Astro static pages and a Cloudfla
 
 - Node.js ^24.13.1
 - pnpm
-- OpenAI API key
+- OpenAI API key and/or Google Generative AI API key
 
 ## Installation
 
@@ -27,6 +29,7 @@ Create `.dev.vars` for local development:
 
 ```
 OPENAI_API_KEY=your_key_here
+# GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
 ```
 
 ## Development
@@ -67,6 +70,7 @@ pnpm build:content-index  # Rebuild content index
 
 - `/` — Blog listing with AI-generated digest
 - `/YYYY/MM/DD/slug` — Post page with AI style controls
+- `/docs` — Local markdown docs page
 - `/tags` — All tags listing
 - `/tags/[tag]` — Tag-filtered posts
 - `/api/generate` — POST: Article AI generation (streaming)
