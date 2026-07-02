@@ -13,23 +13,9 @@ tags: [claude-code, cli, configuration]
 - `~/.claude.json`はOAuth sessionなどを含むので共有しない
 - `projects`、`sessions`、`transcripts`、`history.jsonl`あたりだけsymlinkすると、認証は分けつつ履歴はだいたい共有できる
 
-## やりたいこと
-
-Claude Codeをwork/personalなど複数アカウントで使い分けたい。
-
-ただし、過去セッションやresume候補まで完全に分けたいわけではない。
-
-```text
-work auth:     ~/.claude/.claude.json
-personal auth: ~/.claude-personal/.claude.json
-shared state:  projects/, sessions/, transcripts/, history.jsonl
-```
-
-つまり、**認証だけ分けて、作業履歴は共有する**。
-
 ## CLAUDE_PROFILEを作る
 
-Claude Code標準に`CLAUDE_PROFILE`はない。なので、`~/.zshrc`などで作る。
+`~/.zshrc`などに追加する：
 
 ```zsh
 claude() {
@@ -48,8 +34,6 @@ claude() {
   CLAUDE_CONFIG_DIR="$dir" command claude "$@"
 }
 ```
-
-使い方：
 
 ```bash
 claude
@@ -75,8 +59,7 @@ done
 
 ## 注意点
 
-- `~/.claude.json`は共有しない
-- `credentials`、`token`、`oauth`、`auth`っぽいファイルも共有しない
+- `~/.claude.json`や`credentials`、`token`、`oauth`、`auth`っぽいファイルは共有しない
 - `--continue`やtrust設定など、`.claude.json`側のstateに寄るものはprofileごとに分かれることがある
 - Claude Code公式の想定は`CLAUDE_CONFIG_DIR`単位の分離なので、この構成はsymlink運用
 

@@ -8,28 +8,13 @@ tags: [opencode, tui, terminal, keybinds, macos]
 
 ## まとめ
 
-- macOSの一部ターミナル（Terminal.app等）ではCtrl+Hが`^H(0x08)`として送られるが、OpenCodeのデフォルトkeybindsには含まれていない
-- `~/.config/opencode/opencode.json`に`input_backspace`の設定を追加することで解決
-- 端末によってBackspaceの送信方法が異なるのは歴史的経緯によるもの
-
-## 問題
-
-[OpenCode](https://opencode.ai/)で、Ctrl+Hを押しても文字が削除されない。
-
-readline/emacs文化圏ではCtrl+Hはbackspaceとして機能するのが一般的だが、OpenCodeのデフォルト設定では`input_backspace`に`ctrl+h`が含まれていないため認識されない。
-
-## 原因
-
-ターミナルによってキー入力の送信方法が異なる：
-
-- **Terminal.app（macOS標準）**: Ctrl+Hを`^H(0x08)`として送信（Backspaceと同一視）
-- **iTerm2 / Ghostty等**: kitty keyboard protocol等の拡張で修飾情報付きで送信可能
-
-OpenCodeのデフォルトkeybindsは`backspace,shift+backspace`のみで、`ctrl+h`が含まれていない。
+- Terminal.app等はCtrl+Hを`^H(0x08)`として送るが、OpenCodeのデフォルトkeybinds（`backspace,shift+backspace`）に`ctrl+h`が含まれないため文字削除できない
+- `~/.config/opencode/opencode.json`の`input_backspace`に`ctrl+h`を足せば解決
+- iTerm2/Ghostty等はkitty keyboard protocol等の拡張で修飾情報付きで送信できるため、端末によって挙動が異なる
 
 ## 解決方法
 
-`~/.config/opencode/opencode.json`を作成または編集し、以下の設定を追加：
+`~/.config/opencode/opencode.json`：
 
 ```json
 {

@@ -8,17 +8,10 @@ tags: [claude-code, opencode, codex, cli, terminal]
 
 ## まとめ
 
-- Claude Code / OpenCode / Codex CLI は Ctrl+Z でサスペンドして `fg` で復帰できる
+- Claude Code / OpenCode / Codex CLI はいずれも Ctrl+Z でサスペンドして `fg` で復帰できる（Unixのジョブコントロール）
 - vimでCtrl+Z → シェル作業 → fgで戻る、と同じ要領
 - セッションやコンテキストは維持される
 - `ls` や `git status` など、ちょっとしたコマンドでディレクトリの状況確認したいときに重宝する
-
-## Ctrl+Z と fg の仕組み
-
-Unixのジョブコントロール機能。
-
-- **Ctrl+Z**: フォアグラウンドのプロセスにSIGTSTPシグナルを送り、サスペンド（一時停止）する
-- **fg**: サスペンドしたジョブをフォアグラウンドに戻す
 
 ## 使い方
 
@@ -29,16 +22,7 @@ Unixのジョブコントロール機能。
 # シェルで好きなコマンドを実行
 $ ls
 $ git status
-$ git diff
 
 # fg で復帰
 $ fg
 ```
-
-## 対応状況
-
-| ツール      | Ctrl+Z サスペンド |
-| ----------- | ----------------- |
-| Claude Code | ○                 |
-| OpenCode    | ○                 |
-| Codex CLI   | ○                 |

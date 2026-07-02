@@ -9,26 +9,13 @@ tags: [codex, opencode, opencode-zen, configuration]
 ## まとめ
 
 - Codex CLIは`model_providers`でカスタムプロバイダーを定義でき、OpenCode Zenも利用可能
-- `OPENAI_BASE_URL`の上書きではなく、`model_providers` + `profiles`の組み合わせが正解
-- `codex exec -p <profile>` で起動する（ルートレベルの`codex -p <profile> exec`はプロファイルが伝播されないバグがある）
-- OpenCode Zenの`/models`エンドポイントはCodex CLI独自フォーマットと異なるためエラーログが出るが、動作に支障はない
+- 単純な`OPENAI_BASE_URL`の上書きでは動かず、`model_providers` + `profiles`の組み合わせが正解
+- `codex exec -p <profile>`で起動する（`codex -p <profile> exec`は`-p`がTUI側に吸われexecに伝播されないバグがあり動かない）
+- 起動時に`/models`のデコードエラーログ（`missing field 'models'`）が出るが、ビルトインのモデル定義にフォールバックするため無視してよい
 
-## 問題
+## 設定
 
-OpenCode ZenはOpenAI互換のAPIゲートウェイで、GPT・Claude・Gemini等のモデルに統一的にアクセスできる。Codex CLIのバックエンドとして使いたいが、単純な`OPENAI_BASE_URL`の上書きでは動かない。
-
-```bash
-# これは動かない
-env OPENAI_BASE_URL="https://opencode.ai/zen/v1" \
-  OPENAI_API_KEY="$OPENCODE_ZEN_KEY" \
-  codex --model gpt-5.2-codex "hi"
-```
-
-## 解決方法
-
-### 1. config.tomlにプロバイダーとプロファイルを追加
-
-`~/.codex/config.toml`に以下を追加：
+`~/.codex/config.toml`に追加：
 
 ```toml
 [model_providers.opencode]
@@ -43,24 +30,17 @@ model_provider = "opencode"
 model_reasoning_effort = "xhigh"
 ```
 
-### 2. 環境変数を設定
+APIキーは https://opencode.ai/auth で取得する。
 
 ```bash
 export OPENCODE_ZEN_KEY="your-api-key-here"
 ```
 
-APIキーは https://opencode.ai/auth で取得できる。
-
-### 3. 起動
+## 使い方
 
 ```bash
 codex exec -p zen "hi"
-```
-
-対話モードも同様：
-
-```bash
-codex exec -p zen
+codex exec -p zen        # 対話モード
 ```
 
 シェル関数にしておくと便利：
@@ -72,26 +52,7 @@ zcodex() {
 }
 ```
 
-## ハマりどころ
-
-### `-p`フラグの配置
-
-`codex -p zen exec "hi"` は動かない。`-p`がTUI側のCLI定義に吸われ、execサブコマンドに伝播されない。必ず`codex exec -p zen`の順序で指定する。
-
-### /modelsエンドポイントのエラーログ
-
-起動時に以下のようなエラーが出るが、無視してよい：
-
-```
-ERROR codex_core::models_manager::manager: failed to refresh available models:
-  failed to decode models response: missing field `models`
-```
-
-Codex CLIは`/models`に独自スキーマ（`{"models": [...]}`）を期待するが、OpenCode Zenは標準OpenAI形式（`{"data": [...]}`）を返す。ビルトインのモデル定義にフォールバックするため、実際の動作に影響はない。
-
-### 利用可能なモデル
-
-OpenCode Zenで使えるモデルは以下で確認できる：
+## 利用可能なモデル
 
 ```bash
 curl -s -H "Authorization: Bearer $OPENCODE_ZEN_KEY" \
