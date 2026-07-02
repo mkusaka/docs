@@ -1,0 +1,86 @@
+---
+title: "Claude Codeで認証だけ分けてセッションを共有する"
+date: 2026-07-02
+description: "CLAUDE_CONFIG_DIRをprofile化し、認証は分けつつprojectsやsessionsはsymlinkで共有する"
+categories: [tips]
+tags: [claude-code, cli, configuration]
+---
+
+## まとめ
+
+- Claude Codeは`CLAUDE_CONFIG_DIR`で設定ディレクトリを切り替えられる
+- `CLAUDE_PROFILE`は標準ではないので、シェル関数で`CLAUDE_PROFILE` → `CLAUDE_CONFIG_DIR`に変換する
+- `~/.claude.json`はOAuth sessionなどを含むので共有しない
+- `projects`、`sessions`、`transcripts`、`history.jsonl`あたりだけsymlinkすると、認証は分けつつ履歴はだいたい共有できる
+
+## やりたいこと
+
+Claude Codeをwork/personalなど複数アカウントで使い分けたい。
+
+ただし、過去セッションやresume候補まで完全に分けたいわけではない。
+
+```text
+work auth:     ~/.claude/.claude.json
+personal auth: ~/.claude-personal/.claude.json
+shared state:  projects/, sessions/, transcripts/, history.jsonl
+```
+
+つまり、**認証だけ分けて、作業履歴は共有する**。
+
+## CLAUDE_PROFILEを作る
+
+Claude Code標準に`CLAUDE_PROFILE`はない。なので、`~/.zshrc`などで作る。
+
+```zsh
+claude() {
+  local dir
+
+  case "${CLAUDE_PROFILE:-default}" in
+    default|work) dir="$HOME/.claude" ;;
+    personal) dir="$HOME/.claude-personal" ;;
+    *)
+      echo "unknown CLAUDE_PROFILE: ${CLAUDE_PROFILE}" >&2
+      echo "expected: default, work, or personal" >&2
+      return 2
+      ;;
+  esac
+
+  CLAUDE_CONFIG_DIR="$dir" command claude "$@"
+}
+```
+
+使い方：
+
+```bash
+claude
+CLAUDE_PROFILE=personal claude
+CLAUDE_PROFILE=personal claude auth login
+```
+
+## セッションだけ共有する
+
+`~/.claude-personal`を作り、共有したいものだけ`~/.claude`へsymlinkする。
+
+```bash
+profile="$HOME/.claude-personal"
+shared="$HOME/.claude"
+
+mkdir -p "$profile"
+
+for item in projects sessions transcripts todos file-history history.jsonl; do
+  [ -e "$shared/$item" ] || continue
+  [ -e "$profile/$item" ] || [ -L "$profile/$item" ] || ln -s "$shared/$item" "$profile/$item"
+done
+```
+
+## 注意点
+
+- `~/.claude.json`は共有しない
+- `credentials`、`token`、`oauth`、`auth`っぽいファイルも共有しない
+- `--continue`やtrust設定など、`.claude.json`側のstateに寄るものはprofileごとに分かれることがある
+- Claude Code公式の想定は`CLAUDE_CONFIG_DIR`単位の分離なので、この構成はsymlink運用
+
+## ref
+
+- [Claude Code Environment variables](https://code.claude.com/docs/en/env-vars)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
