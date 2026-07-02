@@ -183,40 +183,6 @@ codex exec "Reply OK"
 CODEX_PROFILE=alternate codex exec "Reply OK"
 ```
 
-## cxporterも同じノリにする
-
-`cxporter`もCodex config/authを読むので、同じ`CODEX_PROFILE`解決にしておくと混乱しにくい。
-
-```zsh
-cxporter() {
-  local profile="${CODEX_PROFILE:-default}"
-  local codex_home
-
-  case "$profile" in
-    default|primary)
-      codex_home="$HOME/.codex"
-      ;;
-    alternate|secondary)
-      codex_home="$HOME/.codex-alternate"
-      ;;
-    *)
-      echo "unknown CODEX_PROFILE: $profile" >&2
-      echo "expected: default or alternate" >&2
-      return 2
-      ;;
-  esac
-
-  CODEX_HOME="$codex_home" command cxporter "$@"
-}
-```
-
-これで以下のように使える。
-
-```bash
-cxporter list --server codex_apps
-CODEX_PROFILE=alternate cxporter list --server codex_apps
-```
-
 ## MCP credentialの扱い
 
 通常MCP OAuth credentialのfile storeは`.credentials.json`に入る。これを共有したい場合はsymlinkできる。
