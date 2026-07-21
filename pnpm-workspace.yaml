@@ -15,3 +15,6 @@ trustPolicy: no-downgrade
 blockExoticSubdeps: true
 trustPolicyExclude:
   - "semver@6.3.1"
+minimumReleaseAgeExclude:
+  # Renovate security update: astro@7.1.0
+  - astro@7.1.0
