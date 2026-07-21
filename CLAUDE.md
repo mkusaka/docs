@@ -26,7 +26,7 @@ pnpm lint                 # Lint with oxlint
 
 - **Runtime**: Cloudflare Workers with Static Assets
 - **Framework**: Astro static pages + React islands
-- **AI**: Vercel AI SDK v6 (`streamText`) + OpenAI or Google Generative AI
+- **AI**: Vercel AI SDK (`streamText`) + Google Generative AI
 - **Styling**: Tailwind CSS v4, Design 7 (OpenAI-inspired dark UI)
 - **Markdown rendering**: Streamdown (streaming-optimized)
 
@@ -60,4 +60,4 @@ pnpm lint                 # Lint with oxlint
 - **Node**: ^24.13.1
 - **Package Manager**: pnpm
 - **Pre-commit**: Lefthook (oxfmt + oxlint)
-- **Env**: `OPENAI_API_KEY` and/or `GOOGLE_GENERATIVE_AI_API_KEY` in `.dev.vars` (local) or Cloudflare Secrets (production)
+- **Env**: `GOOGLE_GENERATIVE_AI_API_KEY` in `.dev.vars` (local) or Cloudflare Secrets (production)

@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.0",
-    "@ai-sdk/openai": "^4.0.0",
     "@ai-sdk/react": "^4.0.0",
     "@astrojs/react": "^6.0.0",
     "@streamdown/cjk": "^1.0.2",

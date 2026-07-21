@@ -1,26 +1,23 @@
 import { Hono } from "hono";
-import { streamText, tool, convertToModelMessages, stepCountIs } from "ai";
+import { streamText, tool, stepCountIs } from "ai";
 import { z } from "zod";
 import { getAllPosts, getPostBySlug } from "../lib/posts";
 import { buildFeed } from "../lib/feed";
 import {
   buildDigestSystemPrompt,
+  buildDigestUserPrompt,
   buildGenerateSystemPrompt,
   buildNotFoundSystemPrompt,
+  buildNotFoundUserPrompt,
   buildSearchSystemPrompt,
 } from "../lib/prompt";
-import {
-  resolveDigestModelName,
-  resolveGenerateModelName,
-  resolveSearchModelName,
-  type EnvSource,
-} from "../lib/ai-model-config";
 import { buildGenerateUserPrompt } from "../lib/generate-prompt-shared.js";
 import { resolveTextModelConfig } from "../lib/ai-provider";
-import type { DigestTools, Language, PostMeta, Style } from "../lib/types";
+import type { Language, PostMeta, Style } from "../lib/types";
 
-interface WorkerEnv extends EnvSource {
+interface WorkerEnv {
   ASSETS: Fetcher;
+  GOOGLE_GENERATIVE_AI_API_KEY: string;
 }
 
 const app = new Hono<{ Bindings: WorkerEnv }>();
@@ -72,46 +69,6 @@ function wantsMarkdown(request: Request) {
 function getPostSlugFromPath(pathname: string) {
   const match = pathname.match(/^\/\d{4}\/\d{2}\/\d{2}\/([^/]+)\/?$/);
   return match?.[1];
-}
-
-function getDigestStyleInstruction(style?: Style): string {
-  switch (style) {
-    case "quick":
-      return `\nStyle instructions (QUICK mode - tool-centric, minimal text):
-- Text: only 1-2 sentence intro. No detailed prose.
-- Use showTopicHighlight for 2-3 major themes (brief summary each).
-- Use showPostCards to surface key posts.
-- End with showTagCloud for navigation.
-- The UI components ARE the digest. Text is just glue between them.`;
-
-    case "detailed":
-    default:
-      return `\nStyle instructions (DETAILED mode - text-centric, rich prose):
-- Write substantial prose covering every article: explain key points, background, and practical value.
-- When mentioning a post in text, always use Markdown link format: [Post Title](/YYYY/MM/DD/slug).
-- The text IS the digest. It should be a complete, standalone read.
-- After the text, add showPostCards for 2-3 featured posts and showTagCloud for navigation.
-- Do NOT use showTopicHighlight - the detailed text already covers topics.`;
-  }
-}
-
-function getNotFoundStyleInstruction(style?: Style): string {
-  switch (style) {
-    case "quick":
-      return `\nStyle instructions (QUICK mode - tool-centric):
-- Write a short, playful 404 message (1 sentence).
-- Use showPostCards to display 3 recommended articles. Pick diverse topics.
-- End with showTagCloud for navigation.
-- Keep text minimal - the UI components are the main content.`;
-
-    case "detailed":
-    default:
-      return `\nStyle instructions (DETAILED mode - text-centric):
-- Write a warm, friendly 404 message (1-2 sentences). Be creative but not silly.
-- Write a "Recommended" section with 3 articles as Markdown links: [Title](/path). For each, add 1-2 sentences explaining why the reader would find it valuable.
-- After the text, use showPostCards to also display the 3 recommended articles as cards.
-- The text should be a complete, standalone read.`;
-  }
 }
 
 function buildDigestTools(allPosts: readonly PostMeta[]) {
@@ -200,8 +157,7 @@ app.post("/api/generate", async (c) => {
     return new Response("Post not found", { status: 404 });
   }
 
-  const modelName = resolveGenerateModelName(language, c.env);
-  const modelConfig = resolveTextModelConfig(modelName, c.env);
+  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "minimal");
 
   const result = streamText({
     ...modelConfig,
@@ -226,8 +182,7 @@ app.post("/api/search", async (c) => {
     });
   }
 
-  const modelName = resolveSearchModelName(c.env);
-  const modelConfig = resolveTextModelConfig(modelName, c.env);
+  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "minimal");
 
   const result = streamText({
     ...modelConfig,
@@ -244,7 +199,6 @@ app.post("/api/digest", async (c) => {
   const tag = body.tag as string | undefined;
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
-  const uiMessages = body.messages ?? [];
   let posts = getAllPosts();
 
   if (topic) {
@@ -256,44 +210,37 @@ app.post("/api/digest", async (c) => {
 
   const recentPosts = posts.slice(0, 10);
   const allPosts = getAllPosts();
-  const modelMessages = await convertToModelMessages(uiMessages);
-  const promptText = `${topic ? `Generate a digest about recent "${topic}" posts.` : tag ? `Generate a digest about posts tagged "${tag}".` : "Generate a digest about recent posts."}${getDigestStyleInstruction(style)}`;
-  const modelName = resolveDigestModelName(language, c.env);
-  const modelConfig = resolveTextModelConfig(modelName, c.env);
+  const promptText = buildDigestUserPrompt({ topic, tag, style });
+  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "medium");
 
   const result = streamText({
     ...modelConfig,
     system: buildDigestSystemPrompt(recentPosts, language),
-    messages:
-      modelMessages.length > 0 ? modelMessages : [{ role: "user" as const, content: promptText }],
+    messages: [{ role: "user", content: promptText }],
     tools: buildDigestTools(allPosts),
     stopWhen: stepCountIs(3),
   });
 
-  return result.toUIMessageStreamResponse<DigestTools>();
+  return result.toUIMessageStreamResponse();
 });
 
 app.post("/api/not-found", async (c) => {
   const body = await c.req.json().catch(() => ({}));
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
-  const uiMessages = body.messages ?? [];
   const posts = getAllPosts();
-  const modelMessages = await convertToModelMessages(uiMessages);
-  const promptText = `The user landed on a 404 page. Generate a friendly message and recommend articles.${getNotFoundStyleInstruction(style)}`;
-  const modelName = resolveDigestModelName(language, c.env);
-  const modelConfig = resolveTextModelConfig(modelName, c.env);
+  const promptText = buildNotFoundUserPrompt(style);
+  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "medium");
 
   const result = streamText({
     ...modelConfig,
     system: buildNotFoundSystemPrompt(posts, language),
-    messages:
-      modelMessages.length > 0 ? modelMessages : [{ role: "user" as const, content: promptText }],
+    messages: [{ role: "user", content: promptText }],
     tools: buildDigestTools(posts),
     stopWhen: stepCountIs(3),
   });
 
-  return result.toUIMessageStreamResponse<DigestTools>();
+  return result.toUIMessageStreamResponse();
 });
 
 app.all("*", async (c) => {

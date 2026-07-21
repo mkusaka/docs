@@ -15,7 +15,7 @@ Personal tech blog and docs site built with Astro static pages and a Cloudflare 
 
 - Node.js ^24.13.1
 - pnpm
-- OpenAI API key and/or Google Generative AI API key
+- Google Generative AI API key
 
 ## Installation
 
@@ -28,8 +28,7 @@ pnpm install
 Create `.dev.vars` for local development:
 
 ```
-OPENAI_API_KEY=your_key_here
-# GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
+GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
 ```
 
 ## Development

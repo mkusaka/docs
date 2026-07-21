@@ -5,23 +5,13 @@ import {
   buildGenerateSystemPrompt,
   buildGenerateUserPrompt,
 } from "../lib/generate-prompt-shared.js";
+import { AI_MODEL } from "../lib/ai-model-config.ts";
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
-const OPENAI_MODELS = (process.env.OPENAI_MODELS || "gpt-5-mini,gpt-5-nano")
-  .split(",")
-  .map((value) => value.trim())
-  .filter(Boolean);
-const OPENAI_REASONING_EFFORT = process.env.OPENAI_REASONING_EFFORT || "low";
-const OPENAI_JUDGE_MODEL = process.env.OPENAI_JUDGE_MODEL || "gpt-5.4";
-const OPENAI_JUDGE_REASONING_EFFORT = process.env.OPENAI_JUDGE_REASONING_EFFORT || "minimal";
 const RUNS_PER_CASE = Number.parseInt(process.env.RUNS_PER_CASE || "1", 10);
 const REQUEST_TIMEOUT_MS = Number.parseInt(process.env.REQUEST_TIMEOUT_MS || "120000", 10);
 
-if (!process.env.GOOGLE_API_KEY) {
-  throw new Error("GOOGLE_API_KEY is required");
-}
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("OPENAI_API_KEY is required");
+if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+  throw new Error("GOOGLE_GENERATIVE_AI_API_KEY is required");
 }
 
 const contentIndexPath = path.resolve("lib/generated/content-index.json");
@@ -191,24 +181,8 @@ function parseGeminiText(payload) {
     .trim();
 }
 
-function parseOpenAIText(payload) {
-  if (typeof payload?.output_text === "string") {
-    return payload.output_text.trim();
-  }
-
-  const texts = [];
-  for (const item of payload?.output || []) {
-    for (const content of item?.content || []) {
-      if (typeof content?.text === "string") {
-        texts.push(content.text);
-      }
-    }
-  }
-  return texts.join("\n").trim();
-}
-
-async function callGemini({ system, prompt }) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(process.env.GOOGLE_API_KEY)}`;
+async function callGemini({ system, prompt, thinkingLevel }) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(AI_MODEL)}:generateContent`;
   const body = {
     systemInstruction: {
       role: "system",
@@ -220,12 +194,19 @@ async function callGemini({ system, prompt }) {
         parts: [{ text: prompt }],
       },
     ],
+    generationConfig: {
+      thinkingConfig: {
+        thinkingLevel,
+        includeThoughts: false,
+      },
+    },
   };
 
   const { response, headersMs, totalMs, bodyText } = await fetchWithTiming(url, {
     method: "POST",
     headers: {
       "content-type": "application/json",
+      "x-goog-api-key": process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     },
     body: JSON.stringify(body),
   });
@@ -242,57 +223,13 @@ async function callGemini({ system, prompt }) {
   }
 
   return {
-    model: GEMINI_MODEL,
+    model: AI_MODEL,
     provider: "gemini",
     headersMs,
     totalMs,
     raw: payload,
     output: parseGeminiText(payload),
     finishReason: payload?.candidates?.[0]?.finishReason ?? null,
-  };
-}
-
-async function callOpenAI({ model, system, prompt, reasoningEffort = OPENAI_REASONING_EFFORT }) {
-  const body = {
-    model,
-    reasoning: {
-      effort: reasoningEffort,
-    },
-    instructions: system,
-    input: prompt,
-  };
-
-  const { response, headersMs, totalMs, bodyText } = await fetchWithTiming(
-    "https://api.openai.com/v1/responses",
-    {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify(body),
-    },
-  );
-
-  let payload;
-  try {
-    payload = JSON.parse(bodyText);
-  } catch (error) {
-    throw new Error(`OpenAI returned non-JSON response: ${error}`);
-  }
-
-  if (!response.ok) {
-    throw new Error(`OpenAI API error ${response.status}: ${bodyText}`);
-  }
-
-  return {
-    model,
-    provider: "openai",
-    headersMs,
-    totalMs,
-    raw: payload,
-    output: parseOpenAIText(payload),
-    finishReason: payload?.status ?? null,
   };
 }
 
@@ -355,18 +292,17 @@ ${benchmarkCase.post.rawContent}
 Generated output:
 ${run.output}`;
 
-  const judged = await callOpenAI({
-    model: OPENAI_JUDGE_MODEL,
+  const judged = await callGemini({
     system,
     prompt,
-    reasoningEffort: OPENAI_JUDGE_REASONING_EFFORT,
+    thinkingLevel: "high",
   });
   const parsed = extractJsonObject(judged.output);
   if (!parsed) {
     throw new Error(`Judge output was not valid JSON: ${judged.output}`);
   }
   return {
-    judgeModel: OPENAI_JUDGE_MODEL,
+    judgeModel: AI_MODEL,
     judgeLatencyMs: judged.totalMs,
     ...parsed,
     script_language_pass: languageCheck.pass,
@@ -477,10 +413,8 @@ function toMarkdown(results, rows) {
 
 const results = {
   generatedAt: new Date().toISOString(),
-  geminiModel: GEMINI_MODEL,
-  openaiModels: OPENAI_MODELS,
-  openaiReasoningEffort: OPENAI_REASONING_EFFORT,
-  judgeModel: OPENAI_JUDGE_MODEL,
+  model: AI_MODEL,
+  judgeModel: AI_MODEL,
   runsPerCase: RUNS_PER_CASE,
   cases: [],
 };
@@ -497,11 +431,10 @@ for (const benchmarkCase of cases) {
   };
 
   const modelRunners = [
-    { label: GEMINI_MODEL, fn: () => callGemini({ system, prompt }) },
-    ...OPENAI_MODELS.map((model) => ({
-      label: model,
-      fn: () => callOpenAI({ model, system, prompt }),
-    })),
+    {
+      label: AI_MODEL,
+      fn: () => callGemini({ system, prompt, thinkingLevel: "minimal" }),
+    },
   ];
 
   caseResult.runsByModel = await Promise.all(

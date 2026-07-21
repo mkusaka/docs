@@ -7,7 +7,7 @@ import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
-import { resolveDigestDisplayModel } from "@/lib/ai-model-config";
+import { AI_MODEL } from "@/lib/ai-model-config";
 import type { Language, StyleOptions, DigestTools } from "@/lib/types";
 import type { UIMessage } from "ai";
 import { isSupportedLanguage } from "@/lib/language";
@@ -57,7 +57,6 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
     }),
     [topic, tag, style.language, style.style],
   );
-  const displayedModel = resolveDigestDisplayModel(style.language);
 
   const initialRef = useRef(false);
   useEffect(() => {
@@ -107,7 +106,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
           )}
           <span>{topic ? `${topic} Digest` : tag ? `${tag} Digest` : "Weekly Digest"}</span>
           <span className="text-muted-foreground/50">·</span>
-          <span className="text-muted-foreground/70">{displayedModel}</span>
+          <span className="text-muted-foreground/70">{AI_MODEL}</span>
         </div>
         <CardAction>
           <Button variant="outline" size="xs" onClick={handleRegenerate} disabled={isLoading}>
