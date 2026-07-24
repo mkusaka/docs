@@ -85,7 +85,7 @@ function countMatches(text, pattern) {
 function detectLanguageByScript(language, output) {
   const visibleText = removeUrls(stripCodeBlocks(output))
     .replace(/`[^`]*`/g, " ")
-    .replace(/\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/\s+/g, " ");
 
   const scriptCounts = {
@@ -118,8 +118,10 @@ function detectLanguageByScript(language, output) {
         : "Japanese kana or Hangul appeared, or Han usage was too low.";
       break;
     case "ko":
-      pass = scriptCounts.hangul >= 20;
-      reason = pass ? "Hangul dominates the prose." : "Hangul usage was too low.";
+      pass = scriptCounts.hangul >= 20 && jaKana === 0;
+      reason = pass
+        ? "Hangul dominates without Japanese kana."
+        : "Japanese kana appeared, or Hangul usage was too low.";
       break;
     default:
       reason = "Unknown language.";
@@ -421,7 +423,11 @@ const results = {
 
 for (const benchmarkCase of cases) {
   const system = buildGenerateSystemPrompt(benchmarkCase.language);
-  const prompt = buildGenerateUserPrompt(benchmarkCase.post.rawContent, benchmarkCase.style);
+  const prompt = buildGenerateUserPrompt(
+    benchmarkCase.post.rawContent,
+    benchmarkCase.style,
+    benchmarkCase.language,
+  );
   const caseResult = {
     id: benchmarkCase.id,
     slug: benchmarkCase.slug,

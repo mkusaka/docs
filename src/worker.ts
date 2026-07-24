@@ -162,7 +162,7 @@ app.post("/api/generate", async (c) => {
   const result = streamText({
     ...modelConfig,
     system: buildGenerateSystemPrompt(language),
-    prompt: buildGenerateUserPrompt(post.rawContent, style),
+    prompt: buildGenerateUserPrompt(post.rawContent, style, language),
   });
 
   return result.toTextStreamResponse();
@@ -210,7 +210,7 @@ app.post("/api/digest", async (c) => {
 
   const recentPosts = posts.slice(0, 10);
   const allPosts = getAllPosts();
-  const promptText = buildDigestUserPrompt({ topic, tag, style });
+  const promptText = buildDigestUserPrompt({ topic, tag, style, language });
   const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "medium");
 
   const result = streamText({
@@ -229,7 +229,7 @@ app.post("/api/not-found", async (c) => {
   const language = body.language as Language | undefined;
   const style = body.style as Style | undefined;
   const posts = getAllPosts();
-  const promptText = buildNotFoundUserPrompt(style);
+  const promptText = buildNotFoundUserPrompt(style, language);
   const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "medium");
 
   const result = streamText({
