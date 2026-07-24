@@ -1,0 +1,23 @@
+---
+title: "AIコーディングエージェントに過剰な防御コードを書かせない"
+date: 2026-07-24
+description: "実際の要件と現実的な障害に絞り、根拠のないfallbackや抽象化を増やさないためのAGENTS.md向け指示"
+categories: [tips]
+tags: [ai, coding-agent, agents-md]
+---
+
+## まとめ
+
+- AIコーディングエージェントは、念のためのfallbackや互換分岐を増やしがち
+- `AGENTS.md`に、確認できている要件と現実的な障害を扱う最も単純な実装を選ぶよう明記する
+- エラーハンドリングを省くのではなく、根拠のない複雑さを足さないための指示
+
+## 指示
+
+```md
+IMPORTANT: Do not write overly defensive code. Prefer the simplest implementation that handles demonstrated requirements and realistic failure modes. Do not add speculative fallbacks, compatibility branches, or abstractions without concrete evidence that they are needed.
+```
+
+## ref
+
+- [@kennさんのポスト](https://x.com/i/status/2080539722456383874)
