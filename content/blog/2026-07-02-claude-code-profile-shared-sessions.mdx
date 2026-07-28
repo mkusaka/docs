@@ -1,7 +1,7 @@
 ---
 title: "Claude Codeで認証だけ分けてセッションを共有する"
 date: 2026-07-02
-description: "CLAUDE_CONFIG_DIRをprofile化し、認証は分けつつprojectsやsessionsはsymlinkで共有する"
+description: "CLAUDE_CONFIG_DIRをprofile化し、認証は分けつつsettings.jsonやsessionsはsymlinkで共有する"
 categories: [tips]
 tags: [claude-code, cli, configuration]
 ---
@@ -11,7 +11,7 @@ tags: [claude-code, cli, configuration]
 - Claude Codeは`CLAUDE_CONFIG_DIR`で設定ディレクトリを切り替えられる
 - `CLAUDE_PROFILE`は標準ではないので、シェル関数で`CLAUDE_PROFILE` → `CLAUDE_CONFIG_DIR`に変換する
 - `~/.claude.json`はOAuth sessionなどを含むので共有しない
-- `projects`、`sessions`、`transcripts`、`history.jsonl`あたりだけsymlinkすると、認証は分けつつ履歴はだいたい共有できる
+- `settings.json`と`projects`、`sessions`、`transcripts`、`history.jsonl`あたりだけsymlinkすると、認証は分けつつ設定と履歴はだいたい共有できる
 
 ## CLAUDE_PROFILEを作る
 
@@ -41,9 +41,9 @@ CLAUDE_PROFILE=personal claude
 CLAUDE_PROFILE=personal claude auth login
 ```
 
-## セッションだけ共有する
+## 設定とセッションを共有する
 
-`~/.claude-personal`を作り、共有したいものだけ`~/.claude`へsymlinkする。
+`~/.claude-personal`を作り、ユーザー設定の`settings.json`とセッション履歴だけ`~/.claude`へsymlinkする。
 
 ```bash
 profile="$HOME/.claude-personal"
@@ -51,7 +51,7 @@ shared="$HOME/.claude"
 
 mkdir -p "$profile"
 
-for item in projects sessions transcripts todos file-history history.jsonl; do
+for item in settings.json projects sessions transcripts todos file-history history.jsonl; do
   [ -e "$shared/$item" ] || continue
   [ -e "$profile/$item" ] || [ -L "$profile/$item" ] || ln -s "$shared/$item" "$profile/$item"
 done
