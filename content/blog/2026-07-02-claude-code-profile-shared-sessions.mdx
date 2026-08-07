@@ -43,13 +43,7 @@ CLAUDE_PROFILE=personal claude auth login
 
 ## 設定とセッションを共有する
 
-`~/.claude-personal`を作り、次の項目を`~/.claude`へsymlinkする。
-
-| 種類 | 項目 |
-| --- | --- |
-| 設定 | `settings.json` |
-| 拡張 | `skills`、`commands` |
-| 履歴・状態 | `projects`、`sessions`、`transcripts`、`todos`、`tasks`、`plans`、`file-history`、`history.jsonl` |
+`~/.claude-personal`を作り、ユーザー設定、skillやcommand、セッション履歴を`~/.claude`へsymlinkする。
 
 ```bash
 profile="$HOME/.claude-personal"
