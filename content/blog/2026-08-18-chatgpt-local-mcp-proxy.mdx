@@ -1,0 +1,81 @@
+---
+title: "ChatGPTからローカルのCodexに接続して実装させる"
+date: 2026-08-18
+description: "Secure MCP Tunnel（gtunnel）とCodex MCP Serverを使い、ローカル環境を公開せずにChatGPTから実装を依頼する"
+categories: [tools]
+tags: [chatgpt, mcp, codex, tunnel, security]
+---
+
+## まとめ
+
+- ChatGPTからローカルのCodexに接続して実装を依頼するには、公開URLではなくSecure MCP Tunnel（gtunnel）を使える
+- `tunnel-client`はローカルからOpenAIへ外向きのHTTPS接続を作り、MCPサーバーをインターネットへ公開しない
+- `codex mcp-server`を指定すれば、CodexのMCPサーバーをそのままChatGPTから利用できる
+- Codex MCP ServerがChatGPTの`server/discover`に対応していないため、薄い互換proxyを挟んだ
+
+Secure MCP Tunnelは2026年6月にOpenAIから紹介された仕組みで、ローカル側から外向きに接続するのが特徴になる。
+
+## 構成
+
+```text
+ChatGPT
+  │ Secure MCP Tunnel
+  ▼
+tunnel-client ── tmcproxy ── codex mcp-server
+```
+
+Secure MCP Tunnelは、ローカルで起動した`tunnel-client`がOpenAIへ外向きに接続する。ChatGPTからのMCPリクエストはトンネル経由でローカルへ届き、ローカルMCPの応答も同じ経路で返る。MCPサーバー側で公開ポートを開く必要はない。
+
+## tunnel-clientを用意する
+
+PlatformのTunnel設定から`tunnel_id`を作成し、runtime API keyを用意する。`tunnel-client`は同じ画面のダウンロードリンク、または[公式リリース](https://github.com/openai/tunnel-client)からインストールする。
+
+必要な権限は用途ごとに異なる。
+
+- Tunnelを作成・編集する: Tunnels Read + Manage
+- `tunnel-client`を起動する、ChatGPT側でTunnelを選ぶ: Tunnels Read + Use
+- Platform組織とChatGPTワークスペースの関連付けを変更する: 組織の管理権限
+
+`tunnel-client`が使うのはruntime API keyで、Admin API keyではない。キーを発行したら、値は環境変数にだけ設定する。設定ファイルや記事、リポジトリには保存しない。
+
+stdio MCPサーバー用のプロファイルを作る。
+
+```bash
+export CONTROL_PLANE_API_KEY="<runtime-api-key>"
+
+tunnel-client init \
+  --sample sample_mcp_stdio_local \
+  --profile local-codex \
+  --tunnel-id "<tunnel-id>" \
+  --mcp-command "node /path/to/tmcproxy/src/tmcproxy.ts -- codex mcp-server"
+
+tunnel-client doctor --profile local-codex --explain
+tunnel-client run --profile local-codex
+```
+
+`doctor`が成功したら、`tunnel-client run`は起動したままにする。`/readyz`やローカル管理画面で状態を確認できる。
+
+## ChatGPTからローカルのCodexへ接続する
+
+ChatGPTのPluginsから開発者モードのアプリを作り、接続方式にTunnelを選ぶ。利用可能なTunnelから先ほどのTunnelを選択し、認証方式は「認証なし」を選ぶ。必要な確認に同意して作成する。
+
+この構成では、MCPサーバー側のOAuth認証は使わない。Tunnelへの接続は`tunnel-client`のruntime API keyで行う。
+
+ChatGPTは接続時に`server/discover`を送り、利用可能なMCPの能力を確認する。
+
+## Codex MCP Serverとproxy
+
+`codex mcp-server`はstdioでMCPサーバーを起動できるため、Tunnelの下流コマンドに指定できる。ただし、ChatGPTが最初に送る`server/discover`には対応していない。
+
+`server/discover`用に`initialize`を先に送ると、Codexの「initializeは一度だけ」という制約と衝突する。そこで、[tmcproxy](https://github.com/mkusaka/tmcproxy)では`server/discover`だけを処理し、`tools/list`で能力を確認する。`initialize`、`tools/list`、`tools/call`などの他のJSON-RPCはそのままCodexへ転送する。
+
+## 注意点
+
+MCPサーバーを公開せずに接続できる一方、ChatGPTからローカルのファイル操作やコマンド実行が可能になる。接続するMCPサーバー、公開するツール、ChatGPT側のアクション権限を確認してから使う。
+
+## ref
+
+- [Secure MCP Tunnel - OpenAI Developers](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels)
+- [Developer mode and MCP apps in ChatGPT](https://help.openai.com/en/articles/12584461-developer-mode-and-full-mcp-connectors-in-chatgpt-beta)
+- [mkusaka/tmcproxy](https://github.com/mkusaka/tmcproxy)
+- [Discovery - Model Context Protocol](https://modelcontextprotocol.io/specification/draft/server/discover)
