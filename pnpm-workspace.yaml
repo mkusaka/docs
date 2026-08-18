@@ -20,3 +20,5 @@ minimumReleaseAgeExclude:
   - astro@7.1.0
   # Renovate security update: hono@4.12.34
   - hono@4.12.34
+  # ponytail: bypass 7-day minimumReleaseAge for @cloudflare/workers-types v5; remove after 2026-08-22 when the version is mature
+  - "@cloudflare/workers-types@5.20260815.1"

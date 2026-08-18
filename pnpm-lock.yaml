@@ -70,8 +70,8 @@ importers:
         version: 4.4.3
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: 4.20260702.1
-        version: 4.20260702.1
+        specifier: 5.20260815.1
+        version: 5.20260815.1
       '@tailwindcss/postcss':
         specifier: 4.3.3
         version: 4.3.3
@@ -110,7 +110,7 @@ importers:
         version: 7.0.2
       wrangler:
         specifier: 4.120.1
-        version: 4.120.1(@cloudflare/workers-types@4.20260702.1)
+        version: 4.120.1(@cloudflare/workers-types@5.20260815.1)
 
 packages:
 
@@ -494,8 +494,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-types@4.20260702.1':
-    resolution: {integrity: sha512-mOhf5TUEB1m2vPrxtqoIGfz0fUC9xyxRDx5gWHy5s+OCo6dcV+g7wI1R7gYCMFohhqF/2y2xeKVwMwCJjfn/WA==}
+  '@cloudflare/workers-types@5.20260815.1':
+    resolution: {integrity: sha512-btpW8rEgeJKcxDlBWKxzjLLUHxzUWqXZY8O+DmM6NcSHadUQN5I71z6Q/yAKCTJyGS7adBpXzlsZSFbosLnECQ==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -5895,7 +5895,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20260804.1':
     optional: true
 
-  '@cloudflare/workers-types@4.20260702.1': {}
+  '@cloudflare/workers-types@5.20260815.1': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -10859,7 +10859,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20260804.1
       '@cloudflare/workerd-windows-64': 1.20260804.1
 
-  wrangler@4.120.1(@cloudflare/workers-types@4.20260702.1):
+  wrangler@4.120.1(@cloudflare/workers-types@5.20260815.1):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.5.0
       '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260804.1)
@@ -10870,7 +10870,7 @@ snapshots:
       unenv: 2.0.0-rc.24
       workerd: 1.20260804.1
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20260702.1
+      '@cloudflare/workers-types': 5.20260815.1
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil
