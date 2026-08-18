@@ -79,6 +79,8 @@ command: "node /path/to/tmcproxy/src/tmcproxy.ts -- codex mcp-server"
 
 MCPサーバーを公開せずに接続できる一方、ChatGPTからローカルのファイル操作やコマンド実行が可能になる。接続するMCPサーバー、公開するツール、ChatGPT側のアクション権限を確認してから使う。
 
+ChatGPT 経由で `tools/call` を実行する場合、OpenAI 側の **command response deadline**（通常 3 分）で打ち切られる。`MCP_CONNECTION_MAX_TTL`（`tunnel-client` 側、デフォルト 10 分）は接続の寿命だが、1 回のツール呼び出し自体はコントロールプレーンから送られる `response_timeout`（3 分）で制限される。`tmcproxy` ではこの 3 分を伸ばせない。`codex` や `subagent` のように 3 分を超える可能性があるツールを呼ぶと、`tunnel-client` が接続を閉じ、`tmcproxy` は `EPIPE` でシャットダウンする。長時間エージェントを実行したい場合は、ChatGPT から直接ではなくローカルで `codex` を使うか、実行時間を 3 分以内に収めた小さいタスクに分ける。
+
 Tunnelはチャットごとに作られるのではなく、起動中の`tunnel-client`と下流MCPプロセスを複数のチャットで共有する。Codexの場合はproxyと`codex mcp-server`も共有される。チャットごとに完全に分離したい場合は、それぞれに別のTunnelとMCPプロセスを用意する必要がある。複数チャットから同時に使う場合は、下流MCPの状態や`initialize`の扱いが競合しないか確認する。
 
 ## ref
