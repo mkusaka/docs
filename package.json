@@ -12,7 +12,7 @@
     "build:content-index": "node scripts/build-content-index.mjs",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "lint": "oxlint --deny-warnings --ignore-pattern 'dist/**' --ignore-pattern '.astro/**' ."
+    "lint": "oxlint --deny-warnings ."
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.0",
