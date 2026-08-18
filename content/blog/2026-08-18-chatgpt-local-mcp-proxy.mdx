@@ -1,17 +1,17 @@
 ---
-title: "ChatGPTからローカルのCodexに接続して実装させる"
+title: "ChatGPTからローカルMCPを安全に操作する"
 date: 2026-08-18
-description: "Secure MCP Tunnel（gtunnel）とCodex MCP Serverを使い、ローカル環境を公開せずにChatGPTから実装を依頼する"
+description: "Secure MCP Tunnel（gtunnel）を使い、ローカル環境を公開せずにChatGPTからMCPを操作する"
 categories: [tools]
 tags: [chatgpt, mcp, codex, tunnel, security]
 ---
 
 ## まとめ
 
-- ChatGPTからローカルのCodexに接続して実装を依頼するには、公開URLではなくSecure MCP Tunnel（gtunnel）を使える
+- ChatGPTからローカルMCPを操作するには、公開URLではなくSecure MCP Tunnel（gtunnel）を使える
 - `tunnel-client`はローカルからOpenAIへ外向きのHTTPS接続を作り、MCPサーバーをインターネットへ公開しない
-- `codex mcp-server`を指定すれば、CodexのMCPサーバーをそのままChatGPTから利用できる
-- Codex MCP ServerがChatGPTの`server/discover`に対応していないため、薄い互換proxyを挟んだ
+- 通常のMCPサーバーはそのまま接続できる
+- Codex MCP Serverのように`server/discover`へ対応していない場合だけ、互換proxyを挟む
 
 Secure MCP Tunnelは2026年6月にOpenAIから紹介された仕組みで、ローカル側から外向きに接続するのが特徴になる。
 
@@ -21,7 +21,7 @@ Secure MCP Tunnelは2026年6月にOpenAIから紹介された仕組みで、ロ�
 ChatGPT
   │ Secure MCP Tunnel
   ▼
-tunnel-client ── tmcproxy ── codex mcp-server
+tunnel-client ── MCP server
 ```
 
 Secure MCP Tunnelは、ローカルで起動した`tunnel-client`がOpenAIへ外向きに接続する。ChatGPTからのMCPリクエストはトンネル経由でローカルへ届き、ローカルMCPの応答も同じ経路で返る。MCPサーバー側で公開ポートを開く必要はない。
@@ -45,17 +45,17 @@ export CONTROL_PLANE_API_KEY="<runtime-api-key>"
 
 tunnel-client init \
   --sample sample_mcp_stdio_local \
-  --profile local-codex \
+  --profile local-mcp \
   --tunnel-id "<tunnel-id>" \
-  --mcp-command "node /path/to/tmcproxy/src/tmcproxy.ts -- codex mcp-server"
+  --mcp-command "/path/to/mcp/server"
 
-tunnel-client doctor --profile local-codex --explain
-tunnel-client run --profile local-codex
+tunnel-client doctor --profile local-mcp --explain
+tunnel-client run --profile local-mcp
 ```
 
 `doctor`が成功したら、`tunnel-client run`は起動したままにする。`/readyz`やローカル管理画面で状態を確認できる。
 
-## ChatGPTからローカルのCodexへ接続する
+## ChatGPTからローカルMCPへ接続する
 
 ChatGPTのPluginsから開発者モードのアプリを作り、接続方式にTunnelを選ぶ。利用可能なTunnelから先ほどのTunnelを選択し、認証方式は「認証なし」を選ぶ。必要な確認に同意して作成する。
 
@@ -63,15 +63,23 @@ ChatGPTのPluginsから開発者モードのアプリを作り、接続方式に
 
 ChatGPTは接続時に`server/discover`を送り、利用可能なMCPの能力を確認する。
 
-## Codex MCP Serverとproxy
+## Codex MCP Serverを使う場合
 
-`codex mcp-server`はstdioでMCPサーバーを起動できるため、Tunnelの下流コマンドに指定できる。ただし、ChatGPTが最初に送る`server/discover`には対応していない。
+`codex mcp-server`はstdioでMCPサーバーを起動できる。ただし、ChatGPTが最初に送る`server/discover`には対応していないため、通常のMCPサーバーと同じように直接指定すると接続時に失敗する。
 
 `server/discover`用に`initialize`を先に送ると、Codexの「initializeは一度だけ」という制約と衝突する。そこで、[tmcproxy](https://github.com/mkusaka/tmcproxy)では`server/discover`だけを処理し、`tools/list`で能力を確認する。`initialize`、`tools/list`、`tools/call`などの他のJSON-RPCはそのままCodexへ転送する。
+
+Codexを下流にする場合の設定は次のようになる。
+
+```yaml
+command: "node /path/to/tmcproxy/src/tmcproxy.ts -- codex mcp-server"
+```
 
 ## 注意点
 
 MCPサーバーを公開せずに接続できる一方、ChatGPTからローカルのファイル操作やコマンド実行が可能になる。接続するMCPサーバー、公開するツール、ChatGPT側のアクション権限を確認してから使う。
+
+Tunnelはチャットごとに作られるのではなく、起動中の`tunnel-client`と下流MCPプロセスを複数のチャットで共有する。Codexの場合はproxyと`codex mcp-server`も共有される。チャットごとに完全に分離したい場合は、それぞれに別のTunnelとMCPプロセスを用意する必要がある。複数チャットから同時に使う場合は、下流MCPの状態や`initialize`の扱いが競合しないか確認する。
 
 ## ref
 
