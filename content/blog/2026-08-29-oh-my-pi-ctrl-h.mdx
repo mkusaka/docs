@@ -1,0 +1,17 @@
+---
+title: "Oh My PiでCtrl+HをBackspaceにする"
+date: 2026-08-29
+description: "Oh My PiのエディタでCtrl+Hを後方削除に割り当てる"
+categories: [tools]
+tags: [oh-my-pi, keybindings]
+---
+
+`~/.omp/agent/keybindings.yml` に設定する。
+
+```yaml
+tui.editor.deleteCharBackward:
+  - Backspace
+  - Ctrl+H
+```
+
+`Ctrl+H` と `Backspace` が同じ後方削除操作になる。
