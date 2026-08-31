@@ -1,0 +1,59 @@
+---
+title: "Claude Codeのstatus lineをプロセス間の状態共有に使う"
+date: 2026-08-31
+description: "status lineに渡されるrate limit情報をファイルへ保存し、別プロセスから読む"
+categories: [tips]
+tags: [claude-code, cli, configuration]
+---
+
+Claude Codeのstatus lineは表示専用に見えるが、JSONを受け取ってローカルで実行される。ただ表示するだけではもったいない。必要な値を小さなファイルへ書いておけば、シェルや別のCLIからも同じ状態を読める。
+
+ここでは5時間・7日間のrate limitを例にする。Claude Codeはstatus lineの標準入力へ`rate_limits.five_hour`と`rate_limits.seven_day`を渡す。これはClaude Codeが表示のために渡す正規の入力であり、非公式APIを呼ぶ必要はない。
+
+## status lineで最新値を保存する
+
+既存のstatus lineスクリプトに、次を足す。
+
+```bash
+config_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+
+if jq -e '.rate_limits.five_hour? or .rate_limits.seven_day?' >/dev/null <<<"$input"; then
+  umask 077
+  tmp=$(mktemp "$config_dir/.rate-limit.json.XXXXXX")
+  jq -c --arg observed_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{
+    observed_at: $observed_at,
+    five_hour: .rate_limits.five_hour?,
+    seven_day: .rate_limits.seven_day?
+  }' <<<"$input" >"$tmp"
+  mv "$tmp" "$config_dir/rate-limit.json"
+fi
+```
+
+`$input`はstatus lineの先頭で`input=$(cat)`として受け取ったJSON。`mv`で置き換えるので、読む側が途中まで書かれたJSONを読むことはない。ファイルには取得時刻、消費率、リセット時刻だけを残す。
+
+読む側はただの`jq`でよい。
+
+```bash
+jq '{observed_at, five_hour, seven_day}' ~/.claude/rate-limit.json
+```
+
+status lineはセッション開始時と、アシスタントの応答後などに再実行される。これはポーリングではなく、Claude Codeがすでに持っている最新値をローカルへ写すだけの仕組みだ。
+
+## 複数アカウントでは保存先も分ける
+
+`CLAUDE_CONFIG_DIR`はClaude Codeの設定・セッション履歴・プラグインの保存先を切り替える。アカウントごとに設定ディレクトリを分けて起動すれば、status lineが書く`rate-limit.json`も自然に分かれる。
+
+```bash
+CLAUDE_CONFIG_DIR="$HOME/.claude-work" claude
+CLAUDE_CONFIG_DIR="$HOME/.claude-personal" claude
+```
+
+このとき保存先はそれぞれ`~/.claude-work/rate-limit.json`と`~/.claude-personal/rate-limit.json`になる。後から各ファイルを読めば、複数アカウントのrate limitを一か所で表示できる。キャッシュファイルだけはsymlinkで共有しない。
+
+rate limit以外でも、status lineに渡されるコンテキスト使用率、セッション情報、コストなどに同じやり方を使える。UIにある値を、必要なプロセスへ渡すための小さな出口としてstatus lineを扱えばよい。
+
+## ref
+
+- [Customize your status line](https://code.claude.com/docs/en/statusline)
+- [Environment variables: CLAUDE_CONFIG_DIR](https://code.claude.com/docs/en/env-vars)
+- [Claude Codeで認証だけ分けてセッションを共有する](/blog/claude-code-profile-shared-sessions)
