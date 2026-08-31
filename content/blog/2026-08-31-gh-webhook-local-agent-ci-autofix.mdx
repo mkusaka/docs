@@ -1,0 +1,64 @@
+---
+title: "webhookを使ってCI failureを自動修正する"
+date: 2026-08-31
+description: "GitHubのwebhookを起点に、agentでCI failureの修正からmergeまでを回す"
+categories: [tools]
+tags: [github-actions, gh, ai-agent, automation]
+---
+
+`gh webhook` extension を使うと、GitHub の webhook をローカルで受けられる。
+
+```sh
+gh extension install cli/gh-webhook
+gh webhook forward \
+  --repo OWNER/REPOSITORY \
+  --events workflow_run \
+  --url http://127.0.0.1:8765/webhook
+```
+
+```text
+GitHub event
+  → gh webhook forward
+  → localhost
+  → agentを起動するサーバ
+```
+
+たとえば `main` のCIが落ちたら、listener が worktree を作り、LLM agent に修正させる。agent がPRを作り、CIを通れば fast-forward でmergeする。
+
+```text
+main のCI failure
+  → worktree
+  → Devin / Codex / Claude
+  → 修正PR
+  → CI
+  → merge
+```
+
+ローカルで受けたイベントは、必ずしも直接agentを起動しなくてよい。issueを作って Symphony のような実行基盤へ渡してもよい。
+
+## 概念コード
+
+```python
+def on_workflow_run(event):
+    if event["conclusion"] != "failure":
+        return
+
+    worktree = create_worktree(event["head_sha"])
+    pr = run_agent(
+        worktree,
+        prompt=f"CIが失敗した。失敗ログを読んで直し、テストしてPRを作って: {event['id']}",
+    )
+
+    for _ in range(5):
+        if required_checks_pass(pr):
+            merge_fast_forward(pr)
+            return
+        run_agent(worktree, prompt=f"このPRのCIがまだ落ちている。直してpushして: {pr.url}")
+```
+
+PRが増えるほど、個別に拾って直してmergeする作業は重い。webhookを入口にすると、CI failureからmain修正までを自動でつなげられる。
+
+## refs
+
+- [cli/gh-webhook](https://github.com/cli/gh-webhook)
+- [Using the GitHub CLI to forward webhooks for testing](https://docs.github.com/en/webhooks/testing-and-troubleshooting-webhooks/using-the-github-cli-to-forward-webhooks-for-testing)
