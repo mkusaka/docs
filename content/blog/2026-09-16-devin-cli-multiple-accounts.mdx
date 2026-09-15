@@ -8,23 +8,22 @@ tags: [devin, cli, configuration]
 
 ## まとめ
 
-- Devin CLIに`CODEX_HOME`相当の専用環境変数はないが、XDGをそのまま読む。`XDG_DATA_HOME`と`XDG_CONFIG_HOME`を切り替えれば認証・設定・sessionsをまるごと分離できる
-- 認証は`$XDG_DATA_HOME/devin/credentials.toml`、設定は`$XDG_CONFIG_HOME/devin/config.json`、sessionsやlogsは`$XDG_DATA_HOME/devin/cli/`配下にある
-- `DEVIN_PROFILE`を読んでXDGを差し替えるwrapperを`devin`という名前でPATH前方に置くと、Codexの`CODEX_PROFILE`と同じノリで使える
-- `devin.org_id`はuser config専用フィールドで、envやproject configから上書きできない。セッション開始時に書き戻されるので、複数orgに所属する同一アカウントでもprofileごとにorgをpinできる
+- Devin CLIはXDGをそのまま読む。`XDG_DATA_HOME`と`XDG_CONFIG_HOME`を切り替えれば認証・設定・sessionsをまるごと分離できる
+- `DEVIN_PROFILE`を読んでXDGを差し替えるwrapperを`devin`という名前でPATH前方に置くと透過的に切り替わる
+- `devin.org_id`はuser config専用フィールドでenvやproject configから上書きできない。セッション開始時に書き戻されるので、複数orgに所属する同一アカウントでもprofileごとにorgをpinできる
 - sessionsを共有したい場合は`cli/`だけをsymlinkする。`credentials.toml`と`mcp/oauth/`は実ファイルのまま残す
 
-## 前提: ファイル配置
+## ファイル配置
 
-`devin auth status`が credentials のパスを表示してくれるので、まず実体を確認できる。
+`devin auth status`がcredentialsのパスを表示してくれる。
 
-| 種別                                        | パス                                      | profile間で                          |
-| ------------------------------------------- | ----------------------------------------- | ------------------------------------ |
-| 認証                                        | `$XDG_DATA_HOME/devin/credentials.toml`   | 分離する                             |
-| MCP OAuth                                   | `$XDG_DATA_HOME/devin/mcp/oauth/`         | 分離される                           |
-| sessions/transcripts/summaries/logs/plugins | `$XDG_DATA_HOME/devin/cli/`               | symlinkで共有可能                    |
-| 設定・hooks                                 | `$XDG_CONFIG_HOME/devin/config.json`      | 分離する（`devin.org_id`を含むため） |
-| グローバルskills等                          | `$XDG_CONFIG_HOME/devin/`配下の他ファイル | symlinkで共有可能                    |
+| 種別                        | パス                                      | profile間で                          |
+| --------------------------- | ----------------------------------------- | ------------------------------------ |
+| 認証                        | `$XDG_DATA_HOME/devin/credentials.toml`   | 分離する                             |
+| MCP OAuth                   | `$XDG_DATA_HOME/devin/mcp/oauth/`         | 分離される                           |
+| sessions/transcripts/logs等 | `$XDG_DATA_HOME/devin/cli/`               | symlinkで共有可能                    |
+| 設定・hooks                 | `$XDG_CONFIG_HOME/devin/config.json`      | 分離する（`devin.org_id`を含むため） |
+| グローバルskills等          | `$XDG_CONFIG_HOME/devin/`配下の他ファイル | symlinkで共有可能                    |
 
 ## profile切り替えwrapper
 
@@ -33,9 +32,6 @@ tags: [devin, cli, configuration]
 ```sh
 #!/bin/sh
 # DEVIN_PROFILE=<name> devin [...]
-# devin の auth/state を XDG ごと profile 分離する wrapper。
-#   default 以外: XDG_DATA_HOME=~/.local/share/devin-<name>
-#                 XDG_CONFIG_HOME=~/.config/devin-<name>
 set -eu
 
 self="$(cd "$(dirname "$0")" && pwd -P)/$(basename "$0")"
@@ -51,23 +47,15 @@ case "${DEVIN_PROFILE:-default}" in
 esac
 ```
 
-`type -aP`で自分自身を除外して実体を解決する。`DEVIN_PROFILE`未設定時は素通しなので既存の呼び出しは壊れない。
-
-## profileの初期化
-
 ```bash
-# 別アカウントでログイン（ブラウザフロー）
-DEVIN_PROFILE=work devin auth login
-
-# 確認
-DEVIN_PROFILE=work devin auth status
+devin                              # 今まで通り
+DEVIN_PROFILE=work devin auth login  # 別アカウントでログイン
+DEVIN_PROFILE=work devin auth status # Credentials pathが~/.local/share/devin-work/...ならOK
 ```
-
-`auth status`の`Credentials path`が`~/.local/share/devin-work/devin/credentials.toml`になっていれば分離できている。
 
 ## 設定とsessionsの共有
 
-config側は`config.json`だけがorg依存（`devin.org_id`を含む）なので、それ以外をsymlinkする。
+config側は`config.json`だけがorg依存なので、それ以外をsymlinkする。
 
 ```bash
 cd ~/.config/devin-work/devin
@@ -76,17 +64,16 @@ for f in AGENTS.md skills; do
 done
 ```
 
-data側は`credentials.toml`と`mcp/oauth/`を残して`cli/`を丸ごとsymlinkすれば、sessions.db・transcripts・summaries・logs・`trusted_workspaces.json`が全部共有される。`devin list`や`devin -c`/`-r`は共有DBを読むので、どちらのprofileからも同じsession一覧が見える。
+data側は`credentials.toml`と`mcp/oauth/`を残して`cli/`を丸ごとsymlinkすれば、sessions.db・transcripts・logsが共有され、どちらのprofileからも同じsession一覧が見える。
 
 ```bash
-# profile側のcli/が既に存在する場合は退避してから
 mv ~/.local/share/devin-work/devin/cli /tmp/devin-work-cli-bak 2>/dev/null
 ln -sfn ~/.local/share/devin/cli ~/.local/share/devin-work/devin/cli
 ```
 
 ## hooksだけはsymlinkできない
 
-user-levelのhooksは`config.json`の`hooks`キー内にあり、ファイル単位のsymlinkが効かない。profileごとの`config.json`に`hooks`だけ流し込むスクリプトで吸収する（`~/.local/bin/devin-sync-hooks`）:
+user-levelのhooksは`config.json`の`hooks`キー内にあり、ファイル単位のsymlinkが効かない。`hooks`だけを流し込むスクリプトで吸収する（`~/.local/bin/devin-sync-hooks`）:
 
 ```sh
 #!/bin/sh
@@ -106,16 +93,15 @@ jq --argjson h "$(jq '.hooks' "$src")" '.hooks = $h' "$target" > "$tmp"
 mv "$tmp" "$target"
 ```
 
-本体側でhooksを変えたら再度実行する。なお`~/.claude/settings.json`のClaude形式hooksも全profileで読まれるが、こちらはhome固定パスでXDG分離の影響を受けない代わりに、profileごとの出し分けもできない。
+## 注意点
 
-## ハマりどころ
+- `devin.org_id`は`auth login`ではなくセッション開始時に書き戻される。未設定ならデフォルトorg（個人org）に解決される。config.jsonをsymlinkするとorg_idが上書き合戦になる
+- 共有sessions.dbは書き込み競合で`database is locked`になり得る。WALなのでretryすれば通る
+- `read_config_from`はprofile側に引き継がれない。main側でproviderを絞っている場合はprofile側configにも書く
+- devinセッション内では`CHISEL_SESSION_DB`がexport済みで、nestedで`devin`を呼ぶと親のsessions.dbを継承する
+- `WINDSURF_API_KEY`はACP server向けで`devin auth`の認証面には効かない
 
-- **`devin.org_id`はセッション開始時に書き戻される**。`auth login`や`auth status`では書かれない。org_id未設定ならサーバー側のデフォルトorg（個人org）に解決される。同じアカウントで複数orgに所属している場合、profileごとの`config.json`がorgをpinする役割を持つ——config.jsonをsymlinkするとorg_idが上書き合戦になる
-- **共有sessions.dbは`database is locked`になり得る**。複数セッションが同時に書き込んでいる間の`devin list`などがbusy timeoutで失敗することがある。WALなのでretryすれば通る
-- **`read_config_from`はprofile側に引き継がれない**。main側で`claude: false`などproviderを絞っている場合、profile側configに書かないと全providerをスキャンする挙動に戻る
-- **devinセッション内では`CHISEL_SESSION_DB`がexport済み**。nestedで`devin`を呼ぶと親のsessions.dbを継承する
-- **`WINDSURF_API_KEY`はACP server向け**で、`devin auth`の認証面には効かない
+## ref
 
-## 参考
-
-- [Codex CLIで複数アカウントを切り替える](/2026/06/06/codex-cli-multiple-accounts) — 同じ手法のCodex版。Codexは`CODEX_HOME`一発で全部が動くが、DevinはXDGの2変数を切る形になる
+- `devin auth status`
+- [Codex CLIで複数アカウントを切り替える](/2026/06/06/codex-cli-multiple-accounts)
