@@ -1,37 +1,42 @@
 ---
 title: "Devin CLIで複数アカウント・orgを切り替える"
 date: 2026-09-16
-description: "XDG_DATA_HOME/XDG_CONFIG_HOMEを切り替えてDevin CLIの認証と設定をprofileごとに分離し、sessionsはsymlinkで共有する"
+description: "XDG_DATA_HOMEだけを切り替えて認証を分離し、config.jsonは--configで指定、XDG_CONFIG_HOMEは共有。atuin/ghなど共有したいデータはsymlinkで吸収する"
 categories: [tips]
 tags: [devin, cli, configuration]
 ---
 
 ## まとめ
 
-- Devin CLIはXDGをそのまま読む。`XDG_DATA_HOME`と`XDG_CONFIG_HOME`を切り替えれば認証・設定・sessionsをまるごと分離できる
-- `DEVIN_PROFILE`を読んでXDGを差し替えるwrapperを`devin`という名前でPATH前方に置くと透過的に切り替わる
-- `devin.org_id`はuser config専用フィールドでenvやproject configから上書きできない。セッション開始時に書き戻されるので、複数orgに所属する同一アカウントでもprofileごとにorgをpinできる
-- sessionsを共有したい場合は`cli/`だけをsymlinkする。`credentials.toml`と`mcp/oauth/`は実ファイルのまま残す
+- Devin CLIは`XDG_DATA_HOME`配下の`devin/credentials.toml`に認証を書くので、`XDG_DATA_HOME`だけ切り替えれば認証を分離できる
+- `devin.org_id`は`~/.config/devin/config.json`に入るので、config.jsonだけ`--config`でプロファイル別に指定する
+- `XDG_CONFIG_HOME`は`~/.config`のままにして、`~/.config/devin/`配下のskills・AGENTS.md・sessions.dbなどを共有する
+- `atuin`や`gh` extensionsなど、`XDG_DATA_HOME`を変えると副作用が出るものはsymlinkで元の場所に戻す
 
 ## ファイル配置
 
-`devin auth status`がcredentialsのパスを表示してくれる。
-
-| 種別                        | パス                                      | profile間で                          |
-| --------------------------- | ----------------------------------------- | ------------------------------------ |
-| 認証                        | `$XDG_DATA_HOME/devin/credentials.toml`   | 分離する                             |
-| MCP OAuth                   | `$XDG_DATA_HOME/devin/mcp/oauth/`         | 分離される                           |
-| sessions/transcripts/logs等 | `$XDG_DATA_HOME/devin/cli/`               | symlinkで共有可能                    |
-| 設定・hooks                 | `$XDG_CONFIG_HOME/devin/config.json`      | 分離する（`devin.org_id`を含むため） |
-| グローバルskills等          | `$XDG_CONFIG_HOME/devin/`配下の他ファイル | symlinkで共有可能                    |
+| 種別                      | パス                                    | profile間で          |
+| ------------------------- | --------------------------------------- | -------------------- |
+| 認証                      | `$XDG_DATA_HOME/devin/credentials.toml` | 分離する             |
+| MCP OAuth                 | `$XDG_DATA_HOME/devin/mcp/oauth/`       | 分離される           |
+| sessions/transcripts/logs | `$XDG_DATA_HOME/devin/`                 | 分離する             |
+| 設定（org_id含む）        | `~/.config/devin-<profile>/config.json` | `--config`で切り替え |
+| グローバルskills等        | `~/.config/devin/` 配下                 | 共有                 |
+| atuin履歴                 | `~/.local/share/atuin`                  | symlinkで共有        |
+| gh extensions             | `~/.local/share/gh`                     | symlinkで共有        |
 
 ## profile切り替えwrapper
 
-`~/bin`が`/opt/homebrew/bin`よりPATH前方にある前提で、`~/bin/devin`を置くと`devin`を透過的にshadowできる。
+`~/bin`が`/opt/homebrew/bin`よりPATH前方にある前提で、`~/bin/devin`を置く。
 
 ```sh
 #!/bin/sh
 # DEVIN_PROFILE=<name> devin [...]
+# devin の auth/state を profile 分離する wrapper。
+#   default 以外: XDG_DATA_HOME=~/.local/share/devin-<name>
+#                 config.json は ~/.config/devin-<name>/config.json
+#                 XDG_CONFIG_HOME は ~/.config のまま
+#   atuin, gh など共有したい XDG data は symlink
 set -eu
 
 self="$(cd "$(dirname "$0")" && pwd -P)/$(basename "$0")"
@@ -42,64 +47,57 @@ case "${DEVIN_PROFILE:-default}" in
     exec "$real" "$@" ;;
   *)
     export XDG_DATA_HOME="$HOME/.local/share/devin-$DEVIN_PROFILE"
-    export XDG_CONFIG_HOME="$HOME/.config/devin-$DEVIN_PROFILE"
-    exec "$real" "$@" ;;
+    mkdir -p "$XDG_DATA_HOME"
+
+    for dir in atuin gh; do
+      if [ ! -e "$XDG_DATA_HOME/$dir" ]; then
+        mkdir -p "$HOME/.local/share/$dir"
+        ln -s "$HOME/.local/share/$dir" "$XDG_DATA_HOME/$dir"
+      fi
+    done
+
+    mkdir -p "$HOME/.config/devin-$DEVIN_PROFILE"
+    exec "$real" --config "$HOME/.config/devin-$DEVIN_PROFILE/config.json" "$@" ;;
 esac
 ```
 
 ```bash
 devin                              # 今まで通り
 DEVIN_PROFILE=work devin auth login  # 別アカウントでログイン
-DEVIN_PROFILE=work devin auth status # Credentials pathが~/.local/share/devin-work/...ならOK
+DEVIN_PROFILE=work devin auth status
 ```
 
-## 設定とsessionsの共有
+## 初回セットアップ・移行
 
-config側は`config.json`だけがorg依存なので、それ以外をsymlinkする。
+既存のprofileディレクトリ（例：`devin-personal`）を新しい構成に合わせる。
 
 ```bash
-cd ~/.config/devin-work/devin
-for f in AGENTS.md skills; do
-  ln -sfn ~/.config/devin/$f .
-done
+# config.jsonをプロファイル直下に移動
+mv ~/.config/devin-personal/devin/config.json ~/.config/devin-personal/config.json
+
+# atuinを共有
+rm -rf ~/.local/share/devin-personal/atuin
+ln -s ~/.local/share/atuin ~/.local/share/devin-personal/atuin
+
+# gh extensionsを共有
+ln -s ~/.local/share/gh ~/.local/share/devin-personal/gh
 ```
 
-data側は`credentials.toml`と`mcp/oauth/`を残して`cli/`を丸ごとsymlinkすれば、sessions.db・transcripts・logsが共有され、どちらのprofileからも同じsession一覧が見える。
+`~/.config/devin-personal/devin/`に残る`AGENTS.md`・`skills`・`ponytail-hook.js`のsymlinkは不要になる。`devin`は`~/.config/devin/`を直接読む。
 
-```bash
-mv ~/.local/share/devin-work/devin/cli /tmp/devin-work-cli-bak 2>/dev/null
-ln -sfn ~/.local/share/devin/cli ~/.local/share/devin-work/devin/cli
-```
+## 設定とsessions
 
-## hooksだけはsymlinkできない
-
-user-levelのhooksは`config.json`の`hooks`キー内にあり、ファイル単位のsymlinkが効かない。`hooks`だけを流し込むスクリプトで吸収する（`~/.local/bin/devin-sync-hooks`）:
-
-```sh
-#!/bin/sh
-# devin-sync-hooks <profile config dir>
-# 例: devin-sync-hooks ~/.config/devin-work/devin
-set -eu
-
-dst="${1:?usage: devin-sync-hooks <profile config dir>}"
-src="$HOME/.config/devin/config.json"
-target="$dst/config.json"
-tmp="$target.tmp.$$"
-
-mkdir -p "$dst"
-[ -f "$target" ] || echo '{}' > "$target"
-
-jq --argjson h "$(jq '.hooks' "$src")" '.hooks = $h' "$target" > "$tmp"
-mv "$tmp" "$target"
-```
+- `config.json`だけ`~/.config/devin-<profile>/config.json`に置く。`devin.org_id`はここに書き戻される
+- `~/.config/devin/`配下の`AGENTS.md`・`skills`・`sessions.db`は全profileで共有
+- sessions.dbは複数profileから同時アクセスすると`database is locked`になり得る。WALなのでretryすれば通る
 
 ## 注意点
 
-- `devin.org_id`は`auth login`ではなくセッション開始時に書き戻される。未設定ならデフォルトorg（個人org）に解決される。config.jsonをsymlinkするとorg_idが上書き合戦になる
-- 共有sessions.dbは書き込み競合で`database is locked`になり得る。WALなのでretryすれば通る
+- `XDG_CONFIG_HOME`はwrapperで上書きしない。`--config`だけで`config.json`の場所を変える
+- `atuin`や`gh`は`XDG_DATA_HOME`に従うので、symlinkを忘れると履歴・extensionsがプロファイル別になってしまう
+- `mise`や`uv`も`XDG_DATA_HOME`に従う。プロファイル別にしたくないなら同様にsymlinkするか、`MISE_DATA_DIR`・`UV_TOOL_DIR`など個別の環境変数で固定する
+- `XDG_DATA_HOME`を切り替えても`devin`のsessions/transcriptsはプロファイル別になる。履歴を共有したい場合は`~/.local/share/devin/cli`や`summaries`をsymlinkする
 - `read_config_from`はprofile側に引き継がれない。main側でproviderを絞っている場合はprofile側configにも書く
-- devinセッション内では`CHISEL_SESSION_DB`がexport済みで、nestedで`devin`を呼ぶと親のsessions.dbを継承する
-- `WINDSURF_API_KEY`はACP server向けで`devin auth`の認証面には効かない
 
 ## ref
 
