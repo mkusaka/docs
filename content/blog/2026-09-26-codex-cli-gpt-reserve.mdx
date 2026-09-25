@@ -1,0 +1,50 @@
+---
+title: "Codex CLIでgpt-reserveを使う"
+date: 2026-09-26
+description: "ChatGPTのReserve枠をCodex CLIから明示的に使う"
+categories: [tips]
+tags: [codex, cli, chatgpt]
+---
+
+## 使う条件
+
+まず認証を確認する。Reserveが有効なChatGPT accountでCodex CLIへログインしていればよい。利用権がないaccountでは、`gpt-reserve`はmodel一覧に表示されない。
+
+```bash
+codex login
+codex login status
+```
+
+## 起動する
+
+対話モードでは、modelを指定して起動する。
+
+```bash
+codex --model gpt-reserve
+```
+
+1回だけ実行する場合は`codex exec`を使う。
+
+```bash
+codex exec --model gpt-reserve 'Reply with exactly: reserve works'
+```
+
+## 最大effortで実行する
+
+`max`がaccountのmodel catalogで提供されている場合は、`model_reasoning_effort`で指定できる。
+
+```bash
+codex exec \
+  --model gpt-reserve \
+  -c 'model_reasoning_effort="max"' \
+  'Review this change for correctness.'
+```
+
+継続的に使う場合は`~/.codex/config.toml`へ設定する。
+
+```toml
+model = "gpt-reserve"
+model_reasoning_effort = "max"
+```
+
+`max`を提供していないaccountやrolloutでは、利用可能な最大effortを選ぶ。Codexのmodel pickerに表示される値がそのaccountで使える値である。
