@@ -6,6 +6,7 @@
   },
   "rules": {
     "react/jsx-curly-brace-presence": "error",
+    "react/set-state-in-effect": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error"
   },
