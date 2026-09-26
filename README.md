@@ -1,6 +1,6 @@
 # docs
 
-Personal tech blog and docs site built with Astro static pages and a Cloudflare Worker API. Posts can be rendered, summarized, searched, and recommended with LLM-powered endpoints.
+Personal tech blog and docs site built with FUNSTACK Static pages and a Cloudflare Worker API. Posts can be rendered, summarized, searched, and recommended with LLM-powered endpoints.
 
 ## Features
 
@@ -35,7 +35,7 @@ GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
 
 ```bash
 pnpm dev              # Build and start local Worker dev server
-pnpm dev:astro        # Page-only Astro dev server
+pnpm dev:pages        # Page-only FUNSTACK Vite dev server (API routes need Worker)
 ```
 
 ## Build & Deploy

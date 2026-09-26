@@ -1,5 +1,4 @@
 {
-  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -18,6 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": [".astro/types.d.ts", "**/*.ts", "**/*.tsx", "**/*.astro"],
-  "exclude": ["node_modules", "app"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
 }
