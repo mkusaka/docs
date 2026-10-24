@@ -1,7 +1,7 @@
 ---
 title: "Pi coding agentで複数アカウントを切り替える"
 date: 2026-10-24
-description: "PI_CODING_AGENT_DIRを切り替えてpiのauth.jsonだけを分離し、sessionsや設定は共有する"
+description: "PI_CODING_AGENT_DIRを切り替えるwrapperでpiのauth.jsonだけを分離し、sessionsや設定は共有する"
 categories: [tips]
 tags: [pi, cli, configuration]
 ---
@@ -11,7 +11,8 @@ tags: [pi, cli, configuration]
 - piは`~/.pi/agent`（`PI_CODING_AGENT_DIR`で変更可）配下に`auth.json`、`settings.json`、`models.json`、sessions等を置く
 - `auth.json`はprovider 1つにつき1credentialなので、同じproviderの複数アカウントは持てない（[#1391](https://github.com/earendil-works/pi/issues/1391)）
 - 別の`PI_CODING_AGENT_DIR`を作って`auth.json`以外をデフォルト側へsymlinkすれば、認証だけ分けてsessionsや設定は共有できる
-- `PI_PROFILE`はpi標準の環境変数ではないが、シェル関数で`PI_PROFILE` → `PI_CODING_AGENT_DIR`へ変換すればCodex CLIと同じ感覚で使える
+- `PI_PROFILE`はpi標準の環境変数ではないが、wrapperで`PI_PROFILE` → `PI_CODING_AGENT_DIR`へ変換すればCodex CLIと同じ感覚で使える
+- シェル関数だと`sh -c`やスクリプトから呼んだときに効かないので、PATH上のwrapperにする
 
 ## auth.json以外を共有する
 
@@ -30,35 +31,40 @@ done
 
 ## PI_PROFILEで切り替える
 
-`~/.zshrc`などに追加する：
+binary版のpiは`~/.local/share/pi/pi`が本体で、`~/.local/bin/pi`はそこへのsymlinkになっている。`~/bin/pi`にwrapperを置く。
 
-```zsh
-pi() {
-  local profile="${PI_PROFILE:-default}"
-  local agent_dir
+```sh
+#!/bin/sh
+# PI_PROFILE=<name> pi [...]
+set -eu
 
-  case "$profile" in
-    default)
-      agent_dir="$HOME/.pi/agent"
-      ;;
-    alternate)
-      agent_dir="$HOME/.pi/agent-alternate"
-      ;;
-    *)
-      echo "unknown PI_PROFILE: $profile" >&2
-      echo "expected: default or alternate" >&2
-      return 2
-      ;;
-  esac
+real="$HOME/.local/share/pi/pi"
 
-  PI_CODING_AGENT_DIR="$agent_dir" command pi "$@"
-}
+case "${PI_PROFILE:-default}" in
+  default)   dir="$HOME/.pi/agent" ;;
+  alternate) dir="$HOME/.pi/agent-alternate" ;;
+  *)
+    echo "unknown PI_PROFILE: ${PI_PROFILE}" >&2
+    echo "expected: default or alternate" >&2
+    exit 2 ;;
+esac
+
+export PI_CODING_AGENT_DIR="$dir"
+exec "$real" "$@"
+```
+
+`~/.local/bin`が`~/bin`よりPATH前方にあっても必ずwrapperを通るように、`~/.local/bin/pi`をwrapperへのsymlinkに張り替える。
+
+```bash
+chmod +x ~/bin/pi
+ln -sfn ~/bin/pi ~/.local/bin/pi
 ```
 
 ```bash
 pi
 PI_PROFILE=alternate pi        # 起動して /login
 PI_PROFILE=alternate pi auth check --provider openai
+PI_PROFILE=alternate bash -c 'pi -p "hello"'   # 非対話shellからも効く
 ```
 
 ## 注意点
@@ -67,7 +73,8 @@ PI_PROFILE=alternate pi auth check --provider openai
 - piは`settings.json`等をrenameせずにその場で書き込むので、symlinkは壊れない
 - sessionsは混ざる。そのかわり、どのprofileからでも`-c`で同じsessionを再開できる
 - MCPのOAuth credential（`mcp-auth.json`）はprofile別のまま。共有したければsymlinkする
-- oh-my-zshのpnpm pluginは`alias pi='pnpm init'`を定義する。`unalias pi`してから関数を定義する
+- binary版の`pi update`はreleasesへの案内を出すだけで`~/.local/bin/pi`を作り直さないので、wrapperは残る
+- oh-my-zshのpnpm pluginは`alias pi='pnpm init'`を定義する。`~/.zshrc`で`unalias pi`しておく
 
 ## ref
 
