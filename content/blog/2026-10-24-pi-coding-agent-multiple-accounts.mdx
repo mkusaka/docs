@@ -1,0 +1,76 @@
+---
+title: "Pi coding agentで複数アカウントを切り替える"
+date: 2026-10-24
+description: "PI_CODING_AGENT_DIRを切り替えてpiのauth.jsonだけを分離し、sessionsや設定は共有する"
+categories: [tips]
+tags: [pi, cli, configuration]
+---
+
+## まとめ
+
+- piは`~/.pi/agent`（`PI_CODING_AGENT_DIR`で変更可）配下に`auth.json`、`settings.json`、`models.json`、sessions等を置く
+- `auth.json`はprovider 1つにつき1credentialなので、同じproviderの複数アカウントは持てない（[#1391](https://github.com/earendil-works/pi/issues/1391)）
+- 別の`PI_CODING_AGENT_DIR`を作って`auth.json`以外をデフォルト側へsymlinkすれば、認証だけ分けてsessionsや設定は共有できる
+- `PI_PROFILE`はpi標準の環境変数ではないが、シェル関数で`PI_PROFILE` → `PI_CODING_AGENT_DIR`へ変換すればCodex CLIと同じ感覚で使える
+
+## auth.json以外を共有する
+
+```bash
+cd ~/.pi
+mkdir -p agent/prompts agent/themes agent/tools
+mkdir -p agent-alternate && chmod 700 agent-alternate
+
+for f in bin extensions skills prompts themes tools sessions \
+  settings.json models.json models-store.json keybindings.json mcp.json trust.json; do
+  ln -s "../agent/$f" "agent-alternate/$f"
+done
+```
+
+`prompts`・`themes`・`tools`のようにまだ無いディレクトリは先に作っておく。`mcp.json`などのファイルはリンク先が無くても、piが書き込むときに作られる。
+
+## PI_PROFILEで切り替える
+
+`~/.zshrc`などに追加する：
+
+```zsh
+pi() {
+  local profile="${PI_PROFILE:-default}"
+  local agent_dir
+
+  case "$profile" in
+    default)
+      agent_dir="$HOME/.pi/agent"
+      ;;
+    alternate)
+      agent_dir="$HOME/.pi/agent-alternate"
+      ;;
+    *)
+      echo "unknown PI_PROFILE: $profile" >&2
+      echo "expected: default or alternate" >&2
+      return 2
+      ;;
+  esac
+
+  PI_CODING_AGENT_DIR="$agent_dir" command pi "$@"
+}
+```
+
+```bash
+pi
+PI_PROFILE=alternate pi        # 起動して /login
+PI_PROFILE=alternate pi auth check --provider openai
+```
+
+## 注意点
+
+- `auth.json`は共有しない。OAuthのrefresh tokenはrefreshのたびに更新されるので、同じアカウントを複数のdirに置くと片方が失効する
+- piは`settings.json`等をrenameせずにその場で書き込むので、symlinkは壊れない
+- sessionsは混ざる。そのかわり、どのprofileからでも`-c`で同じsessionを再開できる
+- MCPのOAuth credential（`mcp-auth.json`）はprofile別のまま。共有したければsymlinkする
+- oh-my-zshのpnpm pluginは`alias pi='pnpm init'`を定義する。`unalias pi`してから関数を定義する
+
+## ref
+
+- `pi --help`
+- `pi auth --help`
+- [Codex CLIで複数アカウントを切り替える](/2026/06/06/codex-cli-multiple-accounts)
