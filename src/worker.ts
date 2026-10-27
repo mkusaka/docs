@@ -127,6 +127,7 @@ function buildDigestTools(allPosts: readonly PostMeta[]) {
 
 const AI_CACHE_TTL_SECONDS = 60 * 60 * 24 * 7;
 const REPLAY_CHUNK_DELAY_MS = 15;
+const REPLAY_MAX_DURATION_MS = 3000;
 
 async function sha256Hex(text: string) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -137,6 +138,7 @@ async function sha256Hex(text: string) {
 function replayResponse(cached: Response, text: string) {
   const isEventStream = cached.headers.get("content-type")?.includes("text/event-stream");
   const chunks = isEventStream ? text.split(/(?<=\n\n)/) : (text.match(/[\s\S]{1,24}/gu) ?? []);
+  const delayMs = Math.min(REPLAY_CHUNK_DELAY_MS, REPLAY_MAX_DURATION_MS / chunks.length);
   const encoder = new TextEncoder();
   let index = 0;
 
@@ -147,7 +149,7 @@ function replayResponse(cached: Response, text: string) {
         return;
       }
       if (index > 0) {
-        await new Promise((resolve) => setTimeout(resolve, REPLAY_CHUNK_DELAY_MS));
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
       }
       controller.enqueue(encoder.encode(chunks[index++]));
     },
