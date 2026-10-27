@@ -129,7 +129,7 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
   );
 
   const handleRegenerate = useCallback(() => {
-    regenerate({ body: makeBody() });
+    regenerate({ body: { ...makeBody(), fresh: true } });
   }, [regenerate, makeBody]);
 
   const handleRetry = useCallback(() => {

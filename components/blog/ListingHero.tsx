@@ -89,7 +89,7 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
   );
 
   const handleRegenerate = useCallback(() => {
-    regenerate({ body: makeBody() });
+    regenerate({ body: { ...makeBody(), fresh: true } });
   }, [regenerate, makeBody]);
 
   const handleRetry = useCallback(() => {

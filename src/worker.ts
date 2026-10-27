@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { streamText, tool, stepCountIs } from "ai";
 import { z } from "zod";
 import { getAllPosts, getPostBySlug } from "../lib/posts";
@@ -13,6 +13,7 @@ import {
 } from "../lib/prompt";
 import { buildGenerateUserPrompt } from "../lib/generate-prompt-shared.js";
 import { resolveTextModelConfig } from "../lib/ai-provider";
+import { AI_MODEL } from "../lib/ai-model-config";
 import type { Language, PostMeta, Style } from "../lib/types";
 
 interface WorkerEnv {
@@ -124,6 +125,87 @@ function buildDigestTools(allPosts: readonly PostMeta[]) {
   };
 }
 
+const AI_CACHE_TTL_SECONDS = 60 * 60 * 24 * 7;
+const REPLAY_CHUNK_DELAY_MS = 15;
+
+async function sha256Hex(text: string) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Re-emits a cached body in small delayed chunks so the client renders it like a live stream.
+function replayResponse(cached: Response, text: string) {
+  const isEventStream = cached.headers.get("content-type")?.includes("text/event-stream");
+  const chunks = isEventStream ? text.split(/(?<=\n\n)/) : (text.match(/[\s\S]{1,24}/gu) ?? []);
+  const encoder = new TextEncoder();
+  let index = 0;
+
+  const stream = new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      if (index >= chunks.length) {
+        controller.close();
+        return;
+      }
+      if (index > 0) {
+        await new Promise((resolve) => setTimeout(resolve, REPLAY_CHUNK_DELAY_MS));
+      }
+      controller.enqueue(encoder.encode(chunks[index++]));
+    },
+  });
+
+  const headers = new Headers(cached.headers);
+  headers.delete("content-length");
+  return new Response(stream, { headers });
+}
+
+// Caches completed AI output in the Cache API, keyed by a hash of the model and prompt content.
+// ponytail: Cache API is per-colo, so each datacenter generates once; use KV if a global cache matters.
+async function cachedStreamResponse(
+  c: Context<{ Bindings: WorkerEnv }>,
+  format: "text" | "ui",
+  options: Parameters<typeof streamText>[0],
+  fresh = false,
+) {
+  const hash = await sha256Hex(
+    JSON.stringify([format, AI_MODEL, options.system, options.prompt, options.messages]),
+  );
+  const cacheKey = new Request(new URL(`/__ai-cache/${hash}`, c.req.url));
+  const cache = await caches.open("ai-generation");
+
+  if (!fresh) {
+    const cached = await cache.match(cacheKey);
+    if (cached) return replayResponse(cached, await cached.text());
+  }
+
+  const { promise: completed, resolve: settle } = Promise.withResolvers<boolean>();
+  // No abortSignal: a generation the client cancels (e.g. on scroll) still runs to completion and
+  // fills the cache, so the next visitor gets a replay instead of paying for another partial run.
+  const result = streamText({
+    ...options,
+    onFinish: ({ finishReason }) => settle(finishReason !== "length"),
+    onAbort: () => settle(false),
+    onError: ({ error }) => {
+      console.error(error);
+      settle(false);
+    },
+  });
+  const response =
+    format === "ui" ? result.toUIMessageStreamResponse() : result.toTextStreamResponse();
+  if (!response.body) return response;
+
+  const [body, copy] = response.body.tee();
+  c.executionCtx.waitUntil(
+    Promise.all([new Response(copy).text(), completed]).then(([text, ok]) => {
+      if (!ok || !text) return;
+      const headers = new Headers(response.headers);
+      headers.set("Cache-Control", `public, max-age=${AI_CACHE_TTL_SECONDS}`);
+      return cache.put(cacheKey, new Response(text, { headers }));
+    }),
+  );
+
+  return new Response(body, response);
+}
+
 app.get("/api/raw/:slug", (c) => rawMarkdownResponse(c.req.param("slug")));
 
 app.get("/feed.xml", () => {
@@ -159,14 +241,16 @@ app.post("/api/generate", async (c) => {
 
   const modelConfig = resolveTextModelConfig(c.env.AI);
 
-  const result = streamText({
-    ...modelConfig,
-    abortSignal: c.req.raw.signal,
-    system: buildGenerateSystemPrompt(language),
-    prompt: buildGenerateUserPrompt(post.rawContent, style, language),
-  });
-
-  return result.toTextStreamResponse();
+  return cachedStreamResponse(
+    c,
+    "text",
+    {
+      ...modelConfig,
+      system: buildGenerateSystemPrompt(language),
+      prompt: buildGenerateUserPrompt(post.rawContent, style, language),
+    },
+    body.fresh === true,
+  );
 });
 
 app.post("/api/search", async (c) => {
@@ -185,14 +269,11 @@ app.post("/api/search", async (c) => {
 
   const modelConfig = resolveTextModelConfig(c.env.AI);
 
-  const result = streamText({
+  return cachedStreamResponse(c, "text", {
     ...modelConfig,
-    abortSignal: c.req.raw.signal,
     system: buildSearchSystemPrompt(getAllPosts()),
     messages: [{ role: "user", content: query.trim() }],
   });
-
-  return result.toTextStreamResponse();
 });
 
 app.post("/api/digest", async (c) => {
@@ -215,16 +296,18 @@ app.post("/api/digest", async (c) => {
   const promptText = buildDigestUserPrompt({ topic, tag, style, language });
   const modelConfig = resolveTextModelConfig(c.env.AI);
 
-  const result = streamText({
-    ...modelConfig,
-    abortSignal: c.req.raw.signal,
-    system: buildDigestSystemPrompt(recentPosts, language),
-    messages: [{ role: "user", content: promptText }],
-    tools: buildDigestTools(allPosts),
-    stopWhen: stepCountIs(3),
-  });
-
-  return result.toUIMessageStreamResponse();
+  return cachedStreamResponse(
+    c,
+    "ui",
+    {
+      ...modelConfig,
+      system: buildDigestSystemPrompt(recentPosts, language),
+      messages: [{ role: "user", content: promptText }],
+      tools: buildDigestTools(allPosts),
+      stopWhen: stepCountIs(3),
+    },
+    body.fresh === true,
+  );
 });
 
 app.post("/api/not-found", async (c) => {
@@ -235,16 +318,18 @@ app.post("/api/not-found", async (c) => {
   const promptText = buildNotFoundUserPrompt(style, language);
   const modelConfig = resolveTextModelConfig(c.env.AI);
 
-  const result = streamText({
-    ...modelConfig,
-    abortSignal: c.req.raw.signal,
-    system: buildNotFoundSystemPrompt(posts, language),
-    messages: [{ role: "user", content: promptText }],
-    tools: buildDigestTools(posts),
-    stopWhen: stepCountIs(3),
-  });
-
-  return result.toUIMessageStreamResponse();
+  return cachedStreamResponse(
+    c,
+    "ui",
+    {
+      ...modelConfig,
+      system: buildNotFoundSystemPrompt(posts, language),
+      messages: [{ role: "user", content: promptText }],
+      tools: buildDigestTools(posts),
+      stopWhen: stepCountIs(3),
+    },
+    body.fresh === true,
+  );
 });
 
 app.all("*", async (c) => {
