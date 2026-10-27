@@ -1,1 +1,1 @@
-export const AI_MODEL = "gemini-3.5-flash-lite";
+export const AI_MODEL = "@cf/zai-org/glm-4.7-flash";

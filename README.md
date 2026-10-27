@@ -15,7 +15,7 @@ Personal tech blog and docs site built with FUNSTACK Static pages and a Cloudfla
 
 - Node.js ^24.13.1
 - pnpm
-- Google Generative AI API key
+- Cloudflare account with Workers AI
 
 ## Installation
 
@@ -25,11 +25,7 @@ pnpm install
 
 ## Environment Setup
 
-Create `.dev.vars` for local development:
-
-```
-GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
-```
+AI features use the Workers AI binding (`AI` in `wrangler.jsonc`); no API key is needed. `wrangler dev` runs Workers AI remotely against the logged-in Cloudflare account.
 
 ## Development
 

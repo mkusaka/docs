@@ -5,6 +5,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { SlidersHorizontalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StyleSelector } from "./StyleSelector";
+import { useCancelOnScroll } from "./useCancelOnScroll";
 import { StreamingContent } from "./StreamingContent";
 import { MarkdownSource } from "./MarkdownSource";
 import { CopyPageDropdown } from "./CopyPageDropdown";
@@ -99,6 +100,7 @@ export function PostPageClient({ meta, rawContent, initialLanguage }: PostPageCl
     transportAbortRef.current = null;
     sdkStop();
   }, [sdkStop]);
+  useCancelOnScroll(generating, handleStop);
 
   // Show raw content only when original + source language (ja)
   const showRawContent = style.style === "original" && style.language === "ja";

@@ -166,9 +166,6 @@ importers:
 
   .:
     dependencies:
-      '@ai-sdk/google':
-        specifier: ^4.0.0
-        version: 4.0.99(zod@4.6.7)
       '@ai-sdk/react':
         specifier: ^4.0.0
         version: 4.0.147(react@19.3.1)(zod@4.6.7)
@@ -223,6 +220,9 @@ importers:
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.7.0
+      workers-ai-provider:
+        specifier: ^4.0.0
+        version: 4.0.0(@ai-sdk/provider@4.0.29)(ai@7.0.143(zod@4.6.7))
       zod:
         specifier: ^4.3.6
         version: 4.6.7
@@ -280,12 +280,6 @@ packages:
 
   '@ai-sdk/gateway@4.0.116':
     resolution: {integrity: sha512-YK2As2GpxmyHi5w6R4FLepiLcs6MbIMxh6nyTMgHaoHKoM5aWEXvKDe/JqdMQ1ivOy3EPJiEBgRI677YTGxfHQ==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/google@4.0.99':
-    resolution: {integrity: sha512-pa3qI4X807oRAHVrJXfgkNHa4EOXEwOAJJYLVIwBk6PHKUW3S35mr/AvN46czyqn+5XNDwihHSF2iR3YiaV+sQ==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -4297,6 +4291,25 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
+  workers-ai-provider@4.0.0:
+    resolution: {integrity: sha512-FkhwMP1EP/MKXR8Jv1o7wLVKfTqu0h/PUaEmhZ7gyDiioib5Wsh3oPAKhG+7+SWfU3roTDHaEWlJpkJjpXu+fQ==}
+    deprecated: |-
+      Deprecated. Use createAI from agents/models/ai-sdk, or
+       ai-search-provider for AI Search: https://developers.cloudflare.com/agents/models/ai-sdk/
+    peerDependencies:
+      '@ai-sdk/anthropic': ^4.0.0
+      '@ai-sdk/google': ^4.0.0
+      '@ai-sdk/openai': ^4.0.0
+      '@ai-sdk/provider': ^4.0.0
+      ai: ^7.0.0
+    peerDependenciesMeta:
+      '@ai-sdk/anthropic':
+        optional: true
+      '@ai-sdk/google':
+        optional: true
+      '@ai-sdk/openai':
+        optional: true
+
   wrangler@4.149.0:
     resolution: {integrity: sha512-OzK7xmB5r5iLKb3cIT3783g13fe6T7xyeKu9LEdUyl+DKAM2KP/jkjnE0OUhyw+mB/XJM9ycjgF3MWm8PR9amg==}
     engines: {node: '>=22.0.0'}
@@ -4368,12 +4381,6 @@ snapshots:
       '@ai-sdk/provider': 4.0.29
       '@ai-sdk/provider-utils': 5.0.62(zod@4.6.7)
       '@vercel/oidc': 3.2.0
-      zod: 4.6.7
-
-  '@ai-sdk/google@4.0.99(zod@4.6.7)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.29
-      '@ai-sdk/provider-utils': 5.0.62(zod@4.6.7)
       zod: 4.6.7
 
   '@ai-sdk/mcp@2.0.78(zod@4.6.7)':
@@ -8466,6 +8473,11 @@ snapshots:
       '@cloudflare/workerd-linux-64': 1.20261006.1
       '@cloudflare/workerd-linux-arm64': 1.20261006.1
       '@cloudflare/workerd-windows-64': 1.20261006.1
+
+  workers-ai-provider@4.0.0(@ai-sdk/provider@4.0.29)(ai@7.0.143(zod@4.6.7)):
+    dependencies:
+      '@ai-sdk/provider': 4.0.29
+      ai: 7.0.143(zod@4.6.7)
 
   wrangler@4.149.0(@cloudflare/workers-types@5.20261012.1)(@types/node@25.9.9):
     dependencies:

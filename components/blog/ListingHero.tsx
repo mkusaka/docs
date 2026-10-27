@@ -7,6 +7,7 @@ import { Card, CardHeader, CardAction, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
+import { useCancelOnScroll } from "./useCancelOnScroll";
 import { AI_MODEL } from "@/lib/ai-model-config";
 import type { Language, StyleOptions, DigestTools } from "@/lib/types";
 import type { UIMessage } from "ai";
@@ -42,11 +43,13 @@ export function ListingHero({ topic, tag, initialLanguage }: ListingHeroProps) {
 
   const transport = useMemo(() => new DefaultChatTransport({ api: "/api/digest" }), []);
 
-  const { messages, sendMessage, regenerate, setMessages, status, error } = useChat<DigestMessage>({
-    transport,
-  });
+  const { messages, sendMessage, regenerate, setMessages, status, error, stop } =
+    useChat<DigestMessage>({
+      transport,
+    });
 
   const isLoading = status === "streaming" || status === "submitted";
+  useCancelOnScroll(isLoading, stop);
 
   const makeBody = useCallback(
     (lang?: Language, sty?: string) => ({

@@ -17,7 +17,7 @@ import type { Language, PostMeta, Style } from "../lib/types";
 
 interface WorkerEnv {
   ASSETS: Fetcher;
-  GOOGLE_GENERATIVE_AI_API_KEY: string;
+  AI: Ai;
 }
 
 const app = new Hono<{ Bindings: WorkerEnv }>();
@@ -157,10 +157,11 @@ app.post("/api/generate", async (c) => {
     return new Response("Post not found", { status: 404 });
   }
 
-  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "minimal");
+  const modelConfig = resolveTextModelConfig(c.env.AI);
 
   const result = streamText({
     ...modelConfig,
+    abortSignal: c.req.raw.signal,
     system: buildGenerateSystemPrompt(language),
     prompt: buildGenerateUserPrompt(post.rawContent, style, language),
   });
@@ -182,10 +183,11 @@ app.post("/api/search", async (c) => {
     });
   }
 
-  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "minimal");
+  const modelConfig = resolveTextModelConfig(c.env.AI);
 
   const result = streamText({
     ...modelConfig,
+    abortSignal: c.req.raw.signal,
     system: buildSearchSystemPrompt(getAllPosts()),
     messages: [{ role: "user", content: query.trim() }],
   });
@@ -211,10 +213,11 @@ app.post("/api/digest", async (c) => {
   const recentPosts = posts.slice(0, 10);
   const allPosts = getAllPosts();
   const promptText = buildDigestUserPrompt({ topic, tag, style, language });
-  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "medium");
+  const modelConfig = resolveTextModelConfig(c.env.AI);
 
   const result = streamText({
     ...modelConfig,
+    abortSignal: c.req.raw.signal,
     system: buildDigestSystemPrompt(recentPosts, language),
     messages: [{ role: "user", content: promptText }],
     tools: buildDigestTools(allPosts),
@@ -230,10 +233,11 @@ app.post("/api/not-found", async (c) => {
   const style = body.style as Style | undefined;
   const posts = getAllPosts();
   const promptText = buildNotFoundUserPrompt(style, language);
-  const modelConfig = resolveTextModelConfig(c.env.GOOGLE_GENERATIVE_AI_API_KEY, "medium");
+  const modelConfig = resolveTextModelConfig(c.env.AI);
 
   const result = streamText({
     ...modelConfig,
+    abortSignal: c.req.raw.signal,
     system: buildNotFoundSystemPrompt(posts, language),
     messages: [{ role: "user", content: promptText }],
     tools: buildDigestTools(posts),

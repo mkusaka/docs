@@ -3,8 +3,11 @@
   "name": "docs",
   "main": "src/worker.ts",
   "compatibility_date": "2026-06-24",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat", "enable_request_signal"],
   "preview_urls": true,
+  "ai": {
+    "binding": "AI",
+  },
   "assets": {
     "directory": "./dist/public",
     "binding": "ASSETS",

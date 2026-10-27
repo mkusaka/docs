@@ -7,6 +7,7 @@ import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DigestParts } from "./DigestParts";
 import { StyleSelector } from "./StyleSelector";
+import { useCancelOnScroll } from "./useCancelOnScroll";
 import type { Language, StyleOptions, DigestTools } from "@/lib/types";
 import type { UIMessage } from "ai";
 import { isSupportedLanguage } from "@/lib/language";
@@ -89,10 +90,11 @@ export function NotFoundClient({ initialLanguage }: NotFoundClientProps) {
 
   const transport = useMemo(() => new DefaultChatTransport({ api: "/api/not-found" }), []);
 
-  const { messages, sendMessage, regenerate, setMessages, status, error } =
+  const { messages, sendMessage, regenerate, setMessages, status, error, stop } =
     useChat<NotFoundMessage>({ transport });
 
   const isLoading = status === "streaming" || status === "submitted";
+  useCancelOnScroll(isLoading, stop);
 
   const makeBody = useCallback(
     (lang?: Language, sty?: string) => ({
