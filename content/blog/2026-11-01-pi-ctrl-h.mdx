@@ -1,0 +1,17 @@
+---
+title: "PiでCtrl+HをBackspaceにする"
+date: 2026-11-01
+description: "PiのエディタでCtrl+Hを後方削除に割り当てる"
+categories: [tools]
+tags: [pi, keybindings]
+---
+
+`~/.pi/agent/keybindings.json` に設定する。
+
+```json
+{
+  "tui.editor.deleteCharBackward": ["backspace", "ctrl+h"]
+}
+```
+
+`/reload` で反映すると、`Ctrl+H` と `Backspace` が同じ後方削除操作になる。
