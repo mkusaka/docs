@@ -183,7 +183,7 @@ importers:
         version: 1.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@funstack/static':
         specifier: ^1.3.2
-        version: 1.3.4(@funstack/router@1.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))
+        version: 1.3.5(@funstack/router@1.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))
       '@streamdown/cjk':
         specifier: ^1.0.2
         version: 1.0.5(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2(supports-color@10.2.2))(react@19.3.1)(supports-color@10.2.2)(unified@11.0.5)
@@ -210,7 +210,7 @@ importers:
         version: 4.13.19
       lucide-react:
         specifier: ^1.0.0
-        version: 1.75.0(@types/react@19.3.0)(react@19.3.1)
+        version: 1.76.0(@types/react@19.3.0)(react@19.3.1)
       radix-ui:
         specifier: ^1.4.3
         version: 1.8.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -228,7 +228,7 @@ importers:
         version: 2.8.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)
       tailwind-merge:
         specifier: ^3.4.0
-        version: 3.7.0
+        version: 3.7.1
       workers-ai-provider:
         specifier: ^4.0.0
         version: 4.0.1(@ai-sdk/provider@4.0.39)(ai@7.0.177(zod@4.6.7))
@@ -690,8 +690,8 @@ packages:
     resolution: {integrity: sha512-reB4V8FE8foqDULiqOhrlMq5ZqrdKpqlM8ulU/gtklf9OW71O4w5z5EZWjzygmIthmTriDo745EcRGm5+DQR1w==}
     hasBin: true
 
-  '@funstack/static@1.3.4':
-    resolution: {integrity: sha512-2+VcwfVx13WjYEmM8BG9dCvEAsbz49qpbZ1LcZaBmKg4ptlXm7vhZrDxa9MeNbB74Aq+1Ne+6Uc2NIekGIUm6w==}
+  '@funstack/static@1.3.5':
+    resolution: {integrity: sha512-OE0BitposYAy/qQHxo4zVCQ/rRsfF+YqyzkFdhv2v3rvCee6faNAzI1pTM6f8noSIhPWOE631C5AEiPjV2v8HQ==}
     hasBin: true
     peerDependencies:
       '@funstack/router': ^1.6.0
@@ -2291,8 +2291,8 @@ packages:
       oxc-transform-react:
         optional: true
 
-  '@vitejs/plugin-rsc@0.5.38':
-    resolution: {integrity: sha512-SoiRBJBVd3Qg6Frnvdk6LwugJYlQKgee+uqySxKz5T/KsCZUgdw529Klzg4IDJuP/EOfsIJ2YiOKAFY8tnr1kg==}
+  '@vitejs/plugin-rsc@0.5.39':
+    resolution: {integrity: sha512-hRa6CK119r1NkwgPWlPRiDP8e4rELCsIZwjGmQK0sOnayAkYPBkyJMip0GhYEt2ukBZaO0Uw3ICHHO9T692OFw==}
     peerDependencies:
       react: '*'
       react-dom: '*'
@@ -3030,8 +3030,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@1.75.0:
-    resolution: {integrity: sha512-piesXAZIXru9d5lHBoM6cPHOBs5+QkMx+3EXwG3xWJ7qdViuz92JtYN0u9jMB6jt+2WbQrwhvJGdMwGnL3EOfA==}
+  lucide-react@1.76.0:
+    resolution: {integrity: sha512-wRVHt2Xf64GXndB4rQOY9+3Wy9oJ59HDMYv6vwhT0hpSwUxQhG/RM9YijnOmvmIQ+VI/n+1V/FKd6gP4XL2aBQ==}
     peerDependencies:
       '@types/react': '*'
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -3747,8 +3747,8 @@ packages:
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
 
-  tailwind-merge@3.7.0:
-    resolution: {integrity: sha512-XPPUyAc+cvspz3lHTcR/QgPfW2A0lv/xQNIjX3HGhLR+Nq2lHaLq5MtTesHn8GUr3W3DguT2KT5x3NVgRtYwmA==}
+  tailwind-merge@3.7.1:
+    resolution: {integrity: sha512-v7y4BV4FUlO8exj/4M5UXKeoowDiuugVUg3tkMNIyOUCOHy5xp8+5aWQeXCtZ2491sUV1YPsVeM9EveZ6/xuZQ==}
 
   tailwindcss@4.3.4:
     resolution: {integrity: sha512-PCJZTFFdG+sL3gvnP1Do9o6GbkvH2q0p04xSs3f7cSvmAeK+sttG+/7ncK1fdRwKFfC7n+wDDJaOMBSefkI9ow==}
@@ -4424,10 +4424,10 @@ snapshots:
 
   '@funstack/skill-installer@1.1.0': {}
 
-  '@funstack/static@1.3.4(@funstack/router@1.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))':
+  '@funstack/static@1.3.5(@funstack/router@1.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))':
     dependencies:
       '@funstack/skill-installer': 1.1.0
-      '@vitejs/plugin-rsc': 0.5.38(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))
+      '@vitejs/plugin-rsc': 0.5.39(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
       react-error-boundary: 6.1.6(@types/react@19.3.0)(react@19.3.1)
@@ -5804,7 +5804,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)
 
-  '@vitejs/plugin-rsc@0.5.38(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))':
+  '@vitejs/plugin-rsc@0.5.39(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
       es-module-lexer: 3.0.4
@@ -6481,7 +6481,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.75.0(@types/react@19.3.0)(react@19.3.1):
+  lucide-react@1.76.0(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       react: 19.3.1
     optionalDependencies:
@@ -7526,7 +7526,7 @@ snapshots:
       remark-parse: 11.0.0(supports-color@10.2.2)
       remark-rehype: 11.1.2
       remend: 1.5.0
-      tailwind-merge: 3.7.0
+      tailwind-merge: 3.7.1
       unified: 11.0.5
       unist-util-visit: 5.2.0
       unist-util-visit-parents: 6.1.0
@@ -7584,7 +7584,7 @@ snapshots:
 
   systeminformation@5.33.13: {}
 
-  tailwind-merge@3.7.0: {}
+  tailwind-merge@3.7.1: {}
 
   tailwindcss@4.3.4: {}
 
